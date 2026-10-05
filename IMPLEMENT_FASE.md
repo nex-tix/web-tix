@@ -45,9 +45,9 @@ Fase 0 → Fase 1 → Fase 2 → Fase 3 ─┐
 - [✅] Install CodeIgniter 4 (via Composer), PHP sesuai syarat CI4
 - [✅] Buat database MySQL 8.0.16+ (InnoDB, `utf8mb4`) — pastikan CHECK constraint aktif
 - [✅] Konfigurasi `.env`: environment, base URL, kredensial DB (jangan commit `.env`)
-- [] Set zona waktu aplikasi `Asia/Makassar`; sesi MySQL `+08:00` (PRD 2.2)
+- [✅] Set zona waktu aplikasi `Asia/Makassar`; sesi MySQL `+08:00` (PRD 2.2)
 - [✅] Inisialisasi Git + `.gitignore` + struktur branch
-- [] Siapkan Postman collection untuk uji API
+- [✅] Siapkan Postman collection untuk uji API
 - [✅] Install Flutter SDK + emulator/perangkat Android (API 26+)
 
 **Definition of Done:** `php spark serve` jalan, koneksi DB sukses, `SELECT @@session.time_zone` = `+08:00`, waktu aplikasi = WITA.

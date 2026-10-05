@@ -10,11 +10,20 @@ class SettingSeeder extends Seeder
     {
         $now = date('Y-m-d H:i:s');
 
+        // Data awal sesuai PRD v2.5 baris 664–671
         $settings = [
-            // Minimal jumlah orang untuk tiket tipe group
-            'min_group_size' => '5',
+            'min_group_size'       => '5',
+            'max_individual_per_tx' => '4',
+            'max_group_members'   => '15',
+            'retention_months'    => '12',
+            'login_max_attempts'  => '5',
+            'login_lock_minutes'  => '15',
+            'api_token_hours'     => '12',
+            'business_name'       => 'nextix',
+            'business_address'    => 'Uluwatu, Bali',
+            'receipt_footer'      => 'Tidak dapat di-refund',
         ];
-
+            
         foreach ($settings as $key => $value) {
             $exists = $this->db->table('settings')
                 ->where('setting_key', $key)

@@ -225,7 +225,7 @@ Transaksi: `subtotal` 520.000, `discount_amount` 26.000, `total_amount` 494.000.
 | BR-09 | Seluruh waktu memakai WITA. |
 | BR-10 | Satu transaksi hanya berisi penjualan individual **atau** rombongan, tidak dicampur. |
 | BR-11 | Harga dinamis & dapat diedit Admin. Harga satuan, persentase diskon, dan nilai diskon saat transaksi disimpan di `ticket_details` (point-in-time pricing). |
-| BR-12 | Data pengunjung (penanggung jawab untuk rombongan) wajib lengkap di aplikasi: nama, asal, alamat, nomor HP. Di DB `phone` & `address` NULL-able agar anonimisasi bisa dilakukan. |
+| BR-12 | Data pengunjung (penanggung jawab untuk rombongan) tidak wajib lengkap di aplikasi: nama, asal, alamat(boleh null), nomor HP(boleh null). Di DB `phone` & `address` NULL-able agar anonimisasi bisa dilakukan. |
 | BR-13 | Debit wajib mencatat nomor referensi EDC; Cash wajib uang diterima ≥ `total_amount`. |
 | BR-14 | Setiap scan Check-in di gate dicatat, termasuk yang ditolak. |
 | BR-15 | Jumlah pengunjung masuk dihitung dari scan berhasil, bukan dari tiket yang dicetak. |
