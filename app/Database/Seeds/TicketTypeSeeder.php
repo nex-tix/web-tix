@@ -12,9 +12,9 @@ class TicketTypeSeeder extends Seeder
 
         // Sesuaikan harga dan diskon dengan kebutuhan
         $types = [
-            ['name' => 'adult', 'price' => 50000.00, 'discount_percent' => 0.00],
-            ['name' => 'child', 'price' => 25000.00, 'discount_percent' => 0.00],
-            ['name' => 'group', 'price' => 45000.00, 'discount_percent' => 10.00],
+            ['name' => 'adult', 'ticket_category' => 'individual', 'price' => 50000.00, 'discount_percent' => 0.00],
+            ['name' => 'child', 'ticket_category' => 'individual', 'price' => 25000.00, 'discount_percent' => 0.00],
+            ['name' => 'group', 'ticket_category' => 'group', 'price' => 45000.00, 'discount_percent' => 10.00],
         ];
 
         foreach ($types as $type) {
