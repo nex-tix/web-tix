@@ -1117,12 +1117,6 @@
 
     <script src="public/js/qrcode.js"></script>
     <script>
-      /* ============================================================================
-   MOCKUP LOKET KECAK ULUWATU - lapisan data & tampilan
-   Seluruh angka, nama, dan transaksi di bawah ini adalah DATA SINTETIS buatan
-   untuk keperluan peninjauan desain. Format kode, aturan batas, dan struktur
-   struk mengikuti PRD.md v2.5.
-   ========================================================================== */
       (function () {
         "use strict";
 
@@ -1267,7 +1261,7 @@
           );
         };
 
-        /* ------------------------------------------------------------------- data */
+            /* ------------------------------------------------------------------- data */
         var TYPES = [
           {
             id: 1,
