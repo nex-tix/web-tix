@@ -1,0 +1,56 @@
+{
+  "$schema": "impeccable/design-tokens@1",
+  "source": "DESIGN.md v1.0 + index.html (mockup)",
+  "surface": "web",
+  "generatedFrom": "index.html",
+  "color": {
+    "primary": { "value": "#CF4647", "role": "aksi utama, tautan aktif, tinta data grafik" },
+    "primary-hover": { "value": "#B33A3B" },
+    "primary-press": { "value": "#9E3233" },
+    "primary-soft": { "value": "#FBEBEB", "role": "latar hover outline/ikon" },
+    "gold": { "value": "#F5D061", "role": "uang dan tenggat hari; latar sel metrik penjualan" },
+    "gold-hover": { "value": "#E0B94E" },
+    "gold-soft": { "value": "#FCF3DB" },
+    "gold-ink": { "value": "#6B5210", "role": "teks di atas gold-soft (6,7:1)" },
+    "bg": { "value": "#F8F6F6", "role": "lantai halaman" },
+    "surface": { "value": "#FFFFFF" },
+    "surface-2": { "value": "#F1EEEE" },
+    "ink": { "value": "#2A363B", "role": "shell, kertas struk, header tabel, tinta QR" },
+    "ink-3": { "value": "#55666D" },
+    "muted": { "value": "#5F6F76", "note": "digelapkan dari #6B7A80 agar lolos AA (5,2:1 pada putih)" },
+    "line": { "value": "#E0E0E0" },
+    "line-strong": { "value": "#CFD8DC" },
+    "success": { "value": "#2E7D32" },
+    "error": { "value": "#C62828" },
+    "warning": { "value": "#B35C00", "note": "digelapkan dari #F57F17 agar teks peringatan terbaca" },
+    "info": { "value": "#1565C0" }
+  },
+  "typography": {
+    "ui": { "family": "Inter", "fallback": "'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" },
+    "mono": { "family": "JetBrains Mono", "fallback": "'Cascadia Mono', Consolas, 'SFMono-Regular', monospace", "use": "kode tiket, nomor nota, struk thermal" },
+    "scale": {
+      "h1": "24-28px/600-700",
+      "h2": "22px/600",
+      "h3": "18px/600",
+      "body": "14px/400",
+      "table": "13px",
+      "small": "12px (lantai minimum teks)",
+      "metric": "30px/600 tabular-nums"
+    },
+    "numeric": "font-variant-numeric: tabular-nums pada semua angka uang dan jam"
+  },
+  "space": { "base": "4px", "container": "1440px", "rail": "252px", "row": "48px" },
+  "radius": { "sm": "6px", "md": "8px", "pill": "999px" },
+  "shadow": {
+    "sm": "0 2px 6px rgba(42,54,59,.08)",
+    "lg": "0 18px 40px -14px rgba(42,54,59,.34), 0 2px 6px rgba(42,54,59,.08)"
+  },
+  "motion": {
+    "ease": "cubic-bezier(.16,1,.3,1)",
+    "moments": ["masuk view (0,38s fade+rise)", "ink struk saat baris berubah", "modal 0,3s", "toast 0,34s", "progres hari 1s linear"]
+  },
+  "components": ["rail/nav berstatus ink+gold", "topbar jam hari dagang", "papan metrik 4 sel", "panel + tabel padat", "tombol 5 varian", "input/select/textarea + state salah", "kartu radio besar", "switch", "kalkulator qty", "stepper 4 langkah", "tab", "modal", "toast", "badge status", "callout", "pratinjau struk thermal", "QR", "pager", "empty state"],
+  "responsive": { "1440+": "rail penuh + papan 4 kolom", "1024": "rail ikon 76px, papan 2 kolom", "760-": "rail jadi strip horizontal, satu kolom, tabel menggeser" },
+  "print": { "page": "80mm auto, margin 3mm", "font": "JetBrains Mono 11px", "rule": "satu QR per potongan; potongan 2+ hanya memuat identitas tiket dan QR" },
+  "unsourced": ["logo dan ikon adalah SVG buatan sendiri, bukan aset brand", "Inter/JetBrains Mono dimuat dari Google Fonts pada mockup"]
+}
