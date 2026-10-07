@@ -13,7 +13,7 @@ $routes->post('/login', 'Auth\LoginController::authenticate');
 $routes->get('/logout', 'Auth\LoginController::logout');
 
 // ADMIN ROUTES
-$routes->group('admin', ['filter' => 'auth'], function($routes) {
+$routes->group('admin', ['filter' => 'auth'], function ($routes) {
     // Dashboard Admin
     $routes->get('/', 'Home::index');
     $routes->get('dashboard', 'Home::index');
@@ -42,4 +42,7 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     $routes->post('settings/store', 'Admin\SettingController::store');
     $routes->post('settings/(:segment)/update', 'Admin\SettingController::update/$1');
     $routes->post('settings/(:segment)/delete', 'Admin\SettingController::delete/$1');
+
+    //Pos Management
+    $routes->get('pos', 'Admin\PosController::index');
 });
