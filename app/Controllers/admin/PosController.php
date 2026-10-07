@@ -28,7 +28,7 @@ class PosController extends BaseController
             ->orderBy('name', 'ASC')
             ->findAll();
 
-        return view('pos/index', [
+        return view('pages/admin/pos/index', [
             'ticketTypes' => $ticketTypes,
         ]);
     }
