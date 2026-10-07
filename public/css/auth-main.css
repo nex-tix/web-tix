@@ -1,0 +1,11 @@
+
+        /* Subtle background grid pattern mimicking POS terminal backdrops */
+        .bg-grid-subtle {
+            background-size: 28px 28px;
+            background-image:
+                radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        }
+
+        .blur-glow {
+            filter: blur(80px);
+        }
