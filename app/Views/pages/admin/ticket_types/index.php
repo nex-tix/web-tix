@@ -22,7 +22,7 @@
       $rows[] = [
         '<div class="fw-semibold">' . esc($tt['name']) . '</div>',
         'Rp ' . number_format($tt['price'], 0, ',', '.'),
-        '<span class="badge bg-' . ($tt['ticket_category'] === 'individual' ? 'info' : 'warning') . '">' . ucfirst($tt['ticket_category']) . '</span>',
+        '<span class="badge bg-' . ($tt['ticket_category'] === 'individual' ? 'danger' : 'warning') . '">' . ucfirst($tt['ticket_category']) . '</span>',
         $tt['discount_percent'] > 0 ? $tt['discount_percent'] . '%' : '—',
         $tt['is_active'] ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Nonaktif</span>',
         $tt['created_at'],

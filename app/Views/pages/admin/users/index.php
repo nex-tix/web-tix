@@ -85,7 +85,6 @@
               <label for="user_role" class="form-label">Role <span class="text-danger">*</span></label>
               <select class="form-select" id="user_role" name="role" required>
                 <option value="admin">Admin</option>
-                <option value="staff">Staff</option>
               </select>
             </div>
             <div class="col-12">
