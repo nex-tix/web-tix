@@ -26,7 +26,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+               <a href="<?= base_url('admin/pos') ?>" class="nav-link <?= strpos(current_url(), 'admin/pos') !== false ? 'active' : '' ?>">
                 <i class="bi bi-pc-display"></i>
                 <p>POS Loket</p>
               </a>
