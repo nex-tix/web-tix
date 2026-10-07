@@ -36,7 +36,7 @@
                     'value'     => 'Rp 8.209.000',
                     'sub'       => '+24% dari kemarin (Rp 6.600.000)',
                     'sub_class' => 'green',
-                    'bg'        => '#fdf8e8'
+
                 ]) ?>
               </div>
               <div class="col-md-3">

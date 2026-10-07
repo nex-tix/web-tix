@@ -1,4 +1,4 @@
-<div class="stat-card" style="background-color: <?= esc($bg ?? '#fff') ?>">
+<div class="stat-card">
   <div class="stat-label">
     <?php if (isset($dot_class)): ?>
       <span class="<?= esc($dot_class) ?>"></span>
