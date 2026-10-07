@@ -11,14 +11,9 @@
     <div class="bg-[#2c3136] pt-8 pb-7 px-8 text-center relative border-b border-slate-700/60">
         <!-- Brand identity logo badge -->
         <div class="inline-flex items-center justify-center space-x-3 mb-4">
-            <div class="w-12 h-12 rounded-xl bg-[#e24a3b] text-white flex items-center justify-center shadow-lg shadow-[#e24a3b]/30">
+            <div class="w-13 h-13 rounded-xl text-white flex items-center justify-center">
                 <!-- Icon resembling traditional Uluwatu Temple shrine/foliage silhouette -->
-                <svg class="w-7 h-7" fill="currentColor" viewbox="0 0 24 24">
-                    <path d="M12 2L15 8H9L12 2Z"></path>
-                    <path d="M7 8H17L19 13H5L7 8Z" opacity="0.9"></path>
-                    <path d="M3 13H21L22 19C22 19.55 21.55 20 21 20H3C2.45 20 2 19.55 2 19L3 13Z"></path>
-                    <rect fill="#1e232a" height="4" rx="0.5" width="3" x="10.5" y="16"></rect>
-                </svg>
+                 <img width="80px" height="auto" src="<?= base_url('img/logo_nextix.png') ?>" alt="logo">
             </div>
             <div class="text-left">
                 <h1 class="text-lg font-bold text-white tracking-tight leading-tight">Kecak Uluwatu</h1>
