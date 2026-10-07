@@ -1,33 +1,29 @@
-        <header class="topbar">
-          <div class="topbar__ctx">
-            <span class="dot" aria-hidden="true"></span>
-            <strong>Terminal Loket 1</strong>
-            <span>Shift siang &middot; online</span>
-          </div>
-          <div class="topbar__spacer"></div>
-          <div
-            class="dayclock"
-            title="Tiket hanya berlaku sampai pukul 24.00 WITA hari ini"
-          >
-            <svg class="ico ico--lg dayclock__ico">
-              <use href="#i-clock"></use>
-            </svg>
-            <div style="flex: 1">
-              <div class="dayclock__date" id="day-date">Hari dagang</div>
-              <div class="dayclock__row">
-                <span class="dayclock__left" id="day-left">--j --m</span>
-                <span class="dayclock__cap">batas 24.00 WITA</span>
-              </div>
-              <div class="dayclock__bar">
-                <div class="dayclock__fill" id="day-bar"></div>
-              </div>
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid px-0">
+          <!-- Sidebar Toggle -->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                data-lte-toggle="sidebar"
+                href="#"
+                role="button"
+                aria-label="Toggle sidebar">
+                <i class="bi bi-list fs-4"></i>
+              </a>
+            </li>
+          </ul>
+          <!-- Header kanan -->
+          <div class="top-bar-right">
+            <div class="header-clock">
+              <span class="date-label"> Hari dagang - Sel, 6 Okt 2026 </span>
+              <span class="time-label">
+                Sisa 10j 54m <span>batas 24.00 WITA</span>
+              </span>
             </div>
+            <a href="#" class="btn-keluar">
+              <i class="bi bi-box-arrow-right"></i> Keluar
+            </a>
           </div>
-          <button
-            class="btn btn--ghost btn--sm"
-            id="btn-logout"
-            title="Keluar ke layar login"
-          >
-            <svg class="ico"><use href="#i-logout"></use></svg> Keluar
-          </button>
-        </header>
+        </div>
+      </nav>
