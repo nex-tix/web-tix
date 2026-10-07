@@ -20,7 +20,6 @@ class TicketModel extends Model
     protected array $casts = [
         'id' => 'int',
         'transaction_id' => 'int',
-        'ticket_category' => 'string',
         'total_visitors' => 'int',
         'status' => 'string',
         'used_by_gate_user_id' => 'int',
