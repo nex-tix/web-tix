@@ -18,7 +18,7 @@ class SettingModel extends Model
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [
-        'updated_by' => 'int',
+        'updated_by' => '?int',
     ];
     protected array $castHandlers = [];
 
@@ -44,5 +44,18 @@ class SettingModel extends Model
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $afterDelete   = [];
+
+    /**
+     * Get a setting value by key
+     *
+     * @param string $key Setting key
+     * @param mixed $default Default value if not found
+     * @return mixed
+     */
+    public function getSetting(string $key, $default = null)
+    {
+        $setting = $this->find($key);
+        return $setting ? $setting['setting_value'] : $default;
+    }
 }

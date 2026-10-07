@@ -19,7 +19,6 @@ class UserModel extends Model
 
     protected array $casts = [
         'id' => 'int',
-        'role' => 'string',
         'is_active' => 'boolean',
     ];
     protected array $castHandlers = [];

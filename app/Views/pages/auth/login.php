@@ -36,7 +36,26 @@
     <!-- BEGIN: LoginForm -->
     <!-- Strictly contains ONLY username, password, remember checkbox & login button -->
     <div class="p-8 bg-white flex-1">
-        <form action="#" class="space-y-5" method="POST" onsubmit="event.preventDefault();">
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="mb-4 p-3.5 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-start space-x-2">
+                <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span><?= esc(session()->getFlashdata('error')) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="mb-4 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-start space-x-2">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span><?= esc(session()->getFlashdata('success')) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <form class="space-y-5" method="POST" action="/login">
+            <?= csrf_field() ?>
             <!-- Input 1: Username / ID Petugas -->
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5" for="username">
@@ -48,7 +67,7 @@
                             <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                         </svg>
                     </div>
-                    <input autocomplete="username" class="block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-lg border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#e24a3b]/20 focus:border-[#e24a3b] transition duration-150" id="username" name="username" placeholder="contoh: kasir.uluwatu atau admin1" required="" type="text" />
+                    <input autocomplete="username" class="block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-lg border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#e24a3b]/20 focus:border-[#e24a3b] transition duration-150" id="username" name="username" value="<?= esc(old('username')) ?>" placeholder="contoh: kasir.uluwatu atau admin1" required="" type="text" />
                 </div>
             </div>
             <!-- Input 2: Password / Kata Sandi -->

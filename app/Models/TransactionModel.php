@@ -21,7 +21,6 @@ class TransactionModel extends Model
         'id' => 'int',
         'customer_id' => 'int',
         'created_by' => 'int',
-        'payment_method' => 'string',
         'subtotal' => 'float',
         'discount_amount' => 'float',
         'total_amount' => 'float',

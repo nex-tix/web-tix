@@ -19,7 +19,6 @@ class CustomerModel extends Model
 
     protected array $casts = [
         'id' => 'int',
-        'origin_type' => 'string',
     ];
     protected array $castHandlers = [];
 
