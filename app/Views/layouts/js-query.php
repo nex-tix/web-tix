@@ -19,4 +19,5 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.3.11/build/vfs_fonts.js"></script>
   <!-- AdminLTE -->
-  <script src="js/adminlte.min.js"></script>
+  <script src="<?= base_url('js/adminlte.min.js') ?>"></script>
+  <script src="<?= base_url('js/main.js') ?>"></script>

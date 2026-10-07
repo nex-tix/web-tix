@@ -19,7 +19,7 @@
 
           <ul class="nav sidebar-menu flex-column">
             <li class="nav-item">
-              <a href="#" class="nav-link active">
+               <a href="<?= base_url('admin/dashboard') ?>" class="nav-link <?= strpos(current_url(), 'admin/dashboard') !== false ? 'active' : '' ?>">
                 <i class="bi bi-grid-1x2-fill"></i>
                 <p>Dashboard</p>
               </a>
@@ -49,34 +49,34 @@
 
           <div class="nav-section">Master Data</div>
 
-          <ul class="nav sidebar-menu flex-column">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bi bi-ticket-perforated"></i>
-                <p>Jenis Tiket</p>
-              </a>
-            </li>
+           <ul class="nav sidebar-menu flex-column">
+             <li class="nav-item">
+               <a href="<?= base_url('admin/ticket-types') ?>" class="nav-link <?= strpos(current_url(), 'admin/ticket-types') !== false ? 'active' : '' ?>">
+                 <i class="bi bi-ticket-perforated"></i>
+                 <p>Jenis Tiket</p>
+               </a>
+             </li>
 
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bi bi-people"></i>
-                <p>Pengguna</p>
-              </a>
-            </li>
+             <li class="nav-item">
+               <a href="<?= base_url('admin/users') ?>" class="nav-link <?= strpos(current_url(), 'admin/users') !== false ? 'active' : '' ?>">
+                 <i class="bi bi-people"></i>
+                 <p>Pengguna</p>
+               </a>
+             </li>
 
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bi bi-check2-square"></i>
-                <p>Checkpoint</p>
-              </a>
-            </li>
-          </ul>
+             <li class="nav-item">
+               <a href="<?= base_url('admin/checkpoints') ?>" class="nav-link <?= strpos(current_url(), 'admin/checkpoints') !== false ? 'active' : '' ?>">
+                 <i class="bi bi-check2-square"></i>
+                 <p>Checkpoint</p>
+               </a>
+             </li>
+           </ul>
 
           <div class="nav-section">Sistem</div>
 
           <ul class="nav sidebar-menu flex-column">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="<?= base_url('admin/settings') ?>" class="nav-link <?= strpos(current_url(), 'admin/settings') !== false ? 'active' : '' ?>">
                 <i class="bi bi-gear"></i>
                 <p>Pengaturan</p>
               </a>

@@ -13,7 +13,7 @@ class LoginController extends BaseController
             helper('form');
             // Jika sudah login, redirect ke dashboard
             if (session()->get('user_logged_in')) {
-                return redirect()->to('/');
+                return redirect()->to('/admin/dashboard');
             }
 
             return view('pages/auth/login');
@@ -82,7 +82,7 @@ class LoginController extends BaseController
             'user_logged_in' => true,
         ]);
 
-        return redirect()->to('/');
+        return redirect()->to('/admin/dashboard');
     }
 
     public function logout()

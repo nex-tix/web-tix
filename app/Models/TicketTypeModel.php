@@ -12,7 +12,7 @@ class TicketTypeModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'price', 'discount_percent', 'is_active'];
+    protected $allowedFields    = ['name', 'price', 'ticket_category', 'discount_percent', 'is_active'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

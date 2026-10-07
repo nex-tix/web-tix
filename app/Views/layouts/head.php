@@ -21,6 +21,6 @@
     href="https://cdn.datatables.net/buttons/4.0.2/css/buttons.dataTables.min.css"
     rel="stylesheet" />
   <!-- AdminLTE 4 CSS -->
-  <link rel="stylesheet" href="css/adminlte.min.css" />
+  <link rel="stylesheet" href="<?= base_url('css/adminlte.min.css') ?>" />
 
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="<?= base_url('css/main.css') ?>">
