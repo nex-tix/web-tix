@@ -21,7 +21,7 @@
                 Sisa 10j 54m <span>batas 24.00 WITA</span>
               </span>
             </div>
-            <a href="#" class="btn-keluar">
+            <a href="<?= base_url('/logout') ?>" class="btn-keluar">
               <i class="bi bi-box-arrow-right"></i> Keluar
             </a>
           </div>

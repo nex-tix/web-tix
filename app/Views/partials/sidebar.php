@@ -93,7 +93,9 @@
             <span>Terminal loket</span>
           </div>
 
+          <a href="<?= base_url('/logout') ?>">
           <i class="bi bi-box-arrow-right logout-icon"></i>
+          </a>
         </div>
       </div>
     </aside>
