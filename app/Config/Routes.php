@@ -45,4 +45,5 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
 
     //Pos Management
     $routes->get('pos', 'Admin\PosController::index');
+    $routes->post('pos/store', 'Admin\PosController::store');
 });
