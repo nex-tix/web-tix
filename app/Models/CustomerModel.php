@@ -29,8 +29,27 @@ class CustomerModel extends Model
     protected $updatedField  = 'updated_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules      = [
+        'name'        => 'required|min_length[3]|max_length[150]',
+        'phone'       => 'permit_empty|numeric|min_length[9]|max_length[15]',
+        'origin_type' => 'required|in_list[domestik,mancanegara]',
+        'origin'      => 'required|max_length[100]',
+        'address'     => 'permit_empty|max_length[255]',
+    ];
+    protected $validationMessages   = [
+        'name' => [
+            'required'   => 'Nama pengunjung wajib diisi.',
+            'min_length' => 'Nama minimal 3 karakter.',
+            'max_length' => 'Nama maksimal 150 karakter.',
+        ],
+        'origin_type' => [
+            'required' => 'Kategori asal pengunjung wajib dipilih.',
+            'in_list'  => 'Kategori asal harus domestik atau mancanegara.',
+        ],
+        'origin' => [
+            'required' => 'Kota/Negara asal wajib diisi.',
+        ],
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
