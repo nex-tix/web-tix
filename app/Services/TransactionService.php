@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\CustomerModel;
 use App\Models\TransactionModel;
 use App\Models\TicketModel;
@@ -30,7 +31,7 @@ class TransactionService
 
     public function create(array $data, int $userId): array
     {
-        $ticketItems = $data['ticket_items'] ?? [];
+        $ticketItems    = $data['ticket_items'] ?? [];
         $ticketCategory = $data['ticket_category'] ?? '';
 
         if (empty($ticketItems)) {
@@ -48,18 +49,19 @@ class TransactionService
             throw new \InvalidArgumentException($limitCheck['message']);
         }
 
+        // ---------- Pembayaran ----------
         $paymentMethod = $data['payment_method'] ?? '';
         if (!in_array($paymentMethod, ['cash', 'debit'], true)) {
             throw new \InvalidArgumentException('Metode pembayaran tidak valid');
         }
 
-        $totalAmount = (float) $pricing['total_amount'];
-        $cashPaid = null;
-        $cashChange = null;
+        $totalAmount      = (float) $pricing['total_amount'];
+        $cashPaid         = null;
+        $cashChange       = null;
         $paymentReference = null;
 
         if ($paymentMethod === 'cash') {
-            if (!isset($data['cash_paid']) || $data['cash_paid'] === '' || $data['cash_paid'] === null) {
+            if (!isset($data['cash_paid']) || $data['cash_paid'] === '') {
                 throw new \InvalidArgumentException('Nominal uang diterima wajib diisi untuk pembayaran tunai');
             }
             $cashPaid = (float) $data['cash_paid'];
@@ -76,11 +78,12 @@ class TransactionService
             }
         }
 
+        // ---------- Data pengunjung ----------
         $customerName = trim((string) ($data['customer_name'] ?? ''));
-        $originType = $data['origin_type'] ?? '';
-        $origin = trim((string) ($data['origin'] ?? ''));
-        $phone = trim((string) ($data['phone'] ?? ''));
-        $address = trim((string) ($data['address'] ?? ''));
+        $originType   = $data['origin_type'] ?? '';
+        $origin       = trim((string) ($data['origin'] ?? ''));
+        $phone        = trim((string) ($data['phone'] ?? ''));
+        $address      = trim((string) ($data['address'] ?? ''));
 
         if ($customerName === '' || mb_strlen($customerName) < 3) {
             throw new \InvalidArgumentException('Nama pengunjung wajib diisi minimal 3 karakter');
@@ -94,105 +97,129 @@ class TransactionService
             throw new \InvalidArgumentException('Kota/Negara asal wajib diisi');
         }
 
+        // ---------- Simpan ----------
         $this->db->transBegin();
 
         try {
             $customerId = $this->customerModel->insert([
-                'name' => $customerName,
-                'phone' => $phone !== '' ? $phone : null,
+                'name'        => $customerName,
+                'phone'       => $phone !== '' ? $phone : null,
                 'origin_type' => $originType,
-                'origin' => $origin,
-                'address' => $address !== '' ? $address : null,
+                'origin'      => $origin,
+                'address'     => $address !== '' ? $address : null,
             ], true);
 
             if (!$customerId) {
                 throw new \RuntimeException('Gagal menyimpan data customer: ' . json_encode($this->customerModel->errors()));
             }
 
-            $invoiceCode = $this->codeGeneratorService->generateInvoiceCode();
-
-            $transactionData = [
-                'invoice_code' => $invoiceCode,
-                'customer_id' => $customerId,
-                'created_by' => $userId,
-                'payment_method' => $paymentMethod,
+            $transactionId = $this->transactionModel->insert([
+                'invoice_code'      => $this->codeGeneratorService->generateInvoiceCode(),
+                'customer_id'       => $customerId,
+                'created_by'        => $userId,
+                'payment_method'    => $paymentMethod,
                 'payment_reference' => $paymentReference,
-                'subtotal' => $pricing['subtotal'],
-                'discount_amount' => $pricing['discount_amount'],
-                'total_amount' => $pricing['total_amount'],
-                'cash_paid' => $cashPaid,
-                'cash_change' => $cashChange,
-                'status' => 'completed',
-            ];
-
-            $transactionId = $this->transactionModel->insert($transactionData, true);
+                'subtotal'          => $pricing['subtotal'],
+                'discount_amount'   => $pricing['discount_amount'],
+                'total_amount'      => $pricing['total_amount'],
+                'cash_paid'         => $cashPaid,
+                'cash_change'       => $cashChange,
+                'status'            => 'completed',
+            ], true);
 
             if (!$transactionId) {
                 throw new \RuntimeException('Gagal menyimpan transaksi: ' . json_encode($this->transactionModel->errors()));
             }
 
-            $ticketCode = $this->codeGeneratorService->generateTicketCode($ticketCategory);
+            // Group  : 1 tiket menampung seluruh rombongan.
+            // Individual: 1 tiket per orang (total_visitors = 1, qty detail = 1).
+            $ticketIds = [];
 
-            $ticketData = [
-                'transaction_id' => $transactionId,
-                'ticket_code' => $ticketCode,
-                'ticket_category' => $ticketCategory,
-                'valid_date' => date('Y-m-d'),
-                'total_visitors' => $pricing['total_visitors'],
-                'status' => 'active',
-            ];
-
-            
-            $ticketId = $this->ticketModel->insert($ticketData, true);
-
-            if (!$ticketId) {
-                throw new \RuntimeException('Gagal menyimpan tiket: ' . json_encode($this->ticketModel->errors()));
-            }
-
-            foreach ($pricing['details'] as $detail) {
-                $detailData = [
-                    'ticket_id' => $ticketId,
-                    'ticket_type_id' => $detail['ticket_type_id'],
-                    'qty' => $detail['qty'],
-                    'unit_price' => $detail['unit_price'],
-                    'discount_percent' => $detail['discount_percent'],
-                    'discount_amount' => $detail['discount_amount'],
-                    'subtotal' => $detail['subtotal'],
-                ];
-
-                if (!$this->ticketDetailModel->insert($detailData, false)) {
-                    throw new \RuntimeException('Gagal menyimpan detail tiket: ' . json_encode($this->ticketDetailModel->errors()));
+            if ($ticketCategory === 'group') {
+                $ticketId = $this->createTicket($transactionId, 'group', (int) $pricing['total_visitors']);
+                foreach ($pricing['details'] as $detail) {
+                    $this->insertDetail($ticketId, $detail, (int) $detail['qty']);
+                }
+                $ticketIds[] = $ticketId;
+            } else {
+                foreach ($pricing['details'] as $detail) {
+                    for ($i = 0; $i < (int) $detail['qty']; $i++) {
+                        $ticketId = $this->createTicket($transactionId, 'individual', 1);
+                        $this->insertDetail($ticketId, $detail, 1);
+                        $ticketIds[] = $ticketId;
+                    }
                 }
             }
 
-            if ($this->db->transStatus() === false) {
-                $this->db->transRollback();
+            // transCommit() otomatis rollback & return false jika ada query yang gagal.
+            if (!$this->db->transCommit()) {
                 throw new \RuntimeException('Transaksi database gagal');
             }
-
-            $this->db->transCommit();
-
-            $transaction = $this->transactionModel->find($transactionId);
-            $ticket = $this->ticketModel->find($ticketId);
-            $customer = $this->customerModel->find($customerId);
-            $details = $this->ticketDetailModel->where('ticket_id', $ticketId)->findAll();
-
-            return [
-                'customer' => $customer,
-                'transaction' => $transaction,
-                'ticket' => $ticket,
-                'ticket_details' => $details,
-                'pricing' => $pricing,
-            ];
         } catch (\Throwable $e) {
-            if ($this->db->transStatus() === false || $this->db->transBegin()) {
-            }
-            try {
-                $this->db->transRollback();
-            } catch (\Throwable $rollbackEx) {
-            }
+            $this->db->transRollback();
             throw $e;
+        }
+
+        // ---------- Ambil data hasil (di luar transaksi) ----------
+        $tickets = $this->ticketModel->whereIn('id', $ticketIds)->orderBy('id', 'ASC')->findAll();
+
+        $detailsByTicket = [];
+        $allDetails = $this->ticketDetailModel->whereIn('ticket_id', $ticketIds)->findAll();
+        foreach ($allDetails as $d) {
+            $detailsByTicket[$d['ticket_id']][] = $d;
+        }
+
+        $ticketResults = [];
+        foreach ($tickets as $t) {
+            $ticketResults[] = [
+                'ticket'  => $t,
+                'details' => $detailsByTicket[$t['id']] ?? [],
+            ];
+        }
+
+        return [
+            'customer'    => $this->customerModel->find($customerId),
+            'transaction' => $this->transactionModel->find($transactionId),
+            'tickets'     => $ticketResults,
+            'pricing'     => $pricing,
+        ];
+    }
+
+    private function createTicket(int $transactionId, string $category, int $visitors): int
+    {
+        $id = $this->ticketModel->insert([
+            'transaction_id'  => $transactionId,
+            'ticket_code'     => $this->codeGeneratorService->generateTicketCode($category),
+            'ticket_category' => $category,
+            'valid_date'      => date('Y-m-d'),
+            'total_visitors'  => $visitors,
+            'status'          => 'active',
+        ], true);
+
+        if (!$id) {
+            throw new \RuntimeException('Gagal menyimpan tiket: ' . json_encode($this->ticketModel->errors()));
+        }
+
+        return (int) $id;
+    }
+
+    private function insertDetail(int $ticketId, array $detail, int $qty): void
+    {
+        $unitPrice = (float) $detail['unit_price'];
+        $discAmt   = (float) $detail['unit_discount'] * $qty;
+
+        $ok = $this->ticketDetailModel->insert([
+            'ticket_id'        => $ticketId,
+            'ticket_type_id'   => $detail['ticket_type_id'],
+            'qty'              => $qty,
+            'unit_price'       => $unitPrice,
+            'discount_percent' => (float) $detail['discount_percent'],
+            'discount_amount'  => $discAmt,
+            'subtotal'         => ($unitPrice * $qty) - $discAmt,
+        ], false);
+
+        if (!$ok) {
+            throw new \RuntimeException('Gagal menyimpan detail tiket: ' . json_encode($this->ticketDetailModel->errors()));
         }
     }
 }
-;

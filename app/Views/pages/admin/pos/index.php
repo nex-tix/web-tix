@@ -99,8 +99,8 @@
                                 No. WhatsApp / HP
                             </label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-semibold text-slate-500">+62</span>
-                                <input class=" input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="81234567890" type="tel" />
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-semibold text-slate-500"></span>
+                                <input class=" input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="081234567890" type="tel" />
                             </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="phone"></p>
                         </div>
@@ -663,9 +663,13 @@
         if (el) { el.textContent = ''; el.classList.add('hidden'); }
         e.target.classList.remove('border-rose-400', 'ring-rose-400');
     });
-    ['visitor-city', 'visitor-phone', 'visitor-address', 'cash-received', 'edc-ref'].forEach(id => {
+    ['visitor-city', 'visitor-phone', 'visitor-address', 'edc-ref'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', clearFieldErrors);
+    });
+    document.getElementById('cash-received').addEventListener('input', () => {
+        calculateChange();
+        clearFieldErrors();
     });
     document.getElementById('visitor-country').addEventListener('change', clearFieldErrors);
 
