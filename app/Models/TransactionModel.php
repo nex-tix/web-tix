@@ -45,7 +45,7 @@ class TransactionModel extends Model
         'created_by'     => 'required|integer|is_not_unique[users.id]',
 
         // === Payment fields ===
-        'payment_method' => 'required|in_list[cash,edc,transfer]',
+        'payment_method' => 'required|in_list[cash,debit]',
         'payment_reference' => 'permit_empty|max_length[100]',
 
         // === Amount fields (non-negatif) ===
@@ -56,7 +56,7 @@ class TransactionModel extends Model
         'cash_change'     => 'permit_empty|numeric|greater_than_equal_to[0]',
 
         // === Status ===
-        'status'          => 'required|in_list[paid,void,refund]',
+        'status'          => 'required|in_list[completed,cancelled]',
 
         // === Void fields (permit_empty karena hanya diisi saat void) ===
         'voided_by'       => 'permit_empty|integer|is_not_unique[users.id]',

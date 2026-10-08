@@ -32,7 +32,7 @@ class CustomerModel extends Model
     protected $validationRules      = [
         'name'        => 'required|min_length[3]|max_length[150]',
         'phone'       => 'permit_empty|numeric|min_length[9]|max_length[15]',
-        'origin_type' => 'required|in_list[domestik,mancanegara]',
+        'origin_type' => 'required|in_list[domestic,international]',
         'origin'      => 'required|max_length[100]',
         'address'     => 'permit_empty|max_length[255]',
     ];
@@ -44,7 +44,7 @@ class CustomerModel extends Model
         ],
         'origin_type' => [
             'required' => 'Kategori asal pengunjung wajib dipilih.',
-            'in_list'  => 'Kategori asal harus domestik atau mancanegara.',
+            'in_list'  => 'Kategori asal harus domestic atau international.',
         ],
         'origin' => [
             'required' => 'Kota/Negara asal wajib diisi.',
