@@ -21,9 +21,8 @@ class TicketModel extends Model
         'id' => 'int',
         'transaction_id' => 'int',
         'total_visitors' => 'int',
-        'status' => 'string',
-        'used_by_gate_user_id' => 'int',
-        'used_checkpoint_id' => 'int',
+        'used_by_gate_user_id' => '?int',
+        'used_checkpoint_id' => '?int',
     ];
     protected array $castHandlers = [];
 

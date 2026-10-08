@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services;
-
 use App\Models\CustomerModel;
 use App\Models\TransactionModel;
 use App\Models\TicketModel;
@@ -104,7 +103,7 @@ class TransactionService
                 'origin_type' => $originType,
                 'origin' => $origin,
                 'address' => $address !== '' ? $address : null,
-            ], false);
+            ], true);
 
             if (!$customerId) {
                 throw new \RuntimeException('Gagal menyimpan data customer: ' . json_encode($this->customerModel->errors()));
@@ -126,7 +125,7 @@ class TransactionService
                 'status' => 'completed',
             ];
 
-            $transactionId = $this->transactionModel->insert($transactionData, false);
+            $transactionId = $this->transactionModel->insert($transactionData, true);
 
             if (!$transactionId) {
                 throw new \RuntimeException('Gagal menyimpan transaksi: ' . json_encode($this->transactionModel->errors()));
@@ -143,7 +142,8 @@ class TransactionService
                 'status' => 'active',
             ];
 
-            $ticketId = $this->ticketModel->insert($ticketData, false);
+            
+            $ticketId = $this->ticketModel->insert($ticketData, true);
 
             if (!$ticketId) {
                 throw new \RuntimeException('Gagal menyimpan tiket: ' . json_encode($this->ticketModel->errors()));
@@ -185,8 +185,14 @@ class TransactionService
                 'pricing' => $pricing,
             ];
         } catch (\Throwable $e) {
-            $this->db->transRollback();
+            if ($this->db->transStatus() === false || $this->db->transBegin()) {
+            }
+            try {
+                $this->db->transRollback();
+            } catch (\Throwable $rollbackEx) {
+            }
             throw $e;
         }
     }
 }
+;

@@ -77,4 +77,5 @@
     .badge-subtle {
       letter-spacing: 0.025em;
     }
+
   </style>

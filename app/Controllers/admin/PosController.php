@@ -81,7 +81,7 @@ class PosController extends BaseController
             log_message('error', '[POS Error] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Terjadi kesalahan sistem saat memproses transaksi.'
+                'message' => $e->getMessage(),
             ])->setStatusCode(500);
         }
     }
