@@ -36,4 +36,13 @@ class Services extends BaseService
 
         return new \App\Services\CodeGeneratorService();
     }
+
+    public static function transactionService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('transactionService');
+        }
+
+        return new \App\Services\TransactionService();
+    }
 }
