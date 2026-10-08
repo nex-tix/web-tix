@@ -6,6 +6,7 @@ use App\Models\CustomerModel;
 use App\Models\TransactionModel;
 use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
+use App\Models\PrintLogModel;
 use Config\Database;
 
 class TransactionService
@@ -14,6 +15,7 @@ class TransactionService
     protected TransactionModel $transactionModel;
     protected TicketModel $ticketModel;
     protected TicketDetailModel $ticketDetailModel;
+    protected PrintLogModel $printLogModel;
     protected PricingService $pricingService;
     protected CodeGeneratorService $codeGeneratorService;
     protected $db;
@@ -24,6 +26,7 @@ class TransactionService
         $this->transactionModel = new TransactionModel();
         $this->ticketModel = new TicketModel();
         $this->ticketDetailModel = new TicketDetailModel();
+        $this->printLogModel = new PrintLogModel();
         $this->pricingService = new PricingService();
         $this->codeGeneratorService = new CodeGeneratorService();
         $this->db = Database::connect();
@@ -148,6 +151,19 @@ class TransactionService
                         $this->insertDetail($ticketId, $detail, 1);
                         $ticketIds[] = $ticketId;
                     }
+                }
+            }
+
+            foreach ($ticketIds as $ticketId) {
+                $printLogId = $this->printLogModel->insert([
+                    'ticket_id'  => $ticketId,
+                    'printed_by' => $userId,
+                    'print_type' => 'initial',
+                    'printed_at' => date('Y-m-d H:i:s'),
+                ], true);
+
+                if (!$printLogId) {
+                    throw new \RuntimeException('Gagal menyimpan log cetak awal: ' . json_encode($this->printLogModel->errors()));
                 }
             }
 

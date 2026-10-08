@@ -46,4 +46,7 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     //Pos Management
     $routes->get('pos', 'Admin\PosController::index');
     $routes->post('pos/store', 'Admin\PosController::store');
+    $routes->get('pos/receipt/(:num)', 'Admin\PosController::receipt/$1');
+    $routes->get('pos/reprint', 'Admin\PosController::reprint');
+    $routes->post('pos/reprint/(:num)', 'Admin\PosController::doReprint/$1');
 });

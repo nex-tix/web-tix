@@ -26,18 +26,18 @@
             </li>
 
             <li class="nav-item">
-               <a href="<?= base_url('admin/pos') ?>" class="nav-link <?= strpos(current_url(), 'admin/pos') !== false ? 'active' : '' ?>">
+               <a href="<?= base_url('admin/pos') ?>" class="nav-link <?= current_url(true)->getPath() === '/admin/pos' ? 'active' : '' ?>">
                 <i class="bi bi-pc-display"></i>
                 <p>POS Loket</p>
               </a>
             </li>
 
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bi bi-receipt"></i>
-                <p>Riwayat Penjualan</p>
-              </a>
-            </li>
+             <li class="nav-item">
+               <a href="<?= base_url('admin/pos/reprint') ?>" class="nav-link <?= strpos(current_url(), 'admin/pos/reprint') !== false ? 'active' : '' ?>">
+                 <i class="bi bi-printer"></i>
+                 <p>Cetak Ulang Tiket</p>
+               </a>
+             </li>
 
             <li class="nav-item">
               <a href="#" class="nav-link">

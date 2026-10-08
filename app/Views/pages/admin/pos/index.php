@@ -630,10 +630,16 @@
             if (newToken) document.querySelector('meta[name="csrf-token"]').content = newToken;
 
             if (res.ok && data && data.success) {
-                const inv = data.data?.transaction?.invoice_code || data.data?.ticket?.ticket_code || '-';
-                document.getElementById('trx-id').textContent = inv;
-                showAlert(`Transaksi berhasil! Invoice: ${inv}. Mengalihkan...`, 'success');
-                setTimeout(() => { window.location.href = "<?= base_url('admin/pos') ?>?success=" + encodeURIComponent(inv); }, 900);
+                const trxId = data.data?.transaction?.id;
+                const inv = data.data?.transaction?.invoice_code || '-';
+                showAlert(`Transaksi berhasil! Invoice: ${inv}. Mengalihkan ke halaman cetak...`, 'success');
+                setTimeout(() => {
+                    if (trxId) {
+                        window.location.href = "<?= base_url('admin/pos/receipt') ?>/" + trxId;
+                    } else {
+                        window.location.href = "<?= base_url('admin/pos') ?>?success=" + encodeURIComponent(inv);
+                    }
+                }, 800);
                 return;
             }
 

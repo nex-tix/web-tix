@@ -12,7 +12,7 @@ class PrintLogModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['ticket_id', 'printed_by', 'print_type', 'printed_at'];
+    protected $allowedFields    = ['ticket_id', 'printed_by', 'print_type', 'printed_at', 'reprint_reason'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
