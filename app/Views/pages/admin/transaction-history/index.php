@@ -4,6 +4,18 @@
 
 <div class="app-content">
   <div class="container-fluid px-0">
+    <?php if (session()->get('success')): ?>
+      <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        <?= session()->get('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <?php endif; ?>
+    <?php if (session()->get('error')): ?>
+      <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <?= session()->get('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <?php endif; ?>
     <div class="app-content-header">
       <div class="page-title">
         <h4 style="color:#2c3136">Riwayat Penjualan</h4>
@@ -69,6 +81,19 @@
                       <a href="<?= base_url('admin/transaction-history/detail/' . $row['id']) ?>" class="btn btn-sm btn-outline-dark" title="Detail">
                         <i class="bi bi-eye"></i>
                       </a>
+                      <?php if (($row['status'] ?? '') === 'completed'): ?>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-danger"
+                          title="Void Transaksi"
+                          data-bs-toggle="modal"
+                          data-bs-target="#voidTransactionModal"
+                          data-void-url="<?= esc(base_url('admin/transaction-history/void/' . $row['id']), 'attr') ?>"
+                          data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>"
+                        >
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -82,4 +107,78 @@
   </div>
 </div>
 
+<div class="modal fade" id="voidTransactionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="voidTransactionForm" method="POST" action="" novalidate>
+        <?= csrf_field() ?>
+        <div class="modal-header bg-danger py-2">
+          <h6 class="mb-0 text-white">Void Transaksi</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-2 text-muted">
+            Invoice: <strong id="voidInvoiceCode">-</strong>
+          </p>
+          <div class="alert alert-warning py-2 mb-3" style="font-size:.875rem">
+            <i class="bi bi-exclamation-triangle"></i>
+            Void membatalkan transaksi beserta seluruh tiketnya. Tindakan ini tidak dapat dibatalkan dan bukan refund.
+          </div>
+          <label for="voidReason" class="form-label fw-semibold">Alasan Void <span class="text-danger">*</span></label>
+          <textarea id="voidReason" name="void_reason" class="form-control" rows="3" maxlength="255" placeholder="Tuliskan alasan pembatalan..." required></textarea>
+          <div class="invalid-feedback">Alasan void wajib diisi.</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger btn-sm">Void</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('voidTransactionModal');
+    const form = document.getElementById('voidTransactionForm');
+    const reason = document.getElementById('voidReason');
+    const invoice = document.getElementById('voidInvoiceCode');
+
+    modal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      form.action = button.getAttribute('data-void-url');
+      invoice.textContent = button.getAttribute('data-invoice');
+      reason.value = '';
+      reason.classList.remove('is-invalid');
+    });
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      if (reason.value.trim() === '') {
+        reason.classList.add('is-invalid');
+        return;
+      }
+      reason.classList.remove('is-invalid');
+
+      Swal.fire({
+        title: 'Void transaksi ini?',
+        text: 'Transaksi ' + invoice.textContent + ' dan seluruh tiketnya akan dibatalkan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Void',
+        cancelButtonText: 'Batal',
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+</script>
 <?= $this->endSection() ?>

@@ -57,5 +57,10 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     // Riwayat Penjualan
     $routes->get('transaction-history', 'Admin\TransactionHistoryController::index');
     $routes->get('transaction-history/detail/(:num)', 'Admin\TransactionHistoryController::detail/$1');
+    $routes->post('transaction-history/void/(:num)', 'Admin\TransactionHistoryController::void/$1');
+
+    // Data Tiket
+    $routes->get('data-tiket', 'Admin\TicketController::index');
+    $routes->get('data-tiket/detail/(:num)', 'Admin\TicketController::detail/$1');
 
 });

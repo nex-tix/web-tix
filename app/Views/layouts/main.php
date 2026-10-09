@@ -27,6 +27,7 @@
   <!-- jQuery -->
   <?= $this->include('layouts/js-query') ?>
 
+  <?= $this->renderSection('scripts') ?>
 
 </body>
 <!-- CHART JS -->

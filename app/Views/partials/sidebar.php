@@ -65,6 +65,13 @@
             </li>
 
             <li class="nav-item">
+              <a href="<?= base_url('admin/data-tiket') ?>" class="nav-link <?= strpos(current_url(), 'admin/data-tiket') !== false ? 'active' : '' ?>">
+                <i class="bi bi-ticket-detailed"></i>
+                <p>Data Tiket</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a href="<?= base_url('admin/users') ?>" class="nav-link <?= strpos(current_url(), 'admin/users') !== false ? 'active' : '' ?>">
                 <i class="bi bi-people"></i>
                 <p>Pengguna</p>

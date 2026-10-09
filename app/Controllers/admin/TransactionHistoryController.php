@@ -126,4 +126,80 @@ class TransactionHistoryController extends BaseController
             'currentRoute'    => 'transaction-history',
         ]);
     }
+
+    public function void($id)
+    {
+        $transactionModel = new TransactionModel();
+        $ticketModel = new TicketModel();
+
+        $transaction = $transactionModel->find($id);
+
+        if (!$transaction) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Transaksi tidak ditemukan.');
+        }
+
+        if ($transaction['status'] === 'cancelled') {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Transaksi sudah dibatalkan.');
+        }
+
+        $voidReason = trim((string)($this->request->getPost('void_reason') ?? ''));
+        if ($voidReason === '') {
+            return redirect()->back()->with('error', 'Alasan void wajib diisi.')->withInput();
+        }
+
+        $usedTickets = $ticketModel
+            ->where('transaction_id', $id)
+            ->where('status', 'used')
+            ->countAllResults();
+
+        if ($usedTickets > 0) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Tidak dapat void: ada tiket yang sudah digunakan.');
+        }
+
+        $userId = (int) session()->get('user_id');
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        try {
+            $lockedTickets = $db->query(
+                'SELECT id, status FROM tickets WHERE transaction_id = ? FOR UPDATE',
+                [$id]
+            )->getResultArray();
+
+            foreach ($lockedTickets as $lockedTicket) {
+                if ($lockedTicket['status'] === 'used') {
+                    $db->transRollback();
+                    return redirect()->to('/admin/transaction-history')
+                        ->with('error', 'Tidak dapat void: ada tiket yang sudah digunakan.');
+                }
+            }
+
+            $updated = $transactionModel->update($id, [
+                'status'       => 'cancelled',
+                'voided_by'    => $userId,
+                'voided_at'    => date('Y-m-d H:i:s'),
+                'void_reason'  => $voidReason,
+            ]);
+
+            if (!$updated) {
+                throw new \RuntimeException(
+                    'Gagal update transaksi: ' . implode('; ', $transactionModel->errors() ?? [])
+                );
+            }
+
+            $db->table('tickets')->where('transaction_id', $id)->update(['status' => 'cancelled']);
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                return redirect()->to('/admin/transaction-history')->with('error', 'Gagal membatalkan transaksi.');
+            }
+
+            return redirect()->to('/admin/transaction-history')->with('success', 'Transaksi berhasil dibatalkan (void).');
+        } catch (\Throwable $e) {
+            $db->transRollback();
+            return redirect()->to('/admin/transaction-history')->with('error', 'Gagal membatalkan transaksi: ' . $e->getMessage());
+        }
+    }
 }

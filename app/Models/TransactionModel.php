@@ -12,7 +12,7 @@ class TransactionModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['invoice_code', 'customer_id', 'created_by', 'payment_method', 'payment_reference', 'subtotal', 'discount_amount', 'total_amount', 'cash_paid', 'cash_change', 'status', 'voided_by', 'voided_at', 'voided_reason'];
+    protected $allowedFields    = ['invoice_code', 'customer_id', 'created_by', 'payment_method', 'payment_reference', 'subtotal', 'discount_amount', 'total_amount', 'cash_paid', 'cash_change', 'status', 'voided_by', 'voided_at', 'void_reason'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -60,7 +60,7 @@ class TransactionModel extends Model
         // === Void fields (permit_empty karena hanya diisi saat void) ===
         'voided_by'          => 'permit_empty',
         'voided_at'          => 'permit_empty',
-        'voided_reason'      => 'permit_empty',
+        'void_reason'        => 'permit_empty',
 
 
     ];
