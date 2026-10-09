@@ -40,7 +40,7 @@
              </li>
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="<?= base_url('admin/laporan') ?>" class="nav-link <?= strpos(current_url(), 'admin/laporan') !== false ? 'active' : '' ?>">
                 <i class="bi bi-bar-chart-line"></i>
                 <p>Laporan</p>
               </a>

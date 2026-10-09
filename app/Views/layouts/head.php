@@ -25,6 +25,8 @@
 
 <link rel="stylesheet" href="<?= base_url('css/main.css') ?>">
 
+
+
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- Tailwind Configuration for exact Brand Colors -->
 <script>

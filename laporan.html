@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan & Ekspor - Kecak Uluwatu Loket & Gate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            sidebar: '#1F242B',
+            accentYellow: '#FFD000',
+            accentRed: '#F05338',
+            accentGreen: '#16A34A',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #F8FAFC;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800 antialiased">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="w-64 bg-[#1F242B] text-slate-300 flex flex-col flex-shrink-0 select-none z-20">
+    <!-- Header Logo -->
+    <div class="h-20 flex items-center px-6 gap-3 border-b border-slate-800/80">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-red-500/20">
+        <!-- Flame Icon -->
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12.001 2c-.37 0-.72.19-.92.51-.76 1.23-2.02 2.5-3.04 3.76-1.57 1.95-2.54 3.79-2.54 6.23 0 4.69 3.81 8.5 8.5 8.5s8.5-3.81 8.5-8.5c0-3.32-1.74-5.63-3.41-7.44-.81-.88-1.68-1.72-2.31-2.58-.2-.27-.52-.48-.78-.48zm-1.001 6.5c1.47 1.8 3.5 3.32 3.5 5.5 0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5c0-1.72 1.58-3.55 3.5-5.5z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-bold text-white text-base leading-tight tracking-wide">Kecak Uluwatu</h1>
+        <p class="text-[11px] font-semibold text-slate-400 tracking-wider">LOKET & GATE</p>
+      </div>
+    </div>
+
+    <!-- Navigation Menu Items -->
+    <div class="flex-1 overflow-y-auto py-5 px-3 space-y-6 custom-scrollbar text-[13px] font-medium">
+      <!-- Section: OPERASIONAL -->
+      <div>
+        <div class="px-3 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Operasional</div>
+        <nav class="space-y-1">
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            POS Loket
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Riwayat Penjualan
+          </a>
+          <!-- Active Menu: Laporan -->
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#FFD000] text-slate-950 font-bold shadow-sm transition">
+            <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Laporan
+          </a>
+        </nav>
+      </div>
+
+      <!-- Section: MASTER DATA -->
+      <div>
+        <div class="px-3 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Master Data</div>
+        <nav class="space-y-1">
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+            Jenis Tiket
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Pengguna
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Checkpoint
+          </a>
+        </nav>
+      </div>
+
+      <!-- Section: SISTEM -->
+      <div>
+        <div class="px-3 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sistem</div>
+        <nav class="space-y-1">
+          <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Pengaturan
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bottom Profile Footer -->
+    <div class="p-3 border-t border-slate-800 bg-[#191D24]">
+      <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/50 transition">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center font-bold text-xs text-white">
+            AL
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white">Admin Loket 1</div>
+            <div class="text-[11px] text-slate-400">Terminal loket</div>
+          </div>
+        </div>
+        <button title="Keluar" class="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-800 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <div class="flex-1 flex flex-col h-screen overflow-hidden bg-[#F8FAFC]">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between flex-shrink-0 z-10">
+      <div class="flex items-center gap-4">
+        <button class="p-2 -ml-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="flex items-center gap-2 text-xs font-medium text-slate-700 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Terminal Loket 1 · Shift siang · <span class="font-semibold text-emerald-600">online</span></span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Session Countdown Badge -->
+        <div class="flex items-center gap-2.5 bg-[#1F242B] text-white text-xs px-4 py-2 rounded-xl shadow-sm">
+          <span class="text-slate-400 uppercase text-[11px] font-semibold tracking-wide">Hari Dagang - Kam, 8 Okt 2026</span>
+          <span class="text-slate-600">|</span>
+          <span class="font-bold text-amber-400">Sisa 9j 02m 21d</span>
+          <span class="text-slate-400 text-[11px]">batas 24.00 WITA</span>
+        </div>
+
+        <button class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT SCROLL AREA -->
+    <main class="flex-1 overflow-y-auto px-8 py-6 space-y-6 custom-scrollbar">
+      
+      <!-- PAGE HEADER & ACTION BUTTONS -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Laporan & Ekspor</h2>
+          <p class="text-xs text-slate-500 mt-1 font-medium">Ringkasan rekapitulasi penjualan, diskon, demografi, dan audit gate per hari dagang berjalan.</p>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2.5">
+          <!-- Range Picker -->
+          <button class="flex items-center gap-2 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>8 Okt 2026 (Hari Ini)</span>
+            <svg class="w-3.5 h-3.5 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+
+
+          <!-- Export PDF Button -->
+          <button class="flex items-center gap-2 px-4 py-2.5 bg-[#F05338] hover:bg-red-600 text-white rounded-xl text-xs font-bold shadow-sm shadow-red-500/20 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span>Export PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KEY METRICS CARDS (ROW OF 4) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Penjualan Hari Ini -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">PENJUALAN HARI INI</div>
+            <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">Rp 8.209.000</div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1.5">
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              +24% dari kemarin (Rp 6.600.000)
+            </div>
+            <div class="text-[11px] text-slate-500 font-medium">
+              Tunai: <span class="font-semibold text-slate-700">Rp 5.465k</span> · Non-Tunai: <span class="font-semibold text-slate-700">Rp 2.744k</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Rekap Diskon Hari Ini -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">REKAP DISKON HARI INI</span>
+              <span class="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">3 Nota Promo</span>
+            </div>
+            <div class="text-2xl font-extrabold text-[#F05338] mt-2 tracking-tight">Rp 271.000</div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <div class="text-xs text-slate-600 font-medium flex items-center justify-between">
+              <span>Individual: <strong class="text-slate-800">Rp 121.000</strong></span>
+              <span>•</span>
+              <span>Group: <strong class="text-slate-800">Rp 150.000</strong></span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">Diskon agen & promosi rombongan</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Rekap Pengunjung Gate -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">PENGUNJUNG SUDAH MASUK</div>
+            <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">41 <span class="text-sm font-semibold text-slate-500">orang</span></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <div class="text-xs font-semibold text-emerald-600">
+              44% dari 94 tiket terjual
+            </div>
+            <div class="text-[11px] text-slate-500 font-medium mt-1">
+              Audit scan: 41 diterima · <span class="text-red-500 font-semibold">2 ditolak</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Tiket Belum Dipakai -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1.5 text-[11px] font-bold text-amber-500 tracking-wider uppercase">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              BELUM DIPAKAI
+            </div>
+            <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">18 <span class="text-sm font-semibold text-slate-500">tiket</span></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <div class="text-xs font-medium text-slate-600">
+              <span class="text-emerald-600 font-bold">53 tiket terpakai</span> · 0 hangus
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">
+              Batas waktu berlaku s/d 24.00 WITA
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER & TAB CONTROLS -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-4">
+        <!-- Tabs Row -->
+        <div class="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto text-xs font-bold">
+          <button class="px-4 py-2 bg-slate-900 text-white rounded-xl shadow-sm">Audit Scan Gate & Kehadiran</button>
+          <button class="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition">Penjualan & Admin</button>
+          <button class="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition">Rekap Diskon (Individual vs Group)</button>
+          <button class="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition">Demografi Pengunjung</button>
+        </div>
+
+        <!-- Filter Selects -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 pt-1">
+          <!-- Filter Admin -->
+
+          <!-- Filter Gate -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Checkpoint Gate</label>
+            <select class="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <option>Semua Checkpoint (Gate 1, 2, dan 3)</option>
+              <option>Gate 1 </option>
+              <option>Gate 2 </option>
+              <option>Gate 3 </option>
+            </select>
+          </div>
+
+          <!-- Filter Metode Bayar -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Metode Bayar</label>
+            <select class="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <option>Semua Metode Pembayaran</option>
+              <option>Tunai (Cash)</option>
+              <option>Debit </option>
+            </select>
+          </div>
+
+          <!-- Filter Kategori Tiket -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Kategori Tiket</label>
+            <select class="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <option>Semua Kategori</option>
+              <option>Individual (Dewasa/Anak)</option>
+              <option>Group </option>
+            </select>
+          </div>
+
+          <!-- Quick Search -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cari Code Tiket</label>
+            <div class="relative">
+              <input type="text" placeholder="No. Tiket / barcode..." class="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-COLUMN ANALYTICAL WIDGETS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Sales Chart & Payment Method (7 cols) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-base text-slate-900">Penjualan per Hari & Metode Pembayaran</h3>
+                <p class="text-xs text-slate-500 font-medium">Total dibayar per hari dagang (WITA), termasuk void</p>
+              </div>
+              <span class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full">7 Hari Terakhir</span>
+            </div>
+
+            <!-- SVG LINE CHART (Matching reference graph style) -->
+            <div class="mt-6 relative">
+              <div class="h-44 w-full">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 600 150" fill="none">
+                  <!-- Grid Lines & Y-Labels -->
+                  <line x1="45" y1="20" x2="590" y2="20" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  <text x="35" y="24" text-anchor="end" fill="#94A3B8" font-size="9" font-weight="600">Rp 9,0 jt</text>
+
+                  <line x1="45" y1="50" x2="590" y2="50" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  <text x="35" y="54" text-anchor="end" fill="#94A3B8" font-size="9" font-weight="600">Rp 7,0 jt</text>
+
+                  <line x1="45" y1="80" x2="590" y2="80" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  <text x="35" y="84" text-anchor="end" fill="#94A3B8" font-size="9" font-weight="600">Rp 5,0 jt</text>
+
+                  <line x1="45" y1="110" x2="590" y2="110" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="3 3"/>
+                  <text x="35" y="114" text-anchor="end" fill="#94A3B8" font-size="9" font-weight="600">Rp 3,0 jt</text>
+
+                  <line x1="45" y1="140" x2="590" y2="140" stroke="#E2E8F0" stroke-width="1.5"/>
+                  <text x="35" y="144" text-anchor="end" fill="#94A3B8" font-size="9" font-weight="600">Rp 0</text>
+
+                  <!-- Area Gradient Fill -->
+                  <defs>
+                    <linearGradient id="coralArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#F05338" stop-opacity="0.2"/>
+                      <stop offset="100%" stop-color="#F05338" stop-opacity="0.0"/>
+                    </linearGradient>
+                  </defs>
+                  
+                  <polygon points="50,75 140,55 225,88 315,50 405,72 495,60 575,32 575,140 50,140" fill="url(#coralArea)"/>
+                  
+                  <!-- Main Curve Line -->
+                  <polyline points="50,75 140,55 225,88 315,50 405,72 495,60 575,32" 
+                            stroke="#F05338" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                  <!-- Data Points with Ring -->
+                  <circle cx="50" cy="75" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="140" cy="55" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="225" cy="88" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="315" cy="50" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="405" cy="72" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="495" cy="60" r="4" fill="#FFFFFF" stroke="#F05338" stroke-width="2"/>
+                  <circle cx="575" cy="32" r="5" fill="#F05338" stroke="#FFFFFF" stroke-width="2.5"/>
+
+                  <!-- X-Axis Labels -->
+                  <text x="50" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Rab</text>
+                  <text x="140" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Kam</text>
+                  <text x="225" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Jum</text>
+                  <text x="315" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Sab</text>
+                  <text x="405" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Min</text>
+                  <text x="495" y="152" text-anchor="middle" fill="#64748B" font-size="10" font-weight="600">Sen</text>
+                  <text x="575" y="152" text-anchor="middle" fill="#0F172A" font-size="10" font-weight="700">Hari ini</text>
+                </svg>
+              </div>
+
+              <!-- Footer Statistics -->
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div>Rata-rata 7 hari: <strong class="text-slate-800">Rp 6.067.000</strong></div>
+                <div>Tertinggi: <strong class="text-slate-800">Rp 8.209.000 (Hari ini)</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Split Progress Bar -->
+          <div class="mt-6 pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between text-xs mb-2">
+              <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 font-bold text-slate-900">
+                  <span class="w-2.5 h-2.5 rounded bg-slate-900"></span>
+                  Tunai Rp 5.465.000 (14 nota)
+                </span>
+                <span class="flex items-center gap-1.5 font-bold text-[#F05338]">
+                  <span class="w-2.5 h-2.5 rounded bg-[#F05338]"></span>
+                  Debit / EDC Rp 2.744.000 (6 nota)
+                </span>
+              </div>
+              <span class="text-xs font-extrabold text-slate-800">Total: Rp 8.209.000</span>
+            </div>
+            <!-- Progress Bar Bar -->
+            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
+              <div class="h-full bg-slate-900" style="width: 66.5%"></div>
+              <div class="h-full bg-[#F05338]" style="width: 33.5%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Demographics & Category Breakdown (5 cols) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-base text-slate-900">Rekap Demografi Pengunjung</h3>
+                <p class="text-xs text-slate-500 font-medium">Manifest tiket pengunjung hari berjalan</p>
+              </div>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">Total 41 Orang</span>
+            </div>
+
+            <!-- Domestik vs International Split Bar -->
+            <div class="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="flex items-center justify-between text-xs font-bold mb-2">
+                <span class="text-slate-800">Domestik: 65% (27 orang)</span>
+                <span class="text-[#F05338]">Mancanegara: 35% (14 orang)</span>
+              </div>
+              <div class="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden flex">
+                <div class="h-full bg-slate-800" style="width: 65%"></div>
+                <div class="h-full bg-[#F05338]" style="width: 35%"></div>
+              </div>
+            </div>
+
+            <!-- Origin Progress Bars List -->
+            <div class="mt-5 space-y-3.5">
+              <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Asal Pengunjung Terbanyak</div>
+              
+              <div>
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+                  <span>🇮🇩 Indonesia (Jakarta, Surabaya, Bali)</span>
+                  <span>65% (27)</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-slate-700 rounded-full" style="width: 65%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+                  <span>🇦🇺 Australia (Sydney, Melbourne)</span>
+                  <span>18% (7)</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-[#F05338] rounded-full" style="width: 18%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+                  <span>🇬🇧 Inggris & Eropa</span>
+                  <span>10% (4)</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-amber-500 rounded-full" style="width: 10%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-800 mb-1">
+                  <span>🌏 Negara Lainnya</span>
+                  <span>7% (3)</span>
+                </div>
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-slate-400 rounded-full" style="width: 7%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ticket Type Breakdown Note -->
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-1.5 text-slate-600 font-medium">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Individual: <strong>35 tiket</strong>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-600 font-medium">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              Rombongan (Group): <strong>8 nota (59 orang)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA TABLE SECTION: AUDIT SCAN GATE -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-base text-slate-900">Audit Log Scan Tiket & Kehadiran Per Gate</h3>
+            <p class="text-xs text-slate-500 font-medium">Catatan real-time verifikasi barcode tiket di pintu masuk teater</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live Sync Checkpoint
+            </span>
+            <button class="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="Refresh data">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Responsive Table Container -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50/75 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                <th class="py-3.5 px-5">Waktu Scan</th>
+                <th class="py-3.5 px-4">Checkpoint / Gate</th>
+                <th class="py-3.5 px-4">Kode Tiket / Barcode</th>
+                <th class="py-3.5 px-4">Kategori Tiket</th>
+                <th class="py-3.5 px-4">Admin / Kasir</th>
+                <th class="py-3.5 px-4 text-center">Status Scan</th>
+                <th class="py-3.5 px-5">Detail / Keterangan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+              <!-- Row 1 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">17:42:10 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-slate-800">Gate 1 - Utama</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-slate-900">TIKET-20261008-084</td>
+                <td class="py-3.5 px-4">Individual (Dewasa)</td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Admin Loket 1</div>
+                  <div class="text-[10px] text-slate-400">Terminal 1</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    Diterima / Masuk
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-600">Valid, Turnstile gate dibuka otomatis</td>
+              </tr>
+
+              <!-- Row 2 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">17:39:45 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-slate-800">Gate 1 - Utama</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-slate-900">TIKET-20261008-082</td>
+                <td class="py-3.5 px-4">
+                  <span class="font-bold text-indigo-700">Rombongan</span> (Tour Bali Indah)
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Admin Loket 2</div>
+                  <div class="text-[10px] text-slate-400">Terminal 2</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    Diterima / Masuk
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-600">8 Tiket Rombongan valid sekaligus</td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">17:31:02 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-indigo-700">Gate 2 - VIP</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-slate-900">TIKET-20261008-071</td>
+                <td class="py-3.5 px-4">Individual (Mancanegara)</td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Admin Loket 1</div>
+                  <div class="text-[10px] text-slate-400">Terminal 1</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    Diterima / Masuk
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-600">Akses jalur cepat VIP disetujui</td>
+              </tr>
+
+              <!-- Row 4 - REJECTED / INVALID -->
+              <tr class="bg-rose-50/40 hover:bg-rose-50/70 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">17:15:28 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-slate-800">Gate 1 - Utama</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-[#F05338]">TIKET-20261008-019</td>
+                <td class="py-3.5 px-4">Individual (Dewasa)</td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Admin Loket 1</div>
+                  <div class="text-[10px] text-slate-400">Terminal 1</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-300">
+                    <svg class="w-3 h-3 text-rose-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                    Ditolak / Invalid
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-rose-700 font-semibold">Tiket sudah digunakan sebelumnya (16:20 WITA)</td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">16:58:19 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-indigo-700">Gate 2 - VIP</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-slate-900">TIKET-20261008-055</td>
+                <td class="py-3.5 px-4">Individual (Domestik)</td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Online Partner</div>
+                  <div class="text-[10px] text-slate-400">Traveloka / OTA</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    Diterima / Masuk
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-600">E-Voucher QR Code terbaca lancar</td>
+              </tr>
+
+              <!-- Row 6 - REJECTED / INVALID -->
+              <tr class="bg-rose-50/40 hover:bg-rose-50/70 transition">
+                <td class="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap">16:45:11 WITA</td>
+                <td class="py-3.5 px-4">
+                  <span class="inline-flex items-center gap-1 font-semibold text-slate-800">Gate 1 - Utama</span>
+                </td>
+                <td class="py-3.5 px-4 font-mono font-bold text-[#F05338]">TIKET-20261008-012</td>
+                <td class="py-3.5 px-4">Individual (Dewasa)</td>
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-slate-800">Admin Loket 1</div>
+                  <div class="text-[10px] text-slate-400">Terminal 1</div>
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-300">
+                    <svg class="w-3 h-3 text-rose-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                    Ditolak / Invalid
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 text-rose-700 font-semibold">Barcode tidak terdaftar dalam manifest hari ini</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div>
+            Menampilkan <strong class="text-slate-800">1 - 6</strong> dari <strong class="text-slate-800">43</strong> catatan scan tiket
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-400 cursor-not-allowed">Sebelumnya</button>
+            <button class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold">1</button>
+            <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100">2</button>
+            <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100">3</button>
+            <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100">Selanjutnya</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

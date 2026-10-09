@@ -20,6 +20,10 @@
           sans-serif;
       }
 
+      input {
+                color: #1a1d20;
+
+      }
       .input-text {
         color: #1a1d20;
       }
@@ -749,6 +753,8 @@
         border: 1px solid #ced4da;
         padding: 0.3rem 0.6rem;
         font-size: 0.85rem;
+        color: #1a1d20;
+
       }
 
       .dataTables_wrapper .dataTables_info {

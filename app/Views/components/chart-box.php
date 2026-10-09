@@ -9,7 +9,7 @@
     <?php endif; ?>
   </div>
   <div style="height: <?= esc($height ?? '') ?>px">
-    <canvas id="<?= esc($chart_id ?? '') ?>"></canvas>
+    <canvas id="<?= esc($chart_id ?? '') ?>" <?= $extra_attrs ?? '' ?>></canvas>
   </div>
   <?php if (isset($footer_stats) && is_array($footer_stats)): ?>
     <div

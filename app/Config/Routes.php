@@ -49,4 +49,8 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('pos/receipt/(:num)', 'Admin\PosController::receipt/$1');
     $routes->get('pos/reprint', 'Admin\PosController::reprint');
     $routes->post('pos/reprint/(:num)', 'Admin\PosController::doReprint/$1');
+
+    //laporan
+    $routes->get('laporan', 'ReportController::index');
+
 });
