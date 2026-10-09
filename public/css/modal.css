@@ -1,0 +1,292 @@
+/* =============================================================
+   Modern white modal styles (Bootstrap 5)
+   Berlaku untuk SEMUA modal admin tanpa mengubah struktur HTML.
+   ============================================================= */
+
+/* ---------- Tombol brand aksen (pengganti inline style) ---------- */
+.btn-brand,
+.btn-brand.btn-primary,
+.btn-brand.btn-sm {
+  background-color: #e24a3b !important;
+  border-color: #e24a3b !important;
+  color: #fff !important;
+}
+.btn-brand:hover,
+.btn-brand:focus,
+.btn-brand:active,
+.btn-brand:hover.btn-primary {
+  background-color: #cf3f31 !important;
+  border-color: #cf3f31 !important;
+  color: #fff !important;
+}
+.btn-brand:focus {
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.25);
+}
+
+/* ---------- Backdrop ---------- */
+.modal-backdrop.show {
+  opacity: 0.45;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ---------- Kartu modal ---------- */
+.modal-content {
+  background-color: #fff !important;
+  color: #1f2937 !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+/* ---------- Animasi buka/tutup ---------- */
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.modal.fade:not(.show) .modal-dialog {
+  transform: translate(0, -16px) scale(0.97);
+  opacity: 0;
+}
+.modal.show .modal-dialog {
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal.fade .modal-dialog {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ---------- Header ---------- */
+.modal-header {
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 0;
+  background: transparent !important;
+}
+.modal-title {
+  color: #1f2937 !important;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.modal-header .btn-close {
+  padding: 0.4rem;
+  border-radius: 8px;
+  opacity: 0.3;
+  filter: none !important;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+.modal-header .btn-close:hover {
+  opacity: 0.65;
+  background-color: #f3f4f6;
+}
+.modal-header .btn-close:focus {
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.15);
+  outline: none;
+  opacity: 1;
+}
+
+/* ---------- Body ---------- */
+.modal-body {
+  padding: 0.5rem 1.5rem 1.25rem;
+  color: #1f2937 !important;
+}
+
+/* ---------- Footer ---------- */
+.modal-footer {
+  padding: 0.75rem 1.5rem 1.5rem;
+  border-top: 0;
+  gap: 0.75rem;
+  background: transparent !important;
+}
+
+/* ---------- Tombol footer ---------- */
+.modal-footer .btn {
+  min-height: 42px;
+  padding: 0.55rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.925rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, box-shadow 0.15s ease;
+}
+.modal .btn-primary {
+  background-color: #e24a3b !important;
+  border-color: #e24a3b !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(226, 74, 59, 0.25);
+}
+.modal .btn-primary:hover {
+  background-color: #cf3f31 !important;
+  border-color: #cf3f31 !important;
+  color: #fff !important;
+}
+.modal .btn-primary:focus {
+  background-color: #cf3f31 !important;
+  border-color: #cf3f31 !important;
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.25);
+}
+.modal .btn-primary:active {
+  background-color: #c2382b !important;
+  border-color: #c2382b !important;
+}
+.modal .btn-secondary {
+  background-color: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #4b5563 !important;
+}
+.modal .btn-secondary:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+  color: #1f2937 !important;
+}
+.modal .btn-secondary:focus {
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.15);
+}
+.modal .btn-danger {
+  background-color: #e24a3b !important;
+  border-color: #e24a3b !important;
+  color: #fff !important;
+}
+.modal .btn-danger:hover {
+  background-color: #cf3f31 !important;
+  border-color: #cf3f31 !important;
+  color: #fff !important;
+}
+.modal .btn-danger:focus {
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.25);
+}
+
+/* ---------- Label & teks bantuan ---------- */
+.modal .form-label,
+.modal .form-check-label {
+  color: #6b7280 !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.modal .form-label {
+  margin-bottom: 0.45rem;
+}
+.modal .form-text {
+  color: #9ca3af !important;
+  font-size: 0.8125rem;
+}
+
+/* ---------- Input / select / textarea ---------- */
+.modal .form-control,
+.modal .form-select {
+  min-height: 44px;
+  padding: 0.625rem 14px;
+  font-size: 0.95rem;
+  color: #1f2937 !important;
+  background-color: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px;
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.modal textarea.form-control {
+  min-height: auto;
+  line-height: 1.5;
+}
+.modal .form-select {
+  padding-right: 2.5rem;
+  background-position: right 14px center;
+}
+.modal .form-control::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+.modal .form-control:focus,
+.modal .form-select:focus {
+  border-color: #e24a3b !important;
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.15);
+}
+.modal .form-control.is-invalid,
+.modal .form-select.is-invalid {
+  border-color: #dc3545 !important;
+}
+.modal .form-control.is-invalid:focus,
+.modal .form-select.is-invalid:focus {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+.modal .invalid-feedback {
+  color: #dc3545;
+  font-size: 0.8125rem;
+}
+
+/* ---------- Switch "Aktif" (merah brand, bukan biru) ---------- */
+.modal .form-check-input {
+  background-color: #e5e7eb !important;
+  border-color: #d1d5db !important;
+}
+.modal .form-check-input:checked {
+  background-color: #e24a3b !important;
+  border-color: #e24a3b !important;
+}
+.modal .form-check-input:focus {
+  border-color: #e24a3b !important;
+  box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.15) !important;
+}
+.modal .form-check-input:disabled {
+  background-color: #e5e7eb !important;
+  opacity: 0.6;
+}
+
+/* ---------- Alert validasi (gaya soft) ---------- */
+.modal .alert {
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+.modal .alert-danger {
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #b91c1c !important;
+  padding: 0.75rem 1rem;
+}
+.modal .alert-danger ul {
+  margin-bottom: 0;
+  padding-left: 1.1rem;
+}
+.modal .alert-danger li {
+  color: #b91c1c;
+}
+.modal .alert-warning {
+  background-color: #fffbeb !important;
+  border: 1px solid #fde68a !important;
+  color: #92400e !important;
+  padding: 0.75rem 1rem;
+}
+.modal .alert-warning i {
+  color: #d97706;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 575.98px) {
+  .modal-dialog {
+    margin: 1rem;
+  }
+  .modal-dialog-centered {
+    min-height: calc(100% - 2rem);
+  }
+  .modal-content {
+    border-radius: 14px;
+  }
+  .modal-header {
+    padding: 1rem 1rem 0.5rem;
+  }
+  .modal-body {
+    padding: 0.5rem 1rem 1rem;
+  }
+  .modal-footer {
+    padding: 0.5rem 1rem 1rem;
+    flex-direction: column-reverse;
+  }
+  .modal-footer .btn {
+    width: 100%;
+  }
+}

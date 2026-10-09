@@ -69,7 +69,7 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label for="name" class="form-label">Nama <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="name" name="name" value="<?= old('name') ?>" required>
+              <input type="text" class="form-control" id="name" name="name" value="<?= old('name') ?>" placeholder="Contoh: Adult" required>
             </div>
             <div class="col-md-6">
               <label for="ticket_category" class="form-label">Kategori <span class="text-danger">*</span></label>
@@ -80,11 +80,11 @@
             </div>
             <div class="col-md-6">
               <label for="price" class="form-label">Harga <span class="text-danger">*</span></label>
-              <input type="number" class="form-control" id="price" name="price" value="<?= old('price') ?>" step="0.01" required>
+              <input type="number" class="form-control" id="price" name="price" value="<?= old('price') ?>" placeholder="0" step="0.01" required>
             </div>
             <div class="col-md-6">
               <label for="discount_percent" class="form-label">Diskon (%)</label>
-              <input type="number" class="form-control" id="discount_percent" name="discount_percent" value="<?= old('discount_percent') ?>" step="0.01" min="0" max="100">
+              <input type="number" class="form-control" id="discount_percent" name="discount_percent" value="<?= old('discount_percent') ?>" placeholder="0" step="0.01" min="0" max="100">
             </div>
             <div class="col-12">
               <div class="form-check form-switch">
@@ -96,7 +96,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary" style="background-color: #e24a3b; border-color: #e24a3b;">Simpan</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
       </form>
     </div>

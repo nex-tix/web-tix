@@ -64,17 +64,17 @@
           <?php endif; ?>
           <div class="mb-3">
             <label for="setting_key" class="form-label">Setting Key <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="setting_key" name="setting_key" value="<?= old('setting_key') ?>" required maxlength="50">
+            <input type="text" class="form-control" id="setting_key" name="setting_key" value="<?= old('setting_key') ?>" placeholder="Contoh: company_name" required maxlength="50">
             <div class="form-text">Contoh: company_name, address, phone</div>
           </div>
           <div class="mb-3">
             <label for="setting_value" class="form-label">Setting Value <span class="text-danger">*</span></label>
-            <textarea class="form-control" id="setting_value" name="setting_value" rows="3" required maxlength="255"><?= old('setting_value') ?></textarea>
+            <textarea class="form-control" id="setting_value" name="setting_value" rows="3" placeholder="Contoh: Kecak Uluwatu" required maxlength="255"><?= old('setting_value') ?></textarea>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary" style="background-color: #e24a3b; border-color: #e24a3b;">Simpan</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
       </form>
     </div>

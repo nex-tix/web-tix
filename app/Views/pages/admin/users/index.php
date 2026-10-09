@@ -69,16 +69,16 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label for="user_name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="user_name" name="name" value="<?= old('name') ?>" required maxlength="100">
+              <input type="text" class="form-control" id="user_name" name="name" value="<?= old('name') ?>" placeholder="Nama lengkap" required maxlength="100">
             </div>
             <div class="col-md-6">
               <label for="user_username" class="form-label">Username <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="user_username" name="username" value="<?= old('username') ?>" required minlength="3" maxlength="50" pattern="[a-zA-Z0-9]+">
+              <input type="text" class="form-control" id="user_username" name="username" value="<?= old('username') ?>" placeholder="Username" required minlength="3" maxlength="50" pattern="[a-zA-Z0-9]+">
               <div class="form-text">Hanya huruf dan angka (3-50 karakter).</div>
             </div>
             <div class="col-md-6">
               <label for="user_password" class="form-label">Password <span id="pwReq">*</span></label>
-              <input type="password" class="form-control" id="user_password" name="password" minlength="8" autocomplete="new-password">
+              <input type="password" class="form-control" id="user_password" name="password" placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password">
               <div class="form-text">Kosongkan jika tidak ubah password.</div>
             </div>
             <div class="col-md-6">
@@ -97,7 +97,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary" style="background-color: #e24a3b; border-color: #e24a3b;">Simpan</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
       </form>
     </div>

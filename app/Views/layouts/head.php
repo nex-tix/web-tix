@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="<?= base_url('css/adminlte.min.css') ?>" />
 
 <link rel="stylesheet" href="<?= base_url('css/main.css') ?>">
+<link rel="stylesheet" href="<?= base_url('css/modal.css') ?>">
 
 
 

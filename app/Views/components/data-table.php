@@ -10,11 +10,11 @@
         <?php endif; ?>
       </div>
       <?php if (isset($create_modal_id)): ?>
-        <button type="button" class="btn btn-primary btn-sm d-flex align-items-center gap-2" style="background-color: #e24a3b; border-color: #e24a3b;" data-bs-toggle="modal" data-bs-target="#<?= esc($create_modal_id) ?>">
+        <button type="button" class="btn btn-brand btn-primary btn-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#<?= esc($create_modal_id) ?>">
           <i class="bi bi-plus-lg"></i> <?= esc($create_text ?? 'Tambah Data') ?>
         </button>
       <?php elseif (isset($create_url)): ?>
-        <a href="<?= esc($create_url) ?>" class="btn btn-primary btn-sm d-flex align-items-center gap-2" style="background-color: #e24a3b; border-color: #e24a3b;">
+        <a href="<?= esc($create_url) ?>" class="btn btn-brand btn-primary btn-sm d-flex align-items-center gap-2">
           <i class="bi bi-plus-lg"></i> <?= esc($create_text ?? 'Tambah Data') ?>
         </a>
       <?php endif; ?>

@@ -112,15 +112,15 @@
     <div class="modal-content">
       <form id="voidTransactionForm" method="POST" action="" novalidate>
         <?= csrf_field() ?>
-        <div class="modal-header bg-danger py-2">
-          <h6 class="mb-0 text-white">Void Transaksi</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-header">
+          <h6 class="modal-title">Void Transaksi</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <p class="mb-2 text-muted">
             Invoice: <strong id="voidInvoiceCode">-</strong>
           </p>
-          <div class="alert alert-warning py-2 mb-3" style="font-size:.875rem">
+          <div class="alert alert-warning py-2 mb-3">
             <i class="bi bi-exclamation-triangle"></i>
             Void membatalkan transaksi beserta seluruh tiketnya. Tindakan ini tidak dapat dibatalkan dan bukan refund.
           </div>

@@ -64,7 +64,7 @@
           <?php endif; ?>
           <div class="mb-3">
             <label for="checkpoint_name" class="form-label">Nama Checkpoint <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="checkpoint_name" name="name" value="<?= old('name') ?>" required maxlength="50">
+            <input type="text" class="form-control" id="checkpoint_name" name="name" value="<?= old('name') ?>" placeholder="Contoh: Gerbang Utama" required maxlength="50">
           </div>
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="checkpoint_is_active" name="is_active" value="1" <?= old('is_active', 1) ? 'checked' : '' ?>>
@@ -73,7 +73,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary" style="background-color: #e24a3b; border-color: #e24a3b;">Simpan</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
       </form>
     </div>
