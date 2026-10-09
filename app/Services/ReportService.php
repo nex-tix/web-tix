@@ -103,7 +103,7 @@ class ReportService
         $data = [];
         for ($i = 6; $i >= 0; $i--) {
             $d = date('Y-m-d', strtotime($date . " -$i days"));
-            $labels[] = $i === 0 ? 'Hari ini' : date('D', strtotime($d));
+            $labels[] = $i === 0 ? 'Today' : date('D', strtotime($d));
             $data[] = $this->salesForDate($d, $filters);
         }
 

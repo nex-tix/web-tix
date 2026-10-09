@@ -52,5 +52,6 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
 
     //laporan
     $routes->get('laporan', 'ReportController::index');
+    $routes->get('laporan/export-pdf', 'ReportController::exportPdf');
 
 });

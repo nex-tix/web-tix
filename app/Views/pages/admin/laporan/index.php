@@ -10,7 +10,14 @@
       <div class="d-flex gap-2 flex-wrap">
         <input type="date" id="datePicker" class="form-control form-control-sm" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" value="<?= esc($reportDate) ?>">
         <button type="button" id="dateBtn" class="btn-laporan"><i class="bi bi-calendar3"></i> <span id="dateLabel">Pilih Tanggal</span></button>
-        <button type="button" class="btn-transaksi"><i class="bi bi-file-earmark-pdf"></i> Export PDF</button>
+        <?php $exportQuery = http_build_query(array_filter([
+          'date'       => $reportDate,
+          'checkpoint' => $filters['checkpoint_id'] ?? null,
+          'payment'    => $filters['payment_method'] ?? null,
+          'category'   => $filters['ticket_category'] ?? null,
+          'q'          => $filters['search'] ?? null,
+        ])); ?>
+        <a href="<?= base_url('admin/laporan/export-pdf?' . esc($exportQuery)) ?>" class="btn-transaksi"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
       </div>
     </div>
 
@@ -30,26 +37,24 @@
     </div>
 
     <?= view('components/laporan/filter-tabs', [
-        'tabs'        => ['Audit Scan Gate & Kehadiran','Demografi Pengunjung'],
-        'active_tab'  => 'Audit Scan Gate & Kehadiran',
-        'filters'     => $filters ?? [],
-        'checkpoints' => $checkpoints ?? [],
-        'reportDate'  => $reportDate ?? date('Y-m-d'),
+      'filters'     => $filters ?? [],
+      'checkpoints' => $checkpoints ?? [],
+      'reportDate'  => $reportDate ?? date('Y-m-d'),
     ]) ?>
 
     <div class="row g-3 mb-3">
       <div class="col-lg-8">
         <?= view('components/chart-box', [
-            'title'        => 'Penjualan per Hari & Metode Pembayaran',
-            'subtitle'     => 'Total dibayar per hari dagang (WITA), termasuk void',
-            'badge_text'   => '7 Hari Terakhir',
-            'chart_id'     => 'laporanSalesChart',
-            'height'       => 250,
-            'footer_stats' => [
-                ['label' => 'Rata-rata 7 hari', 'value' => $chartData['avg']],
-                ['label' => 'Tertinggi', 'value' => $chartData['max']],
-            ],
-            'extra_attrs'  => 'data-chart=\'' . htmlspecialchars(json_encode($chartData), ENT_QUOTES, 'UTF-8') . '\'',
+          'title'        => 'Penjualan per Hari & Metode Pembayaran',
+          'subtitle'     => 'Total dibayar per hari dagang (WITA), termasuk void',
+          'badge_text'   => '7 Hari Terakhir',
+          'chart_id'     => 'laporanSalesChart',
+          'height'       => 250,
+          'footer_stats' => [
+            ['label' => 'Rata-rata 7 hari', 'value' => $chartData['avg']],
+            ['label' => 'Tertinggi', 'value' => $chartData['max']],
+          ],
+          'extra_attrs'  => 'data-chart=\'' . htmlspecialchars(json_encode($chartData), ENT_QUOTES, 'UTF-8') . '\'',
         ]) ?>
       </div>
       <div class="col-lg-4">
@@ -73,12 +78,18 @@
       </div>
     </div>
 
+    <?= view('components/laporan/audit-filter', [
+      'filters'     => $filters ?? [],
+      'checkpoints' => $checkpoints ?? [],
+      'reportDate'  => $reportDate ?? date('Y-m-d'),
+    ]) ?>
+
     <?= view('components/laporan/audit-table', [
-        'title'     => 'Audit Log Scan Tiket & Kehadiran Per Gate',
-        'subtitle'  => 'Catatan real-time verifikasi barcode tiket di pintu masuk teater',
-        'headers'   => ['WAKTU SCAN','CHECKPOINT / GATE','KODE TIKET','KATEGORI','ADMIN / KASIR','STATUS SCAN','KETERANGAN'],
-        'rows'      => $auditRows,
-        'table_id'  => 'laporanAuditTable',
+      'title'     => 'Audit Log Scan Tiket & Kehadiran Per Gate',
+      'subtitle'  => 'Catatan real-time verifikasi barcode tiket di pintu masuk teater',
+      'headers'   => ['WAKTU SCAN', 'CHECKPOINT / GATE', 'KODE TIKET', 'KATEGORI', 'ADMIN / KASIR', 'STATUS SCAN', 'KETERANGAN'],
+      'rows'      => $auditRows,
+      'table_id'  => 'laporanAuditTable',
     ]) ?>
 
   </div>
@@ -87,47 +98,50 @@
 <script src="<?= base_url('js/laporan-chart.js') ?>"></script>
 <script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function() {
     const picker = document.getElementById('datePicker');
     const btn = document.getElementById('dateBtn');
     const label = document.getElementById('dateLabel');
     if (!picker || !btn || !label) return;
 
-    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const today = new Date();
     const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
     function formatDate(val) {
-        const parts = val.split('-');
-        const d = new Date(parts[0], parts[1] - 1, parts[2]);
-        const text = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        return text + (val === todayStr ? ' (Hari Ini)' : '');
+      const parts = val.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      const text = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+      return text + (val === todayStr ? ' (Hari Ini)' : '');
     }
 
     label.textContent = formatDate(picker.value);
 
     btn.addEventListener('click', function() {
-        if (typeof picker.showPicker === 'function') {
-            try {
-                picker.showPicker();
-                return;
-            } catch (e) {}
-        }
-        picker.style.cssText = 'position:static;opacity:1;width:auto;height:auto;pointer-events:auto';
-        picker.focus();
-        picker.click();
+      if (typeof picker.showPicker === 'function') {
+        try {
+          picker.showPicker();
+          return;
+        } catch (e) {}
+      }
+      picker.style.cssText = 'position:static;opacity:1;width:auto;height:auto;pointer-events:auto;display:block';
+      btn.style.display = 'none';
+      picker.focus();
+      picker.click();
     });
 
     picker.addEventListener('blur', function() {
-        picker.style.cssText = 'position:absolute;opacity:0;width:1px;height:1px;pointer-events:none';
+      picker.style.cssText = 'position:absolute;opacity:0;width:1px;height:1px;pointer-events:none';
+      btn.style.display = '';
     });
 
     picker.addEventListener('change', function() {
-        if (!picker.value) return;
-        const params = new URLSearchParams(window.location.search);
-        params.set('date', picker.value);
-        window.location.search = params.toString();
+      if (!picker.value) return;
+      const params = new URLSearchParams(window.location.search);
+      params.set('date', picker.value);
+      window.location.search = params.toString();
     });
-});
+
+  });
 </script>
 <?= $this->endSection() ?>

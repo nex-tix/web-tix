@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\CheckpointModel;
 use App\Services\ReportService;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class ReportController extends BaseController
 {
@@ -56,5 +58,41 @@ class ReportController extends BaseController
             'ticket_category' => in_array($ticketCategory, ['individual', 'group'], true) ? $ticketCategory : null,
             'search'          => mb_substr($search, 0, 50),
         ];
+    }
+
+    public function exportPdf()
+    {
+        $checkpointModel = new CheckpointModel();
+        $checkpoints = $checkpointModel->where('is_active', 1)->orderBy('name', 'ASC')->findAll();
+        $filters = $this->sanitizeFilters($checkpoints);
+        $date = $this->sanitizeDate($this->request->getGet('date'));
+
+        $service = new ReportService();
+        $data = $service->getDailyReport($date, $filters);
+
+        $html = view('pages/admin/laporan/export-pdf', [
+            'stats'       => $data['stats'],
+            'chartData'   => $data['chartData'],
+            'payment'     => $data['paymentBreakdown'],
+            'demography'  => $data['demography'],
+            'auditRows'   => $data['auditLogs'],
+            'reportDate'  => $data['reportDate'],
+            'filters'     => $filters,
+            'checkpoints' => $checkpoints,
+        ]);
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', false);
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $this->response
+            ->setContentType('application/pdf')
+            ->setHeader('Content-Disposition', 'attachment; filename="laporan-' . $data['reportDate'] . '.pdf"')
+            ->setBody($dompdf->output());
     }
 }
