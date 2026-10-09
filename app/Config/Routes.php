@@ -54,4 +54,8 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('laporan', 'ReportController::index');
     $routes->get('laporan/export-pdf', 'ReportController::exportPdf');
 
+    // Riwayat Penjualan
+    $routes->get('transaction-history', 'Admin\TransactionHistoryController::index');
+    $routes->get('transaction-history/detail/(:num)', 'Admin\TransactionHistoryController::detail/$1');
+
 });

@@ -127,7 +127,7 @@
           <?= view('components/transaction-table', [
               'title'    => 'Transaksi terbaru',
               'subtitle' => 'Lima nota terakhir di loket ini',
-              'link_url' => '#',
+              'link_url' => base_url('admin/transaction-history'),
               'link_text'=> 'Semua riwayat',
               'table_id' => 'transactionTable',
               'headers'  => ['WAKTU', 'NOTA', 'PENGUNJUNG', 'JENIS', 'BAYAR', 'TOTAL', 'STATUS TIKET', 'AKSI'],
