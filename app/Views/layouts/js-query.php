@@ -7,9 +7,6 @@
   <!-- DataTables -->
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-  <script src="https://cdn.datatables.net/v/dt/dt-3.0.2/datatables.min.js"></script>
-  <script src="https://cdn.datatables.net/3.0.2/js/dataTables.min.js"></script>
-
   <script src="https://cdn.datatables.net/buttons/4.0.2/js/dataTables.buttons.min.js"></script>
 
   <script src="https://cdn.datatables.net/buttons/4.0.2/js/buttons.dataTables.min.js"></script>

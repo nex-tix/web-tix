@@ -42,7 +42,7 @@
                 <?= view('components/stat-card', [
                     'label' => 'Tiket Terbit',
                     'value' => ((int)str_replace(' <small>orang</small>', '', $report['stats']['attendance']['value']) + (int)str_replace(' <small>tiket</small>', '', $report['stats']['remaining']['value'])) . ' <small>tiket</small>',
-                    'sub'   => 'individual &middot; rombongan'
+                    'sub'   => 'individual & rombongan'
                 ]) ?>
               </div>
               <div class="col-md-3">
@@ -130,11 +130,11 @@
               'link_url' => base_url('admin/transaction-history'),
               'link_text'=> 'Semua riwayat',
               'table_id' => 'transactionTable',
-              'headers'  => ['WAKTU', 'NOTA', 'PENGUNJUNG', 'JENIS', 'BAYAR', 'TOTAL', 'STATUS TIKET'],
+              'headers'  => ['WAKTU', 'NOTA', 'PENGUNJUNG', 'JENIS', 'BAYAR', 'TOTAL', 'STATUS TIKET','AKSI'],
               'rows'     => $report['transactions']['rows'] ?? []
           ]) ?>
 
-          <div class="text-muted small mt-2">
+          <div class="text-black small mt-2">
             Total <?= esc($report['transactions']['total'] ?? 0) ?> transaksi
           </div>
     </div>

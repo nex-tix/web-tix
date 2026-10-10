@@ -80,7 +80,7 @@ class ReportService
             ],
             'discount' => [
                 'label' => 'Rekap Diskon Hari Ini',
-                'value' => '<span style="color:#e74c3c">Rp ' . number_format($transactions['total_discount'] ?? 0, 0, ',', '.') . '</span>',
+                'value' => 'Rp ' . number_format($transactions['total_discount'] ?? 0, 0, ',', '.'),
                 'sub'   => 'Total diskon dari transaksi selesai',
             ],
             'attendance' => [

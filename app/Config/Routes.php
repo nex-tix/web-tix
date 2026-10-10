@@ -3,9 +3,6 @@
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
-$routes->get('/', 'Home::index');
-$routes->get('/admin', 'Home::index');
-$routes->get('/index', 'Home::index');
 
 // AUTH ROUTES
 $routes->get('/login', 'Auth\LoginController::index');

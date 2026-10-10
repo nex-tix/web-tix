@@ -32,7 +32,7 @@
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
-            <thead class="">
+            <thead>
               <tr style="background: #1a1d20; color: #fff;">
                 <th>Tanggal</th>
                 <th>Kode Tiket</th>

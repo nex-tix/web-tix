@@ -15,9 +15,6 @@
   href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
   rel="stylesheet" />
 <link
-  href="https://cdn.datatables.net/v/dt/dt-3.0.2/datatables.min.css"
-  rel="stylesheet" />
-<link
   href="https://cdn.datatables.net/buttons/4.0.2/css/buttons.dataTables.min.css"
   rel="stylesheet" />
 <!-- AdminLTE 4 CSS -->

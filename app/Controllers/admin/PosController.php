@@ -73,9 +73,10 @@ class PosController extends BaseController
 
         if (!$this->validate($rules)) {
             return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors'  => $this->validator->getErrors()
+                'success'   => false,
+                'message'   => 'Validasi gagal',
+                'errors'    => $this->validator->getErrors(),
+                'csrf_hash' => csrf_hash(),
             ])->setStatusCode(422);
         }
 
