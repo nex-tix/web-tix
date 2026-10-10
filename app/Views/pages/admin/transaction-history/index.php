@@ -117,7 +117,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="mb-2 text-muted">
+          <p class="mb-2">
             Invoice: <strong id="voidInvoiceCode">-</strong>
           </p>
           <div class="alert alert-warning py-2 mb-3">

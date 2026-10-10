@@ -144,6 +144,8 @@ class ReportService
             'total'      => 'Rp ' . number_format($total, 0, ',', '.'),
             'cash_pct'   => $total > 0 ? ($cash['total'] / $total) * 100 : 0,
             'debit_pct'  => $total > 0 ? ($debit['total'] / $total) * 100 : 0,
+            'cash'       => $cash,
+            'debit'      => $debit,
             'cash_text'  => 'Tunai Rp ' . number_format($cash['total'], 0, ',', '.') . ' (' . $cash['count'] . ' nota)',
             'debit_text' => 'Debit / EDC Rp ' . number_format($debit['total'], 0, ',', '.') . ' (' . $debit['count'] . ' nota)',
         ];
@@ -327,6 +329,77 @@ class ReportService
         if (str_contains($o, 'australia') || str_contains($o, 'sydney') || str_contains($o, 'melbourne')) return 'Australia';
         if (str_contains($o, 'europe') || str_contains($o, 'uk') || str_contains($o, 'england') || str_contains($o, 'london')) return 'Inggris & Eropa';
         return 'Negara Lainnya';
+    }
+
+    public function getRecentTransactions(int $page = 1, int $limit = 7): array
+    {
+        $page = max(1, $page);
+        $limit = max(1, $limit);
+        $offset = ($page - 1) * $limit;
+
+        // Get total count for pagination
+        $countBuilder = $this->db->table('transactions tx')
+            ->where('tx.status', 'completed');
+        $totalCount = (int)$countBuilder->countAllResults();
+
+        $builder = $this->db->table('transactions tx')
+            ->select('tx.id, tx.created_at, tx.invoice_code, c.name as customer_name, 
+                      c.origin, t.ticket_category, tx.payment_method, tx.total_amount,
+                      GROUP_CONCAT(t.total_visitors) as visitor_list,
+                      GROUP_CONCAT(t.status) as ticket_status_list')
+            ->join('customers c', 'tx.customer_id = c.id', 'left')
+            ->join('tickets t', 't.transaction_id = tx.id', 'left')
+            ->where('tx.status', 'completed')
+            ->groupBy(['tx.id', 'tx.created_at', 'tx.invoice_code', 'c.name', 'c.origin', 't.ticket_category', 'tx.payment_method', 'tx.total_amount'])
+            ->orderBy('tx.created_at', 'DESC')
+            ->limit($limit)
+            ->offset($offset);
+
+        $rows = $builder->get()->getResultArray();
+
+        $transactions = [];
+        foreach ($rows as $r) {
+            $time = date('H:i', strtotime($r['created_at']));
+            
+            // Calculate total visitors from ticket list
+            $visitorList = $r['visitor_list'] ? explode(',', $r['visitor_list']) : [];
+            $totalVisitors = array_sum(array_map('intval', $visitorList));
+            
+            // Determine ticket status badge
+            $statusList = $r['ticket_status_list'] ? explode(',', $r['ticket_status_list']) : [];
+            $hasActive = in_array('active', $statusList);
+            $hasUsed = in_array('used', $statusList);
+            
+            if ($hasUsed && !$hasActive) {
+                $badge = '<span class="badge-status-used">Used</span>';
+            } elseif ($hasActive) {
+                $badge = '<span class="badge-status-unused">Active</span>';
+            } else {
+                $badge = '<span class="badge bg-secondary" style="font-size:.65rem;font-weight:600;border-radius:20px;padding:.3rem .6rem">' . esc($statusList[0] ?? '-') . '</span>';
+            }
+
+            $categoryLabel = ($r['ticket_category'] === 'group') ? 'Rombongan' : 'Individual';
+            $paymentLabel = ($r['payment_method'] === 'debit') ? 'Debit' : 'Tunai';
+
+            $transactions[] = [
+                $time,
+                esc($r['invoice_code']),
+                '<div class="fw-semibold">' . esc($r['customer_name'] ?? '-') . '</div><div class="visitor-meta">' . $totalVisitors . ' pengunjung &middot; ' . esc($r['origin'] ?? '-') . '</div>',
+                $categoryLabel,
+                $paymentLabel,
+                'Rp ' . number_format((float)$r['total_amount'], 0, ',', '.'),
+                $badge,
+                '<i class="bi bi-printer action-icon"></i> <i class="bi bi-three-dots-vertical action-icon"></i>'
+            ];
+        }
+
+        return [
+            'rows'    => $transactions,
+            'total'   => $totalCount,
+            'page'    => $page,
+            'perPage' => $limit,
+            'totalPages' => (int)ceil($totalCount / $limit),
+        ];
     }
 
     private function getAuditDescription(string $result): string
