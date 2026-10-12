@@ -37,13 +37,13 @@
     ?>
 
     <?= view('components/data-table', [
-        'title'          => 'Kelola Pengguna',
-        'subtitle'       => 'Daftar akun administrator sistem web POS dan loket.',
-        'headers'        => $headers,
-        'rows'           => $rows,
-        'create_modal_id' => 'userModal',
-        'create_text'    => 'Tambah Pengguna',
-        'empty_message'  => 'Belum ada data pengguna.',
+      'title'          => 'Kelola Pengguna',
+      'subtitle'       => 'Daftar akun administrator sistem web POS dan loket.',
+      'headers'        => $headers,
+      'rows'           => $rows,
+      'create_modal_id' => 'userModal',
+      'create_text'    => 'Tambah Pengguna',
+      'empty_message'  => 'Belum ada data pengguna.',
     ]) ?>
   </div>
 </div>

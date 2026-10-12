@@ -24,8 +24,8 @@ class TransactionModel extends Model
         'subtotal' => 'float',
         'discount_amount' => 'float',
         'total_amount' => 'float',
-        'cash_paid' => 'float',
-        'cash_change' => 'float',
+        'cash_paid' => '?float',
+        'cash_change' => '?float',
         'voided_by' => '?int',
     ];
     protected array $castHandlers = [];
