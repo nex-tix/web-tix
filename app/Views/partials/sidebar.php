@@ -79,6 +79,13 @@
             </li>
 
             <li class="nav-item">
+              <a href="<?= base_url('admin/gate-users') ?>" class="nav-link <?= strpos(current_url(), 'admin/gate-users') !== false ? 'active' : '' ?>">
+                <i class="bi bi-person-check"></i>
+                <p>Pengguna Loket</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a href="<?= base_url('admin/checkpoints') ?>" class="nav-link <?= strpos(current_url(), 'admin/checkpoints') !== false ? 'active' : '' ?>">
                 <i class="bi bi-check2-square"></i>
                 <p>Checkpoint</p>

@@ -24,6 +24,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('users/(:num)/delete', 'Admin\UserController::delete/$1');
     $routes->post('users/(:num)/reset-password', 'Admin\UserController::resetPassword/$1');
 
+    // Gate Users Management
+    $routes->get('gate-users', 'Admin\GateUserController::index');
+    $routes->post('gate-users', 'Admin\GateUserController::store');
+    $routes->post('gate-users/(:num)', 'Admin\GateUserController::update/$1');
+    $routes->post('gate-users/(:num)/delete', 'Admin\GateUserController::delete/$1');
+
     // Ticket Types Management
     $routes->get('ticket-types', 'Admin\TicketTypeController::index');
     $routes->post('ticket-types/store', 'Admin\TicketTypeController::store');
