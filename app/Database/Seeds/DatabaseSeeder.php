@@ -9,6 +9,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call('UserSeeder');
+        $this->call('GateUserSeeder');
         $this->call('TicketTypeSeeder');
         $this->call('CheckpointSeeder');
         $this->call('SettingSeeder');
