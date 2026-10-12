@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Struk Thermal - <?= esc($transaction['invoice_code']) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= base_url('js/qrcode.js') ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @media print {
             body {
@@ -173,22 +173,19 @@
             tickets.forEach(ticket => {
                 const container = document.getElementById('qrcode-' + ticket.id);
                 if (!container) return;
-                if (typeof qrcode !== 'function') {
+                if (typeof QRCode === 'undefined') {
                     container.textContent = 'QR gagal dimuat';
                     return;
                 }
 
-                const code = qrcode(4, 'M');
-                code.addData(ticket.ticket_code);
-                code.make();
-                container.innerHTML = code.createImgTag(4, 0, 'Ticket QR ' + ticket.ticket_code);
-
-                const image = container.querySelector('img');
-                if (image) {
-                    image.width = 128;
-                    image.height = 128;
-                    image.alt = 'QR ' + ticket.ticket_code;
-                }
+                new QRCode(container, {
+                    text: `TICKET|code=${ticket.ticket_code}|transaction=${ticket.transaction_id}|status=active`,
+                    width: 128,
+                    height: 128,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
             });
         });
     </script>

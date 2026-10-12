@@ -8,6 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/login', 'Auth\LoginController::index');
 $routes->post('/login', 'Auth\LoginController::authenticate');
 $routes->get('/logout', 'Auth\LoginController::logout');
+$routes->get('/', 'Auth\LoginController::index');
+
 
 // ADMIN ROUTES
 $routes->group('admin', ['filter' => 'auth'], function ($routes) {
@@ -59,5 +61,4 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     // Data Tiket
     $routes->get('data-tiket', 'Admin\TicketController::index');
     $routes->get('data-tiket/detail/(:num)', 'Admin\TicketController::detail/$1');
-
 });
