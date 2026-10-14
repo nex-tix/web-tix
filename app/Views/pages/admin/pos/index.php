@@ -278,7 +278,7 @@
     };
     ticketTypes.forEach(t => posState.quantities[t.id] = 0);
 
-    const limits = { individual: { min: 1, max: 4 }, rombongan: { min: 5, max: 15 } };
+    const limits = { individual: { min: 1, max: 2 }, rombongan: { min: 5, max: 15 } };
     const posStateCategory = () => posState.mode === 'rombongan' ? 'group' : 'individual';
     const rupiah = value => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value || 0);
     const totalQty = () => Object.values(posState.quantities).reduce((a, b) => a + b, 0);
