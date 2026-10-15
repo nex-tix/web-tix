@@ -8,24 +8,18 @@
 <div class="w-full max-w-[460px] bg-white rounded-2xl shadow-2xl shadow-black/40 overflow-hidden border border-slate-100 flex flex-col z-10 transition-all">
     <!-- BEGIN: CardHeaderBranding -->
     <!-- Visual branding identical to top-left of Kecak Uluwatu POS dashboard -->
-    <div class="bg-[#2c3136] pt-8 pb-7 px-8 text-center relative border-b border-slate-700/60">
+    <div class="bg-[#fff] pt-5 pb-1 px-8 text-center relative">
         <!-- Brand identity logo badge -->
-        <div class="inline-flex items-center justify-center space-x-3 mb-4">
-            <div class="w-13 h-13 rounded-xl text-white flex items-center justify-center">
+        <div class="d-flex flex-column items-center justify-items-center ">
+            <div class="w-13 h-13 rounded-xl text-white flex items-center justify-center mb-2">
                 <!-- Icon resembling traditional Uluwatu Temple shrine/foliage silhouette -->
-                 <img width="80px" height="auto" src="<?= base_url('img/logo_nextix.png') ?>" alt="logo">
+                 <img width="120px" height="auto" src="<?= base_url('img/logo_nextix.png') ?>" alt="logo">
             </div>
-            <div class="text-left">
-                <h1 class="text-lg font-bold text-white tracking-tight leading-tight">Kecak Uluwatu</h1>
+            <div class="text-center">
+                <h1 style="color: #2c3136;" class="text-lg font-bold tracking-tight leading-tight">Kecak Uluwatu</h1>
                 <p class="text-[10px] uppercase font-semibold text-slate-400 tracking-widest mt-0.5">LOKET &amp; GATE</p>
             </div>
         </div>
-        <h2 class="text-xl font-bold text-white tracking-tight mt-1">Masuk ke Sistem Loket</h2>
-        <p class="text-xs text-slate-300 mt-1.5 max-w-xs mx-auto leading-relaxed">
-            Masukkan username dan kata sandi petugas untuk memulai shift transaksi.
-        </p>
-        <!-- Subtle accent highlight line -->
-        <div class="absolute bottom-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent via-[#e24a3b] to-transparent"></div>
     </div>
     <!-- END: CardHeaderBranding -->
     <!-- BEGIN: LoginForm -->
@@ -79,10 +73,6 @@
                     <input autocomplete="current-password" class="block w-full pl-10 pr-10 py-2.5 text-sm rounded-lg border-slate-300 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#e24a3b]/20 focus:border-[#e24a3b] transition duration-150" id="password" name="password" placeholder="••••••••" required="" type="password" />
                 </div>
             </div>
-            <!-- Session persistence checkbox -->
-            <div class="flex items-center justify-between pt-1">
-                <span class="text-[11px] text-slate-400">Shift Siang / Sore</span>
-            </div>
             <!-- Submit Button: Matching dashboard Coral-Red Action Button -->
             <div class="pt-2">
                 <button class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-[#e24a3b] hover:bg-[#cf3e30] active:scale-[0.99] text-white font-semibold text-sm shadow-md shadow-[#e24a3b]/25 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#e24a3b]" type="submit">
@@ -95,10 +85,7 @@
         </form>
         <!-- Informational box for cashiers/operators -->
         <div class="mt-6 pt-5 border-t border-slate-100 flex items-start space-x-2.5 text-xs text-slate-500">
-            <svg class="w-4 h-4 text-sky-500 shrink-0 mt-0.5" fill="currentColor" viewbox="0 0 20 20">
-                <path clip-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fill-rule="evenodd"></path>
-            </svg>
-            <p class="leading-relaxed">
+            <p class="leading-relaxed text-center">
                 Butuh pergantian shift atau lupa kredensial? Hubungi <span class="font-medium text-slate-700">Supervisor Operasional Lapangan</span>.
             </p>
         </div>
