@@ -70,7 +70,12 @@
                         </span>
                       <?php endif; ?>
                     </td>
-                    <td><?= (int)($row['total_visitors'] ?? 0) ?> orang</td>
+                    <td>
+                      <?= (int)($row['total_visitors'] ?? 0) ?> orang
+                      <?php if (($row['status'] ?? '') === 'used' && isset($row['actual_visitors']) && $row['actual_visitors'] !== null && (int)$row['actual_visitors'] !== (int)$row['total_visitors']): ?>
+                        <br><small class="text-primary font-monospace">(Hadir: <?= (int)$row['actual_visitors'] ?>)</small>
+                      <?php endif; ?>
+                    </td>
                     <td>
                       <?php if (($row['status'] ?? '') === 'active'): ?>
                         <span class="badge bg-success">Aktif</span>

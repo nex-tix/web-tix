@@ -54,7 +54,7 @@ class ReportService
         $salesDiff = $prevSales > 0 ? (($totalSales - $prevSales) / $prevSales) * 100 : 0;
 
         $ticketsBuilder = $this->db->table('tickets t')
-            ->select('t.status, SUM(t.total_visitors) as count')
+            ->select('t.status, SUM(CASE WHEN t.status = "used" THEN COALESCE(t.actual_visitors, t.total_visitors) ELSE t.total_visitors END) as count')
             ->join('transactions tx', 'tx.id = t.transaction_id')
             ->where('tx.status', 'completed')
             ->where('t.valid_date', $date)
@@ -155,7 +155,7 @@ class ReportService
     {
         [$start, $end] = $this->dateRange($date);
         $builder = $this->db->table('customers c')
-            ->select('c.origin_type, c.origin, t.ticket_category, SUM(t.total_visitors) as visitors, COUNT(DISTINCT t.id) as tickets')
+            ->select('c.origin_type, c.origin, t.ticket_category, SUM(CASE WHEN t.status = "used" THEN COALESCE(t.actual_visitors, t.total_visitors) ELSE t.total_visitors END) as visitors, COUNT(DISTINCT t.id) as tickets')
             ->join('transactions tx', 'tx.customer_id = c.id')
             ->join('tickets t', 't.transaction_id = tx.id')
             ->where('tx.status', 'completed')
@@ -346,6 +346,7 @@ class ReportService
             ->select('tx.id, tx.created_at, tx.invoice_code, c.name as customer_name, 
                       c.origin, t.ticket_category, tx.payment_method, tx.total_amount,
                       GROUP_CONCAT(t.total_visitors) as visitor_list,
+                      GROUP_CONCAT(COALESCE(t.actual_visitors, t.total_visitors)) as actual_visitor_list,
                       GROUP_CONCAT(t.status) as ticket_status_list')
             ->join('customers c', 'tx.customer_id = c.id', 'left')
             ->join('tickets t', 't.transaction_id = tx.id', 'left')
@@ -363,7 +364,10 @@ class ReportService
             
             // Calculate total visitors from ticket list
             $visitorList = $r['visitor_list'] ? explode(',', $r['visitor_list']) : [];
-            $totalVisitors = array_sum(array_map('intval', $visitorList));
+            $quotaVisitors = array_sum(array_map('intval', $visitorList));
+            $actualList = !empty($r['actual_visitor_list']) ? explode(',', $r['actual_visitor_list']) : [];
+            $actualVisitors = !empty($actualList) ? array_sum(array_map('intval', $actualList)) : $quotaVisitors;
+            $totalVisitors = $actualVisitors;
             
             // Determine ticket status badge
             $statusList = $r['ticket_status_list'] ? explode(',', $r['ticket_status_list']) : [];
