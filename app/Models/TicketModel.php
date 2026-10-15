@@ -12,7 +12,7 @@ class TicketModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['transaction_id', 'ticket_code', 'ticket_category', 'valid_date', 'total_visitors', 'status', 'used_at', 'used_by_gate_user_id', 'used_checkpoint_id', 'actual_visitors'];
+    protected $allowedFields    = ['transaction_id', 'ticket_code', 'ticket_category', 'valid_date', 'total_visitors', 'actual_visitors',  'status', 'used_at', 'used_by_gate_user_id', 'used_checkpoint_id',];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

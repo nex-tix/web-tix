@@ -34,6 +34,12 @@ class CreateTicketsTable extends Migration
                 'type'    => 'INT',
                 'default' => 1,
             ],
+            'actual_visitors' => [
+                'type'       => 'INT',
+                'null'       => true,
+                'default' => null,
+                'after'      => 'total_visitors',
+            ],
             'status' => [
                 'type'       => 'ENUM',
                 'constraint' => ['active', 'used', 'cancelled'],

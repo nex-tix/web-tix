@@ -8,14 +8,15 @@ class AddActualVisitorsToTicketsTable extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('tickets', [
+        $fields = [
             'actual_visitors' => [
                 'type'       => 'INT',
                 'null'       => true,
-                'default'    => null,
+                'default' => null,
                 'after'      => 'total_visitors',
             ],
-        ]);
+        ];
+        $this->forge->addColumn('tickets', $fields);
     }
 
     public function down()
