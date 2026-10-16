@@ -141,7 +141,7 @@
                             <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                             </svg>
-                            Individual (1 - 4 Orang)
+                            Individual (1 - 2 Orang)
                         </button>
                         <button class="py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" id="btn-mode-rombongan" onclick="setMode('rombongan')" type="button">
                             <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
