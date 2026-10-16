@@ -26,9 +26,12 @@
               </span>
             </div>
             <div class="mb-2"><strong>Valid Date:</strong> <?= date('d M Y', strtotime($ticket['valid_date'])) ?></div>
-            <div class="mb-2"><strong>Pengunjung:</strong> <?= (int)($ticket['total_visitors'] ?? 0) ?> orang
-              <?php if (($ticket['status'] ?? '') === 'used' && isset($ticket['actual_visitors']) && $ticket['actual_visitors'] !== null && (int)$ticket['actual_visitors'] !== (int)$ticket['total_visitors']): ?>
-                <span class="badge bg-info text-dark ms-1">Hadir Riil: <?= (int)$ticket['actual_visitors'] ?> orang</span>
+            <div class="mb-2"><strong>Pengunjung:</strong> <?= (int)($ticket['total_visitors'] ?? 0) ?> orang</div>
+            <div class="mb-2"><strong>Hadir:</strong>
+              <?php if (isset($ticket['actual_visitors']) && $ticket['actual_visitors'] !== null && $ticket['actual_visitors'] !== '' && (int)$ticket['actual_visitors'] > 0): ?>
+                <?= (int)$ticket['actual_visitors'] ?> orang
+              <?php else: ?>
+                <span class="fw-bold"> - </span>
               <?php endif; ?>
             </div>
             <div class="mb-0"><strong>Status:</strong>

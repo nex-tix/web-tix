@@ -39,6 +39,7 @@
                 <th>Invoice</th>
                 <th>Tipe</th>
                 <th>Pengunjung</th>
+                <th>Hadir</th>
                 <th>Status</th>
                 <th>Kasir</th>
                 <th style="text-align:center">Aksi</th>
@@ -47,7 +48,7 @@
             <tbody class="table-light">
               <?php if (empty($tickets)): ?>
                 <tr>
-                  <td colspan="8" class="text-center text-muted py-4">
+                  <td colspan="9" class="text-center text-muted py-4">
                     <i class="bi bi-inbox" style="font-size:2rem;opacity:.3"></i>
                     <div class="mt-2">Tidak ada tiket ditemukan.</div>
                   </td>
@@ -72,8 +73,12 @@
                     </td>
                     <td>
                       <?= (int)($row['total_visitors'] ?? 0) ?> orang
-                      <?php if (($row['status'] ?? '') === 'used' && isset($row['actual_visitors']) && $row['actual_visitors'] !== null && (int)$row['actual_visitors'] !== (int)$row['total_visitors']): ?>
-                        <br><small class="text-primary font-monospace">(Hadir: <?= (int)$row['actual_visitors'] ?>)</small>
+                    </td>
+                    <td>
+                      <?php if (isset($row['actual_visitors']) && $row['actual_visitors'] !== null && $row['actual_visitors'] !== '' && (int)$row['actual_visitors'] > 0): ?>
+                        <?= (int)$row['actual_visitors'] ?> orang
+                      <?php else: ?>
+                        <span class="fw-bold"> - </span>
                       <?php endif; ?>
                     </td>
                     <td>

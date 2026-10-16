@@ -156,7 +156,7 @@
                 <div class="p-3 mb-5 rounded-lg border text-xs flex items-center justify-between bg-emerald-50 border-emerald-200 text-emerald-900" id="mode-helper-box">
                     <div class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewbox="0 0 20 20">
                             <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
-                        </svg><span class="text-emerald-900 font-medium" id="mode-desc">Mode Individual: Maksimal 4 tiket per transaksi.</span></div>
+                        </svg><span class="text-emerald-900 font-medium" id="mode-desc">Mode Individual: Maksimal 2 tiket per transaksi.</span></div>
                     <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / 4 Orang</div>
                 </div>
                 <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
@@ -376,7 +376,7 @@
         const individual = mode === 'individual';
         document.getElementById('btn-mode-individual').className = individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
         document.getElementById('btn-mode-rombongan').className = !individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
-        document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 4 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 5 orang, Maksimal 15 orang.';
+        document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 5 orang, Maksimal 15 orang.';
         document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
         document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
         document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / ${limits[mode].max} Orang`;
