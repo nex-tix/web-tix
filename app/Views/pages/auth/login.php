@@ -43,7 +43,7 @@
             </div>
         <?php endif; ?>
 
-        <form class="space-y-5" method="POST" action="/login">
+        <form class="space-y-5" method="POST" action="<?= site_url('login') ?>">
             <?= csrf_field() ?>
             <!-- Input 1: Username / ID Petugas -->
             <div>

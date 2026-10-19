@@ -13,7 +13,7 @@ class LoginController extends BaseController
             helper('form');
             // Jika sudah login, redirect ke dashboard
             if (session()->get('user_logged_in')) {
-                return redirect()->to('/admin/dashboard');
+                return redirect()->to(site_url('admin/dashboard'));
             }
 
             return view('pages/auth/login');
@@ -27,7 +27,7 @@ class LoginController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->to('/login')
+            return redirect()->to('login')
                 ->withInput()
                 ->with('error', $this->validator->getError('username') ?: $this->validator->getError('password'));
         }
@@ -42,7 +42,7 @@ class LoginController extends BaseController
 
         // Check if rate limited
         if ($this->isRateLimited($username, $maxAttempts, $lockMinutes)) {
-            return redirect()->to('/login')
+            return redirect()->to('login')
                 ->withInput()
                 ->with('error', "Terlalu banyak percobaan login gagal. Akun terkunci selama {$lockMinutes} menit.");
         }
@@ -52,20 +52,20 @@ class LoginController extends BaseController
 
         if (!$user || !password_verify($password, $user['password_hash'])) {
             $this->recordFailedAttempt($username, $maxAttempts, $lockMinutes);
-            return redirect()->to('/login')
+            return redirect()->to('login')
                 ->withInput()
                 ->with('error', 'Username atau kata sandi salah.');
         }
 
         if (!$user['is_active']) {
-            return redirect()->to('/login')
+            return redirect()->to('login')
                 ->withInput()
                 ->with('error', 'Akun Anda dinonaktifkan. Silakan hubungi administrator.');
         }
 
         // BR-17: Web hanya dapat diakses pengguna internal (role Admin)
         if ($user['role'] !== 'admin') {
-            return redirect()->to('/login')
+            return redirect()->to('login')
                 ->withInput()
                 ->with('error', 'Akses ditolak. Hanya Admin yang dapat login ke sistem web.');
         }
@@ -82,13 +82,13 @@ class LoginController extends BaseController
             'user_logged_in' => true,
         ]);
 
-        return redirect()->to('/admin/dashboard');
+        return redirect()->to(site_url('admin/dashboard'));
     }
 
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login')->with('success', 'Anda telah berhasil keluar dari sistem.');
+        return redirect()->to('login')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 
     private function getCacheKeys(string $username): array
