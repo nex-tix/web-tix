@@ -23,7 +23,7 @@
                 <svg class="w-3.5 h-3.5 mr-1 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                     <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                 </svg>
-                Clear Form
+                Bersihkan Form
             </button>
         </div>
     </div>
@@ -80,7 +80,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-country">
                             Negara Asal (Country)
                         </label>
-                        <select class="w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-country">
+                        <select class="w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-country">
                             <option value="Australia">Australia</option>
                             <option value="France">France</option>
                             <option value="India">India</option>
@@ -249,13 +249,18 @@
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="payment_reference"></p>
                         </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs">
-                            <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path></svg>
+                            <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewbox="0 0 20 20">
+                                <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+                            </svg>
                             <span>Terminal EDC siap swipe/dip kartu ATM/Debit/QRIS</span>
                         </div>
                     </div>
                     <div class="mt-6 space-y-2">
                         <button class="w-full py-3.5 px-4 rounded-xl bg-brand-red hover:bg-brand-redHover active:scale-[0.99] text-white font-extrabold text-sm tracking-wide shadow-lg shadow-brand-red/30 transition flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed" id="btn-submit-order" onclick="processOrder()" type="button">
-                            <svg id="btn-submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                            <svg id="btn-submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
                             <span id="btn-submit-label">BAYAR &amp; CETAK TIKET</span>
                         </button>
                         <button class="w-full py-2 px-4 rounded-lg bg-transparent hover:bg-slate-200/60 text-slate-600 font-semibold text-xs transition" onclick="resetTransaction()" type="button">Batal / Reset Transaksi</button>
@@ -278,9 +283,22 @@
     };
     ticketTypes.forEach(t => posState.quantities[t.id] = 0);
 
-    const limits = { individual: { min: 1, max: 2 }, rombongan: { min: 5, max: 15 } };
+    const limits = {
+        individual: {
+            min: 1,
+            max: 2
+        },
+        rombongan: {
+            min: 5,
+            max: 15
+        }
+    };
     const posStateCategory = () => posState.mode === 'rombongan' ? 'group' : 'individual';
-    const rupiah = value => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value || 0);
+    const rupiah = value => new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+    }).format(value || 0);
     const totalQty = () => Object.values(posState.quantities).reduce((a, b) => a + b, 0);
     const totalPrice = () => {
         let sum = 0;
@@ -304,7 +322,10 @@
         el.textContent = message;
         el.className = 'mb-4 p-3 rounded-lg border text-sm ' + (type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-700');
         el.classList.remove('hidden');
-        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        el.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        });
     }
 
     function hideAlert() {
@@ -338,7 +359,12 @@
             if (el) {
                 el.textContent = msg;
                 el.classList.remove('hidden');
-                const inputMap = { customer_name: 'visitor-name', origin: posState.origin === 'domestik' ? 'visitor-city' : 'visitor-country', phone: 'visitor-phone', address: 'visitor-address' };
+                const inputMap = {
+                    customer_name: 'visitor-name',
+                    origin: posState.origin === 'domestik' ? 'visitor-city' : 'visitor-country',
+                    phone: 'visitor-phone',
+                    address: 'visitor-address'
+                };
                 if (inputMap[key]) {
                     const inp = document.getElementById(inputMap[key]);
                     if (inp) inp.classList.add('border-rose-400', 'ring-rose-400');
@@ -452,7 +478,8 @@
         }
         if (!hasItems) itemsEl.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Belum ada tiket yang dipilih.</p>';
 
-        let subtotal = 0, totalAmt = 0;
+        let subtotal = 0,
+            totalAmt = 0;
         for (const t of ticketTypes) {
             if (t.ticket_category !== cat) continue;
             const qty = posState.quantities[t.id] || 0;
@@ -558,17 +585,33 @@
         clearFieldErrors();
 
         const customerName = document.getElementById('visitor-name').value.trim();
-        if (!customerName) { setFieldError('customer_name', 'Nama pengunjung wajib diisi.'); document.getElementById('visitor-name').focus(); return; }
-        if (customerName.length < 3) { setFieldError('customer_name', 'Minimal 3 karakter.'); return; }
+        if (!customerName) {
+            setFieldError('customer_name', 'Nama pengunjung wajib diisi.');
+            document.getElementById('visitor-name').focus();
+            return;
+        }
+        if (customerName.length < 3) {
+            setFieldError('customer_name', 'Minimal 3 karakter.');
+            return;
+        }
 
         const qty = totalQty();
         const lim = limits[posState.mode];
-        if (qty < lim.min) { setFieldError('ticket_items', `Minimal ${lim.min} tiket untuk mode ${posState.mode}.`); return; }
-        if (qty > lim.max) { setFieldError('ticket_items', `Maksimal ${lim.max} tiket untuk mode ${posState.mode}.`); return; }
+        if (qty < lim.min) {
+            setFieldError('ticket_items', `Minimal ${lim.min} tiket untuk mode ${posState.mode}.`);
+            return;
+        }
+        if (qty > lim.max) {
+            setFieldError('ticket_items', `Maksimal ${lim.max} tiket untuk mode ${posState.mode}.`);
+            return;
+        }
 
         const originType = posState.origin === 'domestik' ? 'domestic' : 'international';
         const origin = posState.origin === 'domestik' ? document.getElementById('visitor-city').value.trim() : document.getElementById('visitor-country').value;
-        if (!origin) { setFieldError('origin', posState.origin === 'domestik' ? 'Kota asal wajib diisi.' : 'Negara asal wajib dipilih.'); return; }
+        if (!origin) {
+            setFieldError('origin', posState.origin === 'domestik' ? 'Kota asal wajib diisi.' : 'Negara asal wajib dipilih.');
+            return;
+        }
 
         const phoneRaw = document.getElementById('visitor-phone').value.trim();
         const address = document.getElementById('visitor-address').value.trim();
@@ -577,8 +620,14 @@
 
         if (paymentMethod === 'cash') {
             const cashVal = document.getElementById('cash-received').value;
-            if (cashVal === '' || cashVal === null) { setFieldError('cash_paid', 'Nominal uang diterima wajib diisi.'); return; }
-            if (Number(cashVal) < totalPrice()) { setFieldError('cash_paid', `Uang kurang ${rupiah(totalPrice() - Number(cashVal))}.`); return; }
+            if (cashVal === '' || cashVal === null) {
+                setFieldError('cash_paid', 'Nominal uang diterima wajib diisi.');
+                return;
+            }
+            if (Number(cashVal) < totalPrice()) {
+                setFieldError('cash_paid', `Uang kurang ${rupiah(totalPrice() - Number(cashVal))}.`);
+                return;
+            }
         }
         if (paymentMethod === 'debit' && !document.getElementById('edc-ref').value.trim()) {
             setFieldError('payment_reference', 'Nomor referensi EDC wajib diisi.');
@@ -589,9 +638,15 @@
         for (const t of ticketTypes) {
             if (t.ticket_category !== ticketCategory) continue;
             const q = posState.quantities[t.id] || 0;
-            if (q > 0) ticketItems.push({ ticket_type_id: t.id, qty: q });
+            if (q > 0) ticketItems.push({
+                ticket_type_id: t.id,
+                qty: q
+            });
         }
-        if (!ticketItems.length) { setFieldError('ticket_items', 'Pilih minimal satu jenis tiket.'); return; }
+        if (!ticketItems.length) {
+            setFieldError('ticket_items', 'Pilih minimal satu jenis tiket.');
+            return;
+        }
 
         const payload = new URLSearchParams();
         payload.append(csrfName, getCsrfToken());
@@ -624,7 +679,9 @@
             if (csrfHeader) document.querySelector('meta[name="csrf-token"]').content = csrfHeader;
 
             let data = null;
-            try { data = await res.json(); } catch (_) {}
+            try {
+                data = await res.json();
+            } catch (_) {}
 
             const newToken = data && (data.csrf_token || data.csrf_hash || data.token);
             if (newToken) document.querySelector('meta[name="csrf-token"]').content = newToken;
@@ -646,7 +703,10 @@
             if (res.status === 422 && data && data.errors) {
                 showFieldErrors(data.errors);
                 const first = document.querySelector('.field-error:not(.hidden)');
-                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (first) first.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
                 return;
             }
 
@@ -666,7 +726,10 @@
     document.getElementById('visitor-name').addEventListener('input', e => {
         document.getElementById('summary-visitor-name').textContent = e.target.value || '- Belum Diisi -';
         const el = document.querySelector('[data-error="customer_name"]');
-        if (el) { el.textContent = ''; el.classList.add('hidden'); }
+        if (el) {
+            el.textContent = '';
+            el.classList.add('hidden');
+        }
         e.target.classList.remove('border-rose-400', 'ring-rose-400');
     });
     ['visitor-city', 'visitor-phone', 'visitor-address', 'edc-ref'].forEach(id => {
@@ -694,4 +757,3 @@
     renderCart();
 </script>
 <?= $this->endSection() ?>
-

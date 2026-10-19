@@ -375,9 +375,9 @@ class ReportService
             $hasUsed = in_array('used', $statusList);
             
             if ($hasUsed && !$hasActive) {
-                $badge = '<span class="badge-status-used">Used</span>';
+                $badge = '<span class="badge-status-used">Terpakai</span>';
             } elseif ($hasActive) {
-                $badge = '<span class="badge-status-unused">Active</span>';
+                $badge = '<span class="badge-status-unused">Aktif</span>';
             } else {
                 $badge = '<span class="badge bg-secondary" style="font-size:.65rem;font-weight:600;border-radius:20px;padding:.3rem .6rem">' . esc($statusList[0] ?? '-') . '</span>';
             }
@@ -393,7 +393,7 @@ class ReportService
                 $paymentLabel,
                 'Rp ' . number_format((float)$r['total_amount'], 0, ',', '.'),
                 $badge,
-                '<i class="bi bi-printer action-icon"></i> <i class="bi bi-three-dots-vertical action-icon"></i>'
+                ''
             ];
         }
 

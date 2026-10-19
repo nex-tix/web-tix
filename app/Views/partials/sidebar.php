@@ -21,7 +21,7 @@
             <li class="nav-item">
               <a href="<?= base_url('admin/dashboard') ?>" class="nav-link <?= strpos(current_url(), 'admin/dashboard') !== false ? 'active' : '' ?>">
                 <i class="bi bi-grid-1x2-fill"></i>
-                <p>Dashboard</p>
+                <p>Beranda</p>
               </a>
             </li>
 

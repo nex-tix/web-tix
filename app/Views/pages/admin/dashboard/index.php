@@ -15,7 +15,7 @@
         <div class="page-title">
           <h4 style="color: #2c3136">Papan hari ini</h4>
           <p style="color: #2c3136">
-            Ringkasan penjualan dan kunjungan seluruh gate pada hari
+            Ringkasan penjualan dan kunjungan seluruh gerbang pada hari
             dagang berjalan.
           </p>
         </div>
@@ -90,7 +90,7 @@
               <?= view('components/chart-box', [
                   'title'        => 'Penjualan tujuh hari',
                   'subtitle'     => 'Total dibayar per hari dagang (WITA), termasuk void',
-                  'badge_text'   => 'hari ini',
+                  'badge_text'   => '7 Hari Terakhir',
                   'chart_id'     => 'salesChart',
                   'height'       => 250,
                   'footer_stats' => [
@@ -130,7 +130,7 @@
               'link_url' => base_url('admin/transaction-history'),
               'link_text'=> 'Semua riwayat',
               'table_id' => 'transactionTable',
-              'headers'  => ['WAKTU', 'NOTA', 'PENGUNJUNG', 'JENIS', 'BAYAR', 'TOTAL', 'STATUS TIKET','AKSI'],
+              'headers'  => ['WAKTU', 'NOTA', 'PENGUNJUNG', 'JENIS', 'BAYAR', 'TOTAL', 'STATUS TIKET',''],
               'rows'     => $report['transactions']['rows'] ?? []
           ]) ?>
 
