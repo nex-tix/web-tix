@@ -23,8 +23,8 @@
         '<div class="fw-semibold">' . esc($cp['name']) . '</div>',
         $cp['is_active'] ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Nonaktif</span>',
         $cp['created_at'],
-        '<button type="button" class="btn btn-sm btn-outline-primary me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#checkpointModal" '
-          . 'data-id="' . $cp['id'] . '" data-name="' . esc($cp['name']) . '" data-active="' . $cp['is_active'] . '"><i class="bi bi-pencil"></i></button>'
+        '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#checkpointModal" '
+          . 'data-id="' . $cp['id'] . '" data-name="' . esc($cp['name']) . '" data-active="' . $cp['is_active'] . '"><i class="bi bi-pencil "></i></button>'
           . '<form action="' . base_url('admin/checkpoints/' . $cp['id'] . '/delete') . '" method="POST" class="d-inline" onsubmit="return confirm(\'Yakin ingin menghapus checkpoint ini?\')">'
           . csrf_field()
           . '<button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>'

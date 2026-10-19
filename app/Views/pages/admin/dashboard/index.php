@@ -107,9 +107,9 @@
                   'title'        => 'Cocokkan kas & EDC',
                   'subtitle'     => 'Yang harus sama saat tutup loket',
                   'cash_rate'    => $report['paymentBreakdown']['cash_pct'],
-                  'cash_amount'  => $report['stats']['sales']['value'],
+                  'cash_amount'  => 'Rp' . number_format($report['paymentBreakdown']['cash']['total'], 0, ',', '.'),
                   'edc_rate'     => $report['paymentBreakdown']['debit_pct'],
-                  'edc_amount'   => $report['paymentBreakdown']['total'],
+                  'edc_amount'   => 'Rp' . number_format($report['paymentBreakdown']['debit']['total'], 0, ',', '.'),
                   'total_notes'  => ($report['paymentBreakdown']['cash']['count'] + $report['paymentBreakdown']['debit']['count']) . ' nota',
                   'discount'     => $report['stats']['discount']['value'],
                   'info_text'    => 'Angka tunai dicocokkan dengan isi laci, angka EDC dengan slip mesin. Void bukan refund.'
