@@ -25,7 +25,7 @@
                 <?= esc(ucfirst($ticket['ticket_category'] ?? '-')) ?>
               </span>
             </div>
-            <div class="mb-2"><strong>Valid Date:</strong> <?= date('d M Y', strtotime($ticket['valid_date'])) ?></div>
+            <div class="mb-2"><strong>Tanggal Valid:</strong> <?= date('d M Y', strtotime($ticket['valid_date'])) ?></div>
             <div class="mb-2"><strong>Pengunjung:</strong> <?= (int)($ticket['total_visitors'] ?? 0) ?> orang</div>
             <div class="mb-2"><strong>Hadir:</strong>
               <?php if (isset($ticket['actual_visitors']) && $ticket['actual_visitors'] !== null && $ticket['actual_visitors'] !== '' && (int)$ticket['actual_visitors'] > 0): ?>

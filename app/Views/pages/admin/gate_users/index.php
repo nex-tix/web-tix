@@ -16,7 +16,7 @@
     <?php endif; ?>
 
     <?php
-    $headers = ['Nama', 'Username', 'Phone', 'Status', 'Dibuat', 'Aksi'];
+    $headers = ['Nama', 'Username', 'Nomor Hp', 'Status', 'Dibuat', 'Aksi'];
     $rows = [];
     foreach ($gateUsers as $u) {
       $rows[] = [
@@ -82,7 +82,7 @@
               <div class="form-text">Kosongkan jika tidak ubah password.</div>
             </div>
             <div class="col-md-6">
-              <label for="gateUser_phone" class="form-label">Phone</label>
+              <label for="gateUser_phone" class="form-label">Nomor Hp</label>
               <input type="text" class="form-control" id="gateUser_phone" name="phone" value="<?= old('phone') ?>" placeholder="08123456789" maxlength="25">
             </div>
             <div class="col-12">
