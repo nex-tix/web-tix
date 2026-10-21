@@ -68,20 +68,28 @@
       <!-- ========================================= CHART + CASH ========================================== -->
       <div class="row g-3 mb-3">
         <!-- Chart -->
-        <div class="col-lg-8">
-          <?= view('components/chart-box', [
-            'title'        => 'Penjualan tujuh hari',
-            'subtitle'     => 'Total dibayar per hari dagang (WITA), termasuk void',
-            'badge_text'   => '7 Hari Terakhir',
-            'chart_id'     => 'salesChart',
-            'height'       => 250,
-            'footer_stats' => [
-              ['label' => 'Rata-rata tujuh hari', 'value' => $report['chartData']['avg']],
-              ['label' => 'Tertinggi', 'value' => $report['chartData']['max']],
-              ['label' => 'Hari ini', 'value' => 'Rp ' . number_format($report['chartData']['data'][6] ?? 0, 0, ',', '.')]
-            ]
-          ]) ?>
-        </div>
+                <div class="col-lg-8">
+                  <div class="card-header">
+                    <h3 class="card-title">Column Chart</h3>
+
+                    <div class="card-tools">
+                      <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-lte-toggle="card-collapse"
+                        aria-label="Collapse card"
+                      >
+                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <div id="column-chart"></div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
 
         <!-- Cash -->
         <div class="col-lg-4">
