@@ -82,7 +82,7 @@
           info: true,
           paging: true,
           language: {
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+            info: "<span style='padding:4px 8px;border-radius:4px;display:inline-block;'>Menampilkan _START_ sampai _END_ dari _TOTAL_ entri</span>",
             paginate: {
               previous: "<i class='bi bi-chevron-left'></i>",
               next: "<i class='bi bi-chevron-right'></i>",

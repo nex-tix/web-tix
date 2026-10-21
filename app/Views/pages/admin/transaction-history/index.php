@@ -28,11 +28,14 @@
       'users'   => $users ?? [],
     ]) ?>
 
-    <div class="card border-0 shadow-sm mb-3">
+    <div class="border-0 shadow-sm mb-3">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead class="">
+          <table
+            id="<?= esc($table_id ?? 'transactionTable') ?>"
+            class="table table-hover mb-0"
+            style="width: 100%">
+            <thead>
               <tr style="background: #1a1d20; color: #fff;">
                 <th>Tanggal</th>
                 <th>Invoice</th>
@@ -89,8 +92,7 @@
                           data-bs-toggle="modal"
                           data-bs-target="#voidTransactionModal"
                           data-void-url="<?= esc(base_url('admin/transaction-history/void/' . $row['id']), 'attr') ?>"
-                          data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>"
-                        >
+                          data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>">
                           <i class="bi bi-x-circle"></i>
                         </button>
                       <?php endif; ?>
@@ -141,13 +143,13 @@
 
 <?= $this->section('scripts') ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('voidTransactionModal');
     const form = document.getElementById('voidTransactionForm');
     const reason = document.getElementById('voidReason');
     const invoice = document.getElementById('voidInvoiceCode');
 
-    modal.addEventListener('show.bs.modal', function (event) {
+    modal.addEventListener('show.bs.modal', function(event) {
       const button = event.relatedTarget;
       form.action = button.getAttribute('data-void-url');
       invoice.textContent = button.getAttribute('data-invoice');
@@ -155,7 +157,7 @@
       reason.classList.remove('is-invalid');
     });
 
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', function(event) {
       event.preventDefault();
 
       if (reason.value.trim() === '') {
@@ -173,7 +175,7 @@
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Ya, Void',
         cancelButtonText: 'Batal',
-      }).then(function (result) {
+      }).then(function(result) {
         if (result.isConfirmed) {
           form.submit();
         }

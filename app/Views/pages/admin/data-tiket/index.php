@@ -28,10 +28,10 @@
       'ticketTypes' => $ticketTypes ?? [],
     ]) ?>
 
-    <div class="card border-0 shadow-sm mb-3">
-      <div class="card-body p-0">
+    <div class="border-0 shadow-sm mb-3">
+      <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table id="dataTiketTable" class="table table-hover mb-0" style="width:100%">
             <thead>
               <tr style="background: #1a1d20; color: #fff;">
                 <th>Tanggal</th>
@@ -56,7 +56,7 @@
               <?php else: ?>
                 <?php foreach ($tickets as $row): ?>
                   <tr>
-                    <td>
+                    <td data-order="<?= strtotime($row['created_at']) ?>">
                       <div class="fw-semibold"><?= date('d M Y', strtotime($row['created_at'])) ?></div>
                       <small><?= date('H:i', strtotime($row['created_at'])) ?> WITA</small>
                     </td>
@@ -108,4 +108,45 @@
   </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+  $(function() {
+    const hasData = <?= !empty($tickets) ? 'true' : 'false' ?>;
+
+    if (hasData) {
+      $('#dataTiketTable').DataTable({
+        pageLength: 7,
+        lengthChange: false,
+        searching: false,
+        ordering: false,
+        info: true,
+        paging: true,
+        order: [
+          [0, 'desc']
+        ],
+        columnDefs: [{
+          targets: [8],
+          orderable: false,
+          searchable: false
+        }],
+        language: {
+          emptyTable: 'Tidak ada tiket ditemukan.',
+          info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ tiket',
+          infoEmpty: 'Menampilkan 0 sampai 0 dari 0 tiket',
+          infoFiltered: '(disaring dari _MAX_ total tiket)',
+          lengthMenu: 'Tampilkan _MENU_ data per halaman',
+          paginate: {
+            first: 'Awal',
+            last: 'Akhir',
+            next: "<i class='bi bi-chevron-right'></i>",
+            previous: "<i class='bi bi-chevron-left'></i>"
+          },
+          zeroRecords: 'Tiket tidak ditemukan.'
+        }
+      });
+    }
+  });
+</script>
 <?= $this->endSection() ?>
