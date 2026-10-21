@@ -23,59 +23,67 @@
 <link rel="stylesheet" href="<?= base_url('css/main.css') ?>">
 <link rel="stylesheet" href="<?= base_url('css/modal.css') ?>">
 
+<!-- Apexchart -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+  integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+  crossorigin="anonymous" />
 
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- Tailwind Configuration for exact Brand Colors -->
 <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              charcoal: '#2A363B',
-              dark: '#1e262a',
-              red: '#CF4647',
-              redHover: '#b53b3c',
-              gold: '#F5D061',
-              goldHover: '#e0bd50',
-              bgLight: '#F8F6F6',
-              borderLight: '#E5E7EB',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            charcoal: '#2A363B',
+            dark: '#1e262a',
+            red: '#CF4647',
+            redHover: '#b53b3c',
+            gold: '#F5D061',
+            goldHover: '#e0bd50',
+            bgLight: '#F8F6F6',
+            borderLight: '#E5E7EB',
           }
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
         }
       }
     }
-  </script>
+  }
+</script>
 <!-- BEGIN: Custom Styles for Layout & Utilities -->
 <style data-purpose="custom-utilities">
-    /* Custom scrollbar for receipt and sidebar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #c7cbd1;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a0a6b1;
-    }
-    
-    /* Subtle dot grid for receipt aesthetic */
-    .receipt-perforation {
-      background-image: radial-gradient(circle, #E5E7EB 1.5px, transparent 1.5px);
-      background-size: 8px 8px;
-    }
-    
-    .badge-subtle {
-      letter-spacing: 0.025em;
-    }
+  /* Custom scrollbar for receipt and sidebar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-  </style>
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #c7cbd1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a0a6b1;
+  }
+
+  /* Subtle dot grid for receipt aesthetic */
+  .receipt-perforation {
+    background-image: radial-gradient(circle, #E5E7EB 1.5px, transparent 1.5px);
+    background-size: 8px 8px;
+  }
+
+  .badge-subtle {
+    letter-spacing: 0.025em;
+  }
+</style>
