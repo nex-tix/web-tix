@@ -21,127 +21,162 @@
       </div>
     </div>
 
-    <div class="row g-3 mb-3">
-      <div class="col-md-3">
-        <?= view('components/stat-card', $stats['sales']) ?>
-      </div>
-      <div class="col-md-3">
-        <?= view('components/stat-card', $stats['discount']) ?>
-      </div>
-      <div class="col-md-3">
-        <?= view('components/stat-card', $stats['attendance']) ?>
-      </div>
-      <div class="col-md-3">
-        <?= view('components/stat-card', $stats['remaining']) ?>
-      </div>
-    </div>
-
-    <?= view('components/laporan/filter-tabs', [
-      'filters'     => $filters ?? [],
-      'checkpoints' => $checkpoints ?? [],
-      'reportDate'  => $reportDate ?? date('Y-m-d'),
-    ]) ?>
-
-    <div class="row g-3 mb-3">
-      <div class="col-lg-8">
-        <?= view('components/chart-box', [
-          'title'        => 'Penjualan per Hari & Metode Pembayaran',
-          'subtitle'     => 'Total dibayar per hari dagang (WITA), termasuk void',
-          'badge_text'   => '7 Hari Terakhir',
-          'chart_id'     => 'laporanSalesChart',
-          'height'       => 250,
-          'footer_stats' => [
-            ['label' => 'Rata-rata 7 hari', 'value' => $chartData['avg']],
-            ['label' => 'Tertinggi', 'value' => $chartData['max']],
-          ],
-          'extra_attrs'  => 'data-chart=\'' . htmlspecialchars(json_encode($chartData), ENT_QUOTES, 'UTF-8') . '\'',
-        ]) ?>
-      </div>
-      <div class="col-lg-4">
-        <?= view('components/laporan/demography-card', $demography) ?>
-      </div>
-    </div>
-
-    <div class="card border-0 shadow-sm bg-white mb-3">
-      <div class="card-body p-3">
-        <div class="custom-progress">
-          <div class="bar-dark" style="width:<?php echo $payment['cash_pct'] ?? 0; ?>%"></div>
-          <div class="bar-red" style="width:<?php echo $payment['debit_pct'] ?? 0; ?>%"></div>
-        </div>
-        <div class="progress-legend">
-          <div class="d-flex gap-3 flex-wrap">
-            <div class="legend-item"><span class="legend-color"></span> <?php echo $payment['cash_text'] ?? 'Tunai Rp 0'; ?></div>
-            <div class="legend-item"><span class="legend-color" style="background-color:#e74c3c"></span> <?php echo $payment['debit_text'] ?? 'Debit / EDC Rp 0'; ?></div>
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-label">
+            <h2>Penjualan hari ini</h2>
           </div>
-          <div class="fw-semibold">Total: <?php echo $payment['total'] ?? 'Rp 0'; ?></div>
+          <div class="stat-value">
+            <h4>Rp 9.897.000,00</h4>
+          </div>
+          <div class="stat-sub">
+            <h4>+23% dari penjualan kemarin (Rp 12.234.000,00)</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-label">
+            <h2>Rekap diskon hari ini</h2>
+          </div>
+          <div class="stat-value">
+            <h4>Rp 290.000,00</h4>
+          </div>
+          <div class="stat-sub">
+            <h4>Total diskon dari transaksi hari ini</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-label">
+            <h2>Pengunjung masuk</h2>
+          </div>
+          <div class="stat-value">
+            <h4>22</h4>
+          </div>
+          <div class="stat-sub">
+            <h4>22 dari 44 tiket terjual</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="stat-card">
+          <div class="stat-label">
+            <h2>Tiket belum terpakai</h2>
+          </div>
+          <div class="stat-value">
+            <h4>22</h4>
+          </div>
+          <div class="stat-sub">
+            <h4>Valid hingga tengah malam <br> (24:00 WITA)</h4>
+          </div>
         </div>
       </div>
     </div>
 
-    <?= view('components/laporan/audit-filter', [
-      'filters'     => $filters ?? [],
-      'checkpoints' => $checkpoints ?? [],
-      'reportDate'  => $reportDate ?? date('Y-m-d'),
-    ]) ?>
+    <section id="chart" class="pt-3">
+      <!-- Chart -->
+      <!--begin::Card-->
+      <div class="chart-card container-fluid">
+        <div class="card-header d-flex">
+          <h3 class="sub-text">Penjualan 1 minggu, 1 bulan, 1 tahun</h3>
 
-    <?= view('components/laporan/audit-table', [
-      'title'     => 'Audit Log Scan Tiket & Kehadiran Per Gate',
-      'subtitle'  => 'Catatan real-time verifikasi barcode tiket di pintu masuk teater',
-      'headers'   => ['WAKTU SCAN', 'CHECKPOINT / GATE', 'KODE TIKET', 'KATEGORI', 'ADMIN / KASIR', 'STATUS SCAN', 'KETERANGAN'],
-      'rows'      => $auditRows,
-      'table_id'  => 'laporanAuditTable',
-    ]) ?>
+          <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
+            <button class="btn-chart-laporan">7 hari</button>
+            <button class="btn-chart-laporan">1 bulan</button>
+            <button class="btn-chart-laporan">1 tahun</button>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <div id="column-chart-report"></div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!--end::Card-->
+    </section>
 
+    <section id="dough-chart" class="pt-3">
+      <div class="row g-3">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="sub-text">Metode Bayar</h3>
+
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <div id="donut-chart-1"></div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="sub-text">Asal pengunjung</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <div id="donut-chart-2"></div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="sub-text">Jenis Tiket</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <div id="donut-chart-3"></div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="table-laporan" class="pt-3">
+      <div class="container-fluid p-0">
+        <div class="table-card">
+          <div class="app-content-header">
+            <div class="page-title">
+              <h4 style="color: #2c3136;" class="sub-text">Audit Scan Tiket</h4>
+            </div>
+          </div>
+          <table id="dataTiketTable" class="table table-hover mb-0" style="width:100%">
+            <thead>
+              <tr>
+                <th>Waktu Scan</th>
+                <th>Checkpoint</th>
+                <th>Kode Tiket</th>
+                <th>Kategori</th>
+                <th>Admin/kasir</th>
+                <th>Status Scan</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody class="table-light">
+              <tr>
+                <td>10:38:02 WITA</td>
+                <td>Gerbang Selatan</td>
+                <td>GRP-HXH2-V262-HPXD-5U42</td>
+                <td>Group</td>
+                <td>Raya</td>
+                <td>Diterima</td>
+                <td>Valid, akses diberikan</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </section>
   </div>
 </div>
-
-<script src="<?= base_url('js/laporan-chart.js') ?>"></script>
-<script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const picker = document.getElementById('datePicker');
-    const btn = document.getElementById('dateBtn');
-    const label = document.getElementById('dateLabel');
-    if (!picker || !btn || !label) return;
-
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const today = new Date();
-    const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-
-    function formatDate(val) {
-      const parts = val.split('-');
-      const d = new Date(parts[0], parts[1] - 1, parts[2]);
-      const text = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-      return text + (val === todayStr ? ' (Hari Ini)' : '');
-    }
-
-    label.textContent = formatDate(picker.value);
-
-    btn.addEventListener('click', function() {
-      if (typeof picker.showPicker === 'function') {
-        try {
-          picker.showPicker();
-          return;
-        } catch (e) {}
-      }
-      picker.style.cssText = 'position:static;opacity:1;width:auto;height:auto;pointer-events:auto;display:block';
-      btn.style.display = 'none';
-      picker.focus();
-      picker.click();
-    });
-
-    picker.addEventListener('blur', function() {
-      picker.style.cssText = 'position:absolute;opacity:0;width:1px;height:1px;pointer-events:none';
-      btn.style.display = '';
-    });
-
-    picker.addEventListener('change', function() {
-      if (!picker.value) return;
-      const params = new URLSearchParams(window.location.search);
-      params.set('date', picker.value);
-      window.location.search = params.toString();
-    });
-
-  });
-</script>
+</div>
 <?= $this->endSection() ?>

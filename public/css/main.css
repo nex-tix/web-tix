@@ -412,6 +412,23 @@
         background-color: #f8f9fa;
       }
 
+      .btn-chart-laporan {
+        background: transparent;
+        border: 1px solid #ced4da;
+        color: var(--text-dark);
+        padding: 0.3rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-chart-laporan:hover {
+        background-color: #f8f9fa;
+      }
+
       /* Content Body */
       .app-content {
         padding: 1rem 2rem 2rem;
@@ -419,11 +436,18 @@
 
       /* Stat Cards */
       .stat-card {
+        color: #2c3136;
         background: #fff;
         border: 1px solid var(--card-border);
         border-radius: 8px;
         padding: 1.2rem;
         height: 100%;
+      }
+
+      .sub-text {
+        color:#2c3136 !important;
+        font-size: smaller;
+        font-weight: bold;
       }
       /* Stat Cards */
       .stat-card:hover {
@@ -520,6 +544,7 @@
 
       /* Chart Card */
       .chart-card {
+        color: #2c3136;
         background: #fff;
         border: 1px solid var(--card-border);
         border-radius: 8px;

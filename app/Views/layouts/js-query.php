@@ -25,3 +25,10 @@
 <script src="<?= base_url('js/adminlte.min.js') ?>"></script>
 <script src="<?= base_url('js/main.js') ?>"></script>
 <script src="<?= base_url('js/dashboard-chart.js') ?>"></script>
+
+<!-- js laporan lama -->
+<script src="<?= base_url('js/laporan-chart.js') ?>"></script>
+<script src="<?= base_url('js/report-chart.js') ?>"></script>
+<script src="<?= base_url('js/donut-report-chart.js') ?>"></script>
+<script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
+<script>

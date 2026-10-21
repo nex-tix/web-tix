@@ -71,8 +71,8 @@
         <!-- Chart -->
                 <div class="col-lg-8 chart-card">
                   <div class="card-header">
-                    <h3 class="card-title">Penjualan tujuh hari</h3> <br>
-                    <p class="font-sm text-muted"> Total dibayar per hari dagang (WITA), termasuk void</p>
+                    <h3 class="card-title sub-text">Penjualan tujuh hari</h3> <br>
+                    <p class="font-sm text-secondary"> Total dibayar per hari dagang (WITA), termasuk void</p>
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
