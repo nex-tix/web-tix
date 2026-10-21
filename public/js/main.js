@@ -117,3 +117,38 @@
     },
   });
 });
+
+  $(function() {
+
+      $('#dataTiketTable').DataTable({
+        pageLength: 7,
+        lengthChange: false,
+        searching: false,
+        ordering: false,
+        info: true,
+        paging: true,
+        order: [
+          [0, 'desc']
+        ],
+        columnDefs: [{
+          targets: [8],
+          orderable: false,
+          searchable: false
+        }],
+        language: {
+          emptyTable: 'Tidak ada tiket ditemukan.',
+          info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ tiket',
+          infoEmpty: 'Menampilkan 0 sampai 0 dari 0 tiket',
+          infoFiltered: '(disaring dari _MAX_ total tiket)',
+          lengthMenu: 'Tampilkan _MENU_ data per halaman',
+          paginate: {
+            first: 'Awal',
+            last: 'Akhir',
+            next: "<i class='bi bi-chevron-right'></i>",
+            previous: "<i class='bi bi-chevron-left'></i>"
+          },
+          zeroRecords: 'Tiket tidak ditemukan.'
+        }
+      });
+    }
+);
