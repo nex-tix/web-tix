@@ -100,7 +100,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-semibold text-slate-500"></span>
-                                <input class=" input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="081234567890" type="tel" />
+                                <input class="input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="081234567890" type="number" />
                             </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="phone"></p>
                         </div>
@@ -147,7 +147,7 @@
                             <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                                 <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                             </svg>
-                            Rombongan (5 - 15 Orang)
+                            Rombongan (3 Orang+)
                         </button>
                     </div>
                     <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="ticket_category"></p>
@@ -289,8 +289,8 @@
             max: 2
         },
         rombongan: {
-            min: 5,
-            max: 15
+            min: 3,
+            max: 'unlimited'
         }
     };
     const posStateCategory = () => posState.mode === 'rombongan' ? 'group' : 'individual';
@@ -402,10 +402,10 @@
         const individual = mode === 'individual';
         document.getElementById('btn-mode-individual').className = individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
         document.getElementById('btn-mode-rombongan').className = !individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
-        document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 5 orang, Maksimal 15 orang.';
+        document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 3 orang.';
         document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
         document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
-        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / ${limits[mode].max} Orang`;
+        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / ${limits[mode].max}`;
         document.getElementById('group-warning').classList.add('hidden');
         clearFieldErrors();
         renderTickets();
@@ -443,7 +443,11 @@
         const next = (posState.quantities[ticketTypeId] || 0) + delta;
         if (next < 0) return;
         if (delta > 0 && totalQty() + 1 > limits[posState.mode].max) {
-            showAlert(`Maksimal ${limits[posState.mode].max} tiket untuk mode ${posState.mode}.`, 'error');
+            Swal.fire({
+                icon: "error",
+                title: "Batas Tiket Tercapai",
+                text: (`Maksimal ${limits[posState.mode].max} tiket untuk mode ${posState.mode}.`)
+            });
             setTimeout(hideAlert, 2500);
             return;
         }
@@ -598,7 +602,11 @@
         const qty = totalQty();
         const lim = limits[posState.mode];
         if (qty < lim.min) {
-            setFieldError('ticket_items', `Minimal ${lim.min} tiket untuk mode ${posState.mode}.`);
+            Swal.fire({
+                icon: "error",
+                title: "Batas Minimal Belum Tercapai",
+                text: (`Minimal ${lim.min} tiket untuk mode ${posState.mode}.`)
+            });
             return;
         }
         if (qty > lim.max) {

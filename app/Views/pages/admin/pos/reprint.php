@@ -99,7 +99,7 @@
                             <form method="POST" action="<?= base_url("admin/pos/reprint/{$t['id']}") ?>" class="border-t border-slate-100 pt-4">
                                 <?= csrf_field() ?>
                                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="reprint_reason_<?= $t['id'] ?>">Alasan Cetak Ulang <span class="text-brand-red">*</span></label>
-                                <textarea class="w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2 mb-3" id="reprint_reason_<?= $t['id'] ?>" name="reprint_reason" rows="2" maxlength="255" required placeholder="Contoh: tiket rusak atau hasil cetak tidak terbaca"></textarea>
+                                <textarea class="w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2 mb-3" id="reprint_reason_<?= $t['id'] ?>" name="reprint_reason" rows="2" maxlength="255" required placeholder="Contoh: tiket rusak atau hasil cetak tidak terbaca"></textarea>
                                 <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-brand-red hover:bg-brand-redHover text-white font-extrabold text-sm tracking-wide shadow-sm transition">
                                     <i class="bi bi-printer"></i> CETAK ULANG TIKET
                                 </button>
