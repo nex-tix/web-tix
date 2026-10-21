@@ -66,23 +66,14 @@
         </div>
       </div>
       <!-- ========================================= CHART + CASH ========================================== -->
+      
       <div class="row g-3 mb-3">
         <!-- Chart -->
-                <div class="col-lg-8">
+                <div class="col-lg-8 chart-card">
                   <div class="card-header">
-                    <h3 class="card-title">Column Chart</h3>
+                    <h3 class="card-title">Penjualan tujuh hari</h3> <br>
+                    <p class="font-sm text-muted"> Total dibayar per hari dagang (WITA), termasuk void</p>
 
-                    <div class="card-tools">
-                      <button
-                        type="button"
-                        class="btn btn-tool"
-                        data-lte-toggle="card-collapse"
-                        aria-label="Collapse card"
-                      >
-                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                      </button>
-                    </div>
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
