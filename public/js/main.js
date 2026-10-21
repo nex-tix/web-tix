@@ -98,3 +98,22 @@
           columnDefs: [{ orderable: false, targets: [7] }],
         });
       });
+
+
+      $(document).ready(function () {
+  $(".datatable").DataTable({
+    pageLength: 7,
+    lengthChange: false,
+    searching: false,
+    ordering: false,
+    info: true,
+    paging: true,
+    language: {
+      info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+      paginate: {
+        previous: "<i class='bi bi-chevron-left'></i>",
+        next: "<i class='bi bi-chevron-right'></i>",
+      },
+    },
+  });
+});

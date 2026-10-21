@@ -150,7 +150,7 @@
               <h4 style="color: #2c3136;" class="sub-text">Audit Scan Tiket</h4>
             </div>
           </div>
-          <table id="dataTiketTable" class="table table-hover mb-0" style="width:100%">
+          <table id="datatable" class="table table-hover datatable mb-0">
             <thead>
               <tr>
                 <th>Waktu Scan</th>
