@@ -73,7 +73,6 @@
                   <div class="card-header">
                     <h3 class="card-title">Penjualan tujuh hari</h3> <br>
                     <p class="font-sm text-muted"> Total dibayar per hari dagang (WITA), termasuk void</p>
-
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
