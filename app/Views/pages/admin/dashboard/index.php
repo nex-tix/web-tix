@@ -119,4 +119,13 @@
       </div>
     </div>
   </div>
+<script>
+    window.dashboardReport = <?= json_encode(
+        $report,
+        JSON_HEX_TAG |
+        JSON_HEX_APOS |
+        JSON_HEX_QUOT |
+        JSON_HEX_AMP
+    ) ?>;
+</script>
   <?= $this->endSection() ?>

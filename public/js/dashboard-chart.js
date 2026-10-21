@@ -1,16 +1,17 @@
 //----------------
 // - COLUMN CHART -
 //----------------
+const report = window.dashboardReport;
 
 const column_chart_options = {
   series: [
     {
       name: "Tunai",
-      data: [443000, 556000, 572000, 614000, 2000000],
+      data: report.cash,
     },
     {
       name: "Debit",
-      data: [500000, 412000, 368000, 453000, 2300000],
+      data: report.debit,
     },
   ],
   chart: {
@@ -24,14 +25,14 @@ const column_chart_options = {
   plotOptions: {
     bar: {
       columnWidth: "55%",
-      borderRadius: 4,
+      borderRadius: 0,
     },
   },
   dataLabels: {
     enabled: false,
   },
   xaxis: {
-    categories: ["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "Q5 2025"],
+    categories: report.labels,
   },
   yaxis: {
     labels: {
@@ -43,7 +44,7 @@ const column_chart_options = {
   tooltip: {
     y: {
       formatter(value) {
-        return `Rp ${value.toLocaleString()}`;
+        return `Rp ${value.toLocaleString("id-ID")}`;
       },
     },
   },
