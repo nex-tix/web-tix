@@ -19,7 +19,7 @@
             <h2>Penjualan hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp <?= esc(number_format($stat_penjualan['total_amount'], 0, ',', '.') ) ?></h4>
+            <h4>Rp <?= esc(number_format($stat_penjualan['total_amount'], 0, ',', '.')) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>+23% dari penjualan kemarin (Rp 12.234.000)</h4>
@@ -32,7 +32,7 @@
             <h2>Rekap diskon hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp <?= esc(number_format($stat_diskon['discount_amount'], 0, ',', '.') ) ?></h4>
+            <h4>Rp <?= esc(number_format($stat_diskon['discount_amount'], 0, ',', '.')) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>Total diskon dari transaksi hari ini</h4>
@@ -75,9 +75,23 @@
           <h3 class="sub-text">Rekap penjualan</h3>
 
           <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
-            <button class="btn-chart-laporan">7 hari</button>
-            <button class="btn-chart-laporan">1 bulan</button>
-            <button class="btn-chart-laporan">1 tahun</button>
+            <button class="btn-chart-laporan active" data-range="7days">7 hari</button>
+            <select id="select-bulan" class="input-chart-laporan">
+              <option value="">Pilih bulan</option>
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+            <button class="btn-chart-laporan" data-range="year">1 tahun</button>
           </div>
         </div>
         <!-- /.card-header -->
@@ -153,27 +167,27 @@
               </tr>
             </thead>
             <tbody class="table-light">
-              <?php foreach($checkin_histories as $ch) : ?>
-              <tr>
-                <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
-                <td><?= esc($ch['checkpoint_name']) ?></td>
-                <td><?= esc($ch['ticket_code']) ?></td>
-                <td><?= esc($ch['ticket_category']) ?></td>
-                <td><?= esc($ch['gate_username'])?></td>
-                <td>
-                  <?php if($ch['result'] == 'VALID') : ?>
-                    Diterima
-                    <?Php elseif($ch['result'] == 'ALREADY_USED') : ?>
-                    Tiket telah terpakai 
-                    <?Php elseif($ch['result'] == 'EXPIRED') : ?>
-                    Tiket telah kadaluarwa 
-                    <?Php elseif($ch['result'] == 'NOT_YET_VALID') : ?>
-                    Tiket belum bisa digunakan
-                    <?Php elseif($ch['result'] == 'CANCELLED') : ?>
-                    Tiket telah dibatalkan
-                  <?php endif; ?>
-                </td>
-              </tr>
+              <?php foreach ($checkin_histories as $ch) : ?>
+                <tr>
+                  <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
+                  <td><?= esc($ch['checkpoint_name']) ?></td>
+                  <td><?= esc($ch['ticket_code']) ?></td>
+                  <td><?= esc($ch['ticket_category']) ?></td>
+                  <td><?= esc($ch['gate_username']) ?></td>
+                  <td>
+                    <?php if ($ch['result'] == 'VALID') : ?>
+                      Diterima
+                    <?Php elseif ($ch['result'] == 'ALREADY_USED') : ?>
+                      Tiket telah terpakai
+                    <?Php elseif ($ch['result'] == 'EXPIRED') : ?>
+                      Tiket telah kadaluarwa
+                    <?Php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
+                      Tiket belum bisa digunakan
+                    <?Php elseif ($ch['result'] == 'CANCELLED') : ?>
+                      Tiket telah dibatalkan
+                    <?php endif; ?>
+                  </td>
+                </tr>
               <?php endforeach ?>
 
             </tbody>

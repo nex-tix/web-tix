@@ -424,6 +424,24 @@
         align-items: center;
         gap: 8px;
       }
+      .btn-chart-laporan.active,
+      .input-chart-laporan.active {
+        background-color: #2a363b;
+        color: #fff;
+      }
+
+      .input-chart-laporan {
+        background: transparent;
+        border: 1px solid #ced4da;
+        color: var(--text-dark);
+        padding: 0.3rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
       .btn-chart-laporan:hover {
         background-color: #f8f9fa;
