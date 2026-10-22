@@ -28,10 +28,10 @@
             <h2>Penjualan hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp 9.897.000,00</h4>
+            <h4>Rp 100.897.000</h4>
           </div>
           <div class="stat-sub">
-            <h4>+23% dari penjualan kemarin (Rp 12.234.000,00)</h4>
+            <h4>+23% dari penjualan kemarin (Rp 12.234.000)</h4>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
             <h2>Rekap diskon hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp 290.000,00</h4>
+            <h4>Rp 290.000</h4>
           </div>
           <div class="stat-sub">
             <h4>Total diskon dari transaksi hari ini</h4>
@@ -81,7 +81,7 @@
       <!--begin::Card-->
       <div class="chart-card container-fluid">
         <div class="card-header d-flex">
-          <h3 class="sub-text">Penjualan 1 minggu, 1 bulan, 1 tahun</h3>
+          <h3 class="sub-text">Rekap penjualan</h3>
 
           <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
             <button class="btn-chart-laporan">7 hari</button>
