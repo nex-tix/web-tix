@@ -3,11 +3,11 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Services\LaporanService;
 use App\Models\CheckinHistoryModel;
 use App\Models\CheckpointModel;
 use App\Models\GateUserModel;
 use App\Models\TicketModel;
-use App\Models\TicketTypeModel;
 use App\Models\TransactionModel;
 
 class ReportController extends BaseController
@@ -53,6 +53,7 @@ class ReportController extends BaseController
             //MENGAMBIL DATA PENJUALAN HARI INI
             'stat_penjualan' => $this->transactionModel
                 ->selectSum('total_amount')
+                ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
                 ->first(),
@@ -60,6 +61,7 @@ class ReportController extends BaseController
             //MENGAMBIL DATA DISKON HARI INI
             'stat_diskon' => $this->transactionModel
                 ->selectSum('discount_amount')
+                ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
                 ->first(),
@@ -76,6 +78,8 @@ class ReportController extends BaseController
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
                 ->countAllResults(),
+
+            'chart_data' => (new LaporanService())->getChartData(),
         ];
 
 

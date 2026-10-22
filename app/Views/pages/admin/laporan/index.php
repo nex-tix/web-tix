@@ -70,6 +70,10 @@
     <section id="chart" class="pt-3">
       <!-- Chart -->
       <!--begin::Card-->
+      <script>
+        const serverChartData = <?= json_encode($chart_data) ?>;
+      </script>
+
       <div class="chart-card container-fluid">
         <div class="card-header d-flex">
           <h3 class="sub-text">Rekap penjualan</h3>

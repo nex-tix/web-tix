@@ -56,7 +56,7 @@ class TransactionModel extends Model
 
         // === Status ===
         'status'          => 'required|in_list[completed,cancelled]',
-        
+
         // === Void fields (permit_empty karena hanya diisi saat void) ===
         'voided_by'          => 'permit_empty',
         'voided_at'          => 'permit_empty',
@@ -108,4 +108,19 @@ class TransactionModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    //FUNCTION QUERY KE DATABASE UNTUK CHART LINE
+
+    public function getSalesByRange(string $start, string $end, string $groupBy = 'DATE'): array
+    {
+        // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
+        $groupBy = $groupBy === 'MONTH' ? 'MONTH' : 'DATE';
+
+        return $this->select("$groupBy(created_at) AS periode, payment_method, SUM(total_amount) AS total")
+            ->where('status', 'completed')
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->groupBy("$groupBy(created_at), payment_method")
+            ->findAll();
+    }
 }

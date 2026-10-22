@@ -45,6 +45,9 @@ const chartData = {
   },
 };
 
+
+chartData["7days"] = serverChartData["7days"]; // data asli menimpa dummy
+chartData["year"] = serverChartData["perYear"]; // data asli menimpa dummy
 const column_chart_report = {
   series: [
     { name: "Tunai", data: chartData["7days"].tunai },
@@ -61,22 +64,13 @@ const column_chart_report = {
   plotOptions: {
     bar: {
       columnWidth: "55%",
-      borderRadius: 4,
     },
   },
   dataLabels: {
     enabled: false,
   },
   xaxis: {
-    categories: [
-      "Q1 2025",
-      "Q2 2025",
-      "Q3 2025",
-      "Q4 2025",
-      "Q5 2025",
-      "Q6 2025",
-      "Q7 2025",
-    ],
+    categories: chartData["7days"].categories,
   },
   yaxis: {
     labels: {
