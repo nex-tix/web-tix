@@ -108,6 +108,9 @@
     </section>
 
     <section id="dough-chart" class="pt-3">
+      <script>
+        const serverDonutChartData = <?= json_encode($donut_chart_data) ?>;
+      </script>
       <div class="row g-3">
         <div class="col-lg-4 col-md-4 col-sm-12">
           <div class="chart-card">

@@ -12,12 +12,21 @@ class LaporanService
         $this->transactionModel = new TransactionModel();
     }
 
+    //column chart
     public function getChartData(): array
     {
         return [
             '7days' => $this->last7Days(),
             'perYear' => $this->perYear(),
             'perMonth' => $this->perMonth(),
+        ];
+    }
+
+    //donut chart
+    public function getDonutChartData(): array
+    {
+        return [
+            'methodPay7Days' => $this->methodPay7Days(),
         ];
     }
 
@@ -108,6 +117,40 @@ class LaporanService
         for ($m = 1; $m <= 12; $m++) {
             $tunai[] = $sales[$m]['cash'] ?? 0;
             $debit[] = $sales[$m]['debit'] ?? 0;
+        }
+
+        return compact('categories', 'tunai', 'debit');
+    }
+
+
+    private function methodPay7Days(): array
+    {
+        //deklarasi tanggal
+        $start  = date('Y-m-d', strtotime('-6 days'));
+        $end    = date('Y-m-d');
+
+        //mengambil data menggunakan method di models
+        $rows = $this->transactionModel->getPaymentMethodByRange($start, $end, 'DATE');
+
+        //index method payment
+        $methods = [];
+        foreach ($rows as $row) {
+            $methods[$row['period']][strtolower($row['payment_method'])] = (int) $row['total'];
+        }
+
+        //deklarasi nama labels
+        $namaHari   = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        $categories = [];
+        $tunai      = [];
+        $debit      = [];
+
+        //cari data berdasarkan hari ini -6!
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = date('Y-m-d', strtotime("-$i days"));
+
+            $categories[] =  $namaHari[date('w', strtotime($tanggal))];
+            $tunai[] = $methods[$tanggal]['cash'] ?? 0;
+            $debit[] = $methods[$tanggal]['debit'] ?? 0;
         }
 
         return compact('categories', 'tunai', 'debit');

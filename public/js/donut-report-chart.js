@@ -1,7 +1,19 @@
+
+const methodPay = serverDonutChartData.methodPay7Days;
+
+// Menjumlahkan transaksi selama 7 hari
+const totalTunai = methodPay.tunai.reduce(
+  (total, value) => total + value, 0
+);
+
+const totalDebit = methodPay.debit.reduce(
+  (total, value) => total + value, 0
+);
+
 const charts = [
   {
     id: "#donut-chart-1",
-    series: [70, 30],
+    series: [totalTunai, totalDebit],
     labels: ["Tunai", "Debit"],
   },
   {
@@ -12,7 +24,7 @@ const charts = [
   {
     id: "#donut-chart-3",
     series: [40, 40, 20],
-    labels: ["child", "adult", "group"],
+    labels: ["Child", "Adult", "Group"],
   },
 ];
 

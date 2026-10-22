@@ -80,6 +80,7 @@ class ReportController extends BaseController
                 ->countAllResults(),
 
             'chart_data' => (new LaporanService())->getChartData(),
+            'donut_chart_data' => (new LaporanService())->getDonutChartData(),
         ];
 
 
