@@ -48,6 +48,7 @@ const chartData = {
 
 chartData["7days"] = serverChartData["7days"]; // data asli menimpa dummy
 chartData["year"] = serverChartData["perYear"]; // data asli menimpa dummy
+chartData["month"] = serverChartData["perMonth"]; // data asli menimpa dummy
 const column_chart_report = {
   series: [
     { name: "Tunai", data: chartData["7days"].tunai },
@@ -141,11 +142,7 @@ selectBulan.addEventListener("change", () => {
   const year = new Date().getFullYear();
   const totalHari = new Date(year, month, 0).getDate(); // hari terakhir bulan tsb
 
-  updateChart({
-    categories: Array.from({ length: totalHari }, (_, i) => `${i + 1}`),
-    tunai: chartData.month.tunai.slice(0, totalHari),
-    debit: chartData.month.debit.slice(0, totalHari),
-  });
+  updateChart(chartData.month[month])
 
   setActiveButton(null); // matikan semua tombol
   selectBulan.classList.add("active");
