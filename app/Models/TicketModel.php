@@ -49,5 +49,18 @@ class TicketModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    //FUNCTION QUERY KE DATABASE UNTUK CHART donut 3
+    public function getTicketTypeByRange(string $start, string $end, string $groupBy = 'DATE'): array
+    {
+        // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
+        $groupBy = $groupBy === 'MONTH' ? 'MONTH' : 'DATE';
+
+        return $this->select("$groupBy(created_at) AS periode, COUNT(*) as total")
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->groupBy("$groupBy(created_at), ticket_type_id")
+            ->findAll();
+    }
 }
 

@@ -122,4 +122,18 @@ class TransactionModel extends Model
             ->groupBy("$groupBy(created_at), payment_method")
             ->findAll();
     }
+
+    //FUNCTION QUERY KE DATABASE UNTUK CHART donut 1
+    public function getPaymentMethodByRange(string $start, string $end, string $groupBy = 'DATE'): array
+    {
+        // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
+        $groupBy = $groupBy === 'MONTH' ? 'MONTH' : 'DATE';
+
+        return $this->select("$groupBy(created_at) AS periode, COUNT(*) as total")
+            ->where('status', 'completed')
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->groupBy("$groupBy(created_at), payment_method")
+            ->findAll();
+    }
 }
