@@ -23,7 +23,6 @@ class CheckinHistoryModel extends Model
         'checkpoint_id' => 'int',
         'gate_user_id' => 'int',
         'visitor_count' => 'int',
-        'result' => 'string',
     ];
     protected array $castHandlers = [];
 

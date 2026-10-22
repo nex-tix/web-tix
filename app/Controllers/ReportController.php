@@ -3,96 +3,45 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\CheckinHistoryModel;
 use App\Models\CheckpointModel;
-use App\Services\ReportService;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use App\Models\GateUserModel;
+use App\Models\TicketModel;
+use App\Models\TicketTypeModel;
 
 class ReportController extends BaseController
 {
-    public function index()
+    protected $chekinHistoryModel;
+    protected $checkpointModel;
+    protected $ticketModel;
+    protected $gateUserModel;
+
+    public function __construct()
     {
-        $checkpointModel = new CheckpointModel();
-        $checkpoints = $checkpointModel->where('is_active', 1)->orderBy('name', 'ASC')->findAll();
-        $filters = $this->sanitizeFilters($checkpoints);
-        $date = $this->sanitizeDate($this->request->getGet('date'));
-
-        $service = new ReportService();
-        $data = $service->getDailyReport($date, $filters);
-
-        return view('pages/admin/laporan/index', [
-            'stats'       => $data['stats'],
-            'chartData'   => $data['chartData'],
-            'payment'     => $data['paymentBreakdown'],
-            'demography'  => $data['demography'],
-            'auditRows'   => $data['auditLogs'],
-            'reportDate'  => $data['reportDate'],
-            'filters'     => $filters,
-            'checkpoints' => $checkpoints,
-        ]);
+        $this->chekinHistoryModel = new CheckinHistoryModel();
+        $this->checkpointModel = new CheckpointModel();
+        $this->ticketModel = new TicketModel();
+        $this->gateUserModel = new GateUserModel();
     }
 
-    private function sanitizeDate($date): string
+    public function index(): string|object
     {
-        $date = is_string($date) ? trim($date) : '';
-        if ($date === '') {
-            return date('Y-m-d');
-        }
-
-        $parsed = date_create_from_format('Y-m-d', $date);
-
-        return $parsed && $parsed->format('Y-m-d') === $date ? $date : date('Y-m-d');
-    }
-
-    private function sanitizeFilters(array $checkpoints): array
-    {
-        $checkpointIds = array_map(static fn($checkpoint) => (int)$checkpoint['id'], $checkpoints);
-        $checkpointId = (int)($this->request->getGet('checkpoint') ?? 0);
-        $paymentMethod = (string)($this->request->getGet('payment') ?? '');
-        $ticketCategory = (string)($this->request->getGet('category') ?? '');
-        $search = trim((string)($this->request->getGet('q') ?? ''));
-
-        return [
-            'checkpoint_id'   => in_array($checkpointId, $checkpointIds, true) ? $checkpointId : null,
-            'payment_method'  => in_array($paymentMethod, ['cash', 'debit'], true) ? $paymentMethod : null,
-            'ticket_category' => in_array($ticketCategory, ['individual', 'group'], true) ? $ticketCategory : null,
-            'search'          => mb_substr($search, 0, 50),
-        ];
-    }
-
-    public function exportPdf()
-    {
-        $checkpointModel = new CheckpointModel();
-        $checkpoints = $checkpointModel->where('is_active', 1)->orderBy('name', 'ASC')->findAll();
-        $filters = $this->sanitizeFilters($checkpoints);
-        $date = $this->sanitizeDate($this->request->getGet('date'));
-
-        $service = new ReportService();
-        $data = $service->getDailyReport($date, $filters);
-
-        $html = view('pages/admin/laporan/export-pdf', [
-            'stats'       => $data['stats'],
-            'chartData'   => $data['chartData'],
-            'payment'     => $data['paymentBreakdown'],
-            'demography'  => $data['demography'],
-            'auditRows'   => $data['auditLogs'],
-            'reportDate'  => $data['reportDate'],
-            'filters'     => $filters,
-            'checkpoints' => $checkpoints,
-        ]);
-
-        $options = new Options();
-        $options->set('isRemoteEnabled', false);
-        $options->set('defaultFont', 'DejaVu Sans');
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html, 'UTF-8');
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        return $this->response
-            ->setContentType('application/pdf')
-            ->setHeader('Content-Disposition', 'attachment; filename="laporan-' . $data['reportDate'] . '.pdf"')
-            ->setBody($dompdf->output());
+        $data = [
+            'checkin_histories' => $this->chekinHistoryModel
+                ->select(
+                    'ch.*, 
+                    c.name AS checkpoint_name,
+                    t.ticket_code, 
+                    t.ticket_category,
+                    gu.username AS gate_username'
+                )
+                ->from('checkin_history ch')
+                ->join('checkpoints c', 'c.id = ch.checkpoint_id', 'left')
+                ->join('tickets t', 't.id = ch.ticket_id', 'left')
+                ->join('gate_users gu', 'gu.id = ch.gate_user_id', 'left')
+                ->orderBy('scanned_at', 'ASC')
+                ->findAll(),
+                ];
+        return view('pages/admin/laporan/index', $data);
     }
 }

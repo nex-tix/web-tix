@@ -8,16 +8,7 @@
         <p style="color:#2c3136">Ringkasan rekapitulasi penjualan, diskon, demografi, dan audit gate per hari dagang berjalan.</p>
       </div>
       <div class="d-flex gap-2 flex-wrap">
-        <input type="date" id="datePicker" class="form-control form-control-sm" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" value="<?= esc($reportDate) ?>">
-        <button type="button" id="dateBtn" class="btn-laporan"><i class="bi bi-calendar3"></i> <span id="dateLabel">Pilih Tanggal</span></button>
-        <?php $exportQuery = http_build_query(array_filter([
-          'date'       => $reportDate,
-          'checkpoint' => $filters['checkpoint_id'] ?? null,
-          'payment'    => $filters['payment_method'] ?? null,
-          'category'   => $filters['ticket_category'] ?? null,
-          'q'          => $filters['search'] ?? null,
-        ])); ?>
-        <a href="<?= base_url('admin/laporan/export-pdf?' . esc($exportQuery)) ?>" class="btn-transaksi"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
+        <a href="#" class="btn-transaksi"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
       </div>
     </div>
 
@@ -159,19 +150,32 @@
                 <th>Kategori</th>
                 <th>Admin/kasir</th>
                 <th>Status Scan</th>
-                <th>Keterangan</th>
               </tr>
             </thead>
             <tbody class="table-light">
+              <?php foreach($checkin_histories as $ch) : ?>
               <tr>
-                <td>10:38:02 WITA</td>
-                <td>Gerbang Selatan</td>
-                <td>GRP-HXH2-V262-HPXD-5U42</td>
-                <td>Group</td>
-                <td>Raya</td>
-                <td>Diterima</td>
-                <td>Valid, akses diberikan</td>
+                <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
+                <td><?= esc($ch['checkpoint_name']) ?></td>
+                <td><?= esc($ch['ticket_code']) ?></td>
+                <td><?= esc($ch['ticket_category']) ?></td>
+                <td><?= esc($ch['gate_username'])?></td>
+                <td>
+                  <?php if($ch['result'] == 'VALID') : ?>
+                    Diterima
+                    <?Php elseif($ch['result'] == 'ALREADY_USED') : ?>
+                    Tiket telah terpakai 
+                    <?Php elseif($ch['result'] == 'EXPIRED') : ?>
+                    Tiket telah kadaluarwa 
+                    <?Php elseif($ch['result'] == 'NOT_YET_VALID') : ?>
+                    Tiket belum bisa digunakan
+                    <?Php elseif($ch['result'] == 'CANCELLED') : ?>
+                    Tiket telah dibatalkan
+                  <?php endif; ?>
+                </td>
               </tr>
+              <?php endforeach ?>
+
             </tbody>
           </table>
         </div>
