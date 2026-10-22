@@ -19,7 +19,7 @@
             <h2>Penjualan hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp 100.897.000</h4>
+            <h4>Rp <?= esc(number_format($stat_penjualan['total_amount'], 0, ',', '.') ) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>+23% dari penjualan kemarin (Rp 12.234.000)</h4>
@@ -32,7 +32,7 @@
             <h2>Rekap diskon hari ini</h2>
           </div>
           <div class="stat-value">
-            <h4>Rp 290.000</h4>
+            <h4>Rp <?= esc(number_format($stat_diskon['discount_amount'], 0, ',', '.') ) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>Total diskon dari transaksi hari ini</h4>
@@ -45,7 +45,7 @@
             <h2>Pengunjung masuk</h2>
           </div>
           <div class="stat-value">
-            <h4>22</h4>
+            <h4><?= esc($stat_pengunjung) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>22 dari 44 tiket terjual</h4>
@@ -58,7 +58,7 @@
             <h2>Tiket belum terpakai</h2>
           </div>
           <div class="stat-value">
-            <h4>22</h4>
+            <h4><?= esc($stat_tiket) ?></h4>
           </div>
           <div class="stat-sub">
             <h4>Valid hingga tengah malam <br> (24:00 WITA)</h4>

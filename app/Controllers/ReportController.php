@@ -8,6 +8,7 @@ use App\Models\CheckpointModel;
 use App\Models\GateUserModel;
 use App\Models\TicketModel;
 use App\Models\TicketTypeModel;
+use App\Models\TransactionModel;
 
 class ReportController extends BaseController
 {
@@ -15,6 +16,7 @@ class ReportController extends BaseController
     protected $checkpointModel;
     protected $ticketModel;
     protected $gateUserModel;
+    protected $transactionModel;
 
     public function __construct()
     {
@@ -22,11 +24,17 @@ class ReportController extends BaseController
         $this->checkpointModel = new CheckpointModel();
         $this->ticketModel = new TicketModel();
         $this->gateUserModel = new GateUserModel();
+        $this->transactionModel = new TransactionModel();
     }
 
     public function index(): string|object
     {
+        $today = DATE('Y-m-d');
+        $startOfToday = $today . ' 00:00:00';
+        $endsOfToday = $today . ' 23:59:59';
+
         $data = [
+            //MENGAMBIL DATA UNTUK TABLE
             'checkin_histories' => $this->chekinHistoryModel
                 ->select(
                     'ch.*, 
@@ -41,7 +49,37 @@ class ReportController extends BaseController
                 ->join('gate_users gu', 'gu.id = ch.gate_user_id', 'left')
                 ->orderBy('scanned_at', 'ASC')
                 ->findAll(),
-                ];
+
+            //MENGAMBIL DATA PENJUALAN HARI INI
+            'stat_penjualan' => $this->transactionModel
+                ->selectSum('total_amount')
+                ->where('created_at >=', $startOfToday)
+                ->where('created_at <=', $endsOfToday)
+                ->first(),
+
+            //MENGAMBIL DATA DISKON HARI INI
+            'stat_diskon' => $this->transactionModel
+                ->selectSum('discount_amount')
+                ->where('created_at >=', $startOfToday)
+                ->where('created_at <=', $endsOfToday)
+                ->first(),
+
+            //MENGAMBIL DATA PENGUNJUNG MASUK HARI INI
+            'stat_pengunjung' => $this->chekinHistoryModel
+                ->where('result', 'VALID')
+                ->where('DATE(scanned_at)', date('Y-m-d'))
+                ->countAllResults(),
+
+            //MENGAMBIL DATA TIKET BELUM DIGUNAKAN HARI INI
+            'stat_tiket' => $this->ticketModel
+                ->where('status', 'active')
+                ->where('created_at >=', $startOfToday)
+                ->where('created_at <=', $endsOfToday)
+                ->countAllResults(),
+        ];
+
+
+
         return view('pages/admin/laporan/index', $data);
     }
 }
