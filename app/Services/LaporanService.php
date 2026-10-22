@@ -23,9 +23,11 @@ class LaporanService
 
     private function last7Days(): array
     {
+        //mendeklarasikan rentang tanggal
         $start = date('Y-m-d', strtotime('-6 days'));
         $end   = date('Y-m-d');
 
+        //mengambil data dari database
         $rows = $this->transactionModel->getSalesByRange($start, $end, 'DATE');
 
         // index hasil query supaya mudah dicari: $sales['2026-10-22']['cash']

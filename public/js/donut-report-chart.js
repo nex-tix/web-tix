@@ -28,7 +28,7 @@ charts.forEach(function (item) {
     plotOptions: {
       pie: {
         donut: {
-          size: "65%",
+          size: "35%",
         },
       },
     },

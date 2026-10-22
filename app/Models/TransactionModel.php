@@ -110,7 +110,6 @@ class TransactionModel extends Model
     protected $afterDelete    = [];
 
     //FUNCTION QUERY KE DATABASE UNTUK CHART LINE
-
     public function getSalesByRange(string $start, string $end, string $groupBy = 'DATE'): array
     {
         // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
