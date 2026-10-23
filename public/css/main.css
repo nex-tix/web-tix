@@ -840,6 +840,74 @@
         font-size: 0.85rem;
       }
 
+      .filter-label {
+        font-size: .7rem;
+        font-weight: 600;
+        letter-spacing: .5px;
+        color: var(--text-muted, #6c757d);
+        text-transform: uppercase;
+        margin-bottom: .35rem;
+      }
+      .btn-filter {
+        border: 1px solid #ced4da;
+        background: #fff;
+        color: var(--text-dark, #2c3136);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        font-size: .9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        min-width: 190px;
+        max-width: 260px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+      }
+      #bulan-label-text {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .btn-filter::after {
+        flex-shrink: 0;
+      }
+      .btn-filter:hover,
+      .btn-filter[aria-expanded="true"] {
+        background: #f8f9fa;
+        border-color: #adb5bd;
+      }
+      .btn-filter[aria-expanded="true"]::after {
+        transform: rotate(180deg);
+      }
+      .filter-dropdown-menu {
+        width: 240px;
+        max-height: 300px;
+        overflow-y: auto;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+      }
+      .filter-dropdown-menu .form-check {
+        padding: .3rem .45rem;
+        border-radius: 6px;
+        margin-bottom: 0;
+      }
+      .filter-dropdown-menu .form-check:hover {
+        background: #f4f6f8;
+      }
+      .filter-dropdown-menu .form-check-label {
+        font-size: .875rem;
+      }
+      #btn-export-pdf.disabled {
+        opacity: .6;
+        pointer-events: none;
+      }
+
       /* Responsive Padding */
       @media (max-width: 991.98px) {
         .app-header,

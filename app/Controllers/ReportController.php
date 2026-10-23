@@ -9,6 +9,7 @@ use App\Models\CheckpointModel;
 use App\Models\GateUserModel;
 use App\Models\TicketModel;
 use App\Models\TransactionModel;
+use App\Models\CustomerModel;
 
 class ReportController extends BaseController
 {
@@ -17,6 +18,7 @@ class ReportController extends BaseController
     protected $ticketModel;
     protected $gateUserModel;
     protected $transactionModel;
+    protected $customerModel;
 
     public function __construct()
     {
@@ -25,6 +27,7 @@ class ReportController extends BaseController
         $this->ticketModel = new TicketModel();
         $this->gateUserModel = new GateUserModel();
         $this->transactionModel = new TransactionModel();
+        $this->customerModel = new CustomerModel();
     }
 
     public function index(): string|object
@@ -52,7 +55,7 @@ class ReportController extends BaseController
 
             //MENGAMBIL DATA PENJUALAN HARI INI
             'stat_penjualan' => $this->transactionModel
-                ->selectSum('total_amount')
+                ->select('IFNULL(SUM(total_amount), 0) AS total_amount', false)
                 ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
@@ -60,7 +63,7 @@ class ReportController extends BaseController
 
             //MENGAMBIL DATA DISKON HARI INI
             'stat_diskon' => $this->transactionModel
-                ->selectSum('discount_amount')
+                ->select('IFNULL(SUM(discount_amount), 0) AS discount_amount', false)
                 ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
@@ -86,5 +89,243 @@ class ReportController extends BaseController
 
 
         return view('pages/admin/laporan/index', $data);
+    }
+
+    public function exportPdf()
+    {
+        $bulanInput = $this->request->getGet('bulan');
+        $tahun = (int) $this->request->getGet('tahun');
+
+        if (empty($bulanInput) || !$tahun) {
+            return redirect()->back()->with('error', 'Filter bulan/tahun tidak valid');
+        }
+
+        $bulanArr = array_map('intval', explode(',', $bulanInput));
+        $bulanArr = array_unique(array_filter($bulanArr, fn($b) => $b >= 1 && $b <= 12));
+        sort($bulanArr);
+
+        if (empty($bulanArr) || count($bulanArr) > 12) {
+            return redirect()->back()->with('error', 'Maksimal 12 bulan, range bulan 1-12');
+        }
+
+        $startMonth = $bulanArr[0];
+        $endMonth = end($bulanArr);
+        $startDate = sprintf('%04d-%02d-01', $tahun, $startMonth);
+        $endDate = sprintf('%04d-%02d-%02d', $tahun, $endMonth, cal_days_in_month(CAL_GREGORIAN, $endMonth, $tahun));
+
+        $data = [
+            'reportDate' => $startDate,
+            'stats' => $this->getStatsForRange($startDate, $endDate),
+            'payment' => $this->getPaymentComposition($startDate, $endDate),
+            'demography' => $this->getDemography($startDate, $endDate),
+            'chartData' => $this->getChartDataForRange($startDate, $endDate),
+            'auditRows' => $this->getAuditRows($startDate, $endDate),
+            'filters' => ['bulan' => $bulanArr, 'tahun' => $tahun],
+        ];
+
+        $html = view('pages/admin/laporan/export-pdf', $data);
+
+        $dompdf = new \Dompdf\Dompdf([
+            'chroot' => FCPATH,
+            'tempDir' => WRITEPATH . 'temp',
+        ]);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+
+        $filename = count($bulanArr) === 1
+            ? "laporan-{$bulanNames[$startMonth]}-{$tahun}.pdf"
+            : "laporan-{$bulanNames[$startMonth]}-s/d-{$bulanNames[$endMonth]}-{$tahun}.pdf";
+
+        $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    private function getStatsForRange(string $start, string $end): array
+    {
+        $salesRow = $this->transactionModel
+            ->select('IFNULL(SUM(total_amount), 0) AS total_amount', false)
+            ->where('status', 'completed')
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->first();
+        $sales = ($salesRow !== null && isset($salesRow['total_amount'])) ? (float) $salesRow['total_amount'] : 0;
+
+        $discountRow = $this->transactionModel
+            ->select('IFNULL(SUM(discount_amount), 0) AS discount_amount', false)
+            ->where('status', 'completed')
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->first();
+        $discount = ($discountRow !== null && isset($discountRow['discount_amount'])) ? (float) $discountRow['discount_amount'] : 0;
+
+        $attendance = $this->chekinHistoryModel
+            ->where('result', 'VALID')
+            ->where('DATE(scanned_at) >=', $start)
+            ->where('DATE(scanned_at) <=', $end)
+            ->countAllResults();
+
+        $remaining = $this->ticketModel
+            ->where('status', 'active')
+            ->where('created_at >=', $start . ' 00:00:00')
+            ->where('created_at <=', $end . ' 23:59:59')
+            ->countAllResults();
+
+        return [
+            'sales' => [
+                'value' => 'Rp ' . number_format($sales, 0, ',', '.'),
+                'sub' => 'Total penjualan periode ini',
+            ],
+            'discount' => [
+                'value' => 'Rp ' . number_format($discount, 0, ',', '.'),
+                'sub' => 'Total diskon periode ini',
+            ],
+            'attendance' => [
+                'value' => (string) $attendance,
+                'sub' => 'Pengunjung masuk (valid)',
+            ],
+            'remaining' => [
+                'value' => (string) $remaining,
+                'sub' => 'Tiket aktif belum dipakai',
+            ],
+        ];
+    }
+
+    private function getPaymentComposition(string $start, string $end): array
+    {
+        $rows = $this->transactionModel->getPaymentMethodByRange($start, $end, 'DATE');
+        $cash = 0;
+        $debit = 0;
+
+        foreach ($rows as $r) {
+            if ($r['payment_method'] === 'cash') {
+                $cash += (float) $r['total'];
+            } elseif ($r['payment_method'] === 'debit') {
+                $debit += (float) $r['total'];
+            }
+        }
+
+        $total = $cash + $debit;
+        $cashPct = $total > 0 ? round(($cash / $total) * 100) : 0;
+
+        return [
+            'cash_pct' => $cashPct,
+            'cash_text' => 'Tunai Rp ' . number_format($cash, 0, ',', '.'),
+            'debit_text' => 'Debit / EDC Rp ' . number_format($debit, 0, ',', '.'),
+            'total' => 'Rp ' . number_format($total, 0, ',', '.'),
+        ];
+    }
+
+    private function getDemography(string $start, string $end): array
+    {
+        $rows = $this->customerModel->getOriginTypeByRange($start, $end, 'DATE');
+        $domestic = 0;
+        $international = 0;
+
+        foreach ($rows as $r) {
+            if ($r['origin_type'] === 'domestic') {
+                $domestic += (int) $r['total'];
+            } elseif ($r['origin_type'] === 'international') {
+                $international += (int) $r['total'];
+            }
+        }
+
+        $total = $domestic + $international;
+        $domPct = $total > 0 ? round(($domestic / $total) * 100) . '%' : '0%';
+        $intPct = $total > 0 ? round(($international / $total) * 100) . '%' : '0%';
+
+        return [
+            'domestic_percent' => $domPct,
+            'domestic_count' => "{$domestic} orang",
+            'mancanegara_percent' => $intPct,
+            'mancanegara_count' => "{$international} orang",
+            'individual_label' => "{$total} orang",
+            'group_label' => '0 nota',
+        ];
+    }
+
+    private function getChartDataForRange(string $start, string $end): array
+    {
+        $rows = $this->transactionModel->getSalesByRange($start, $end, 'DATE');
+        $sales = [];
+
+        foreach ($rows as $r) {
+            $sales[$r['periode']][$r['payment_method']] = (float) $r['total'];
+        }
+
+        $labels = [];
+        $data = [];
+        $current = strtotime($start);
+        $endTs = strtotime($end);
+
+        while ($current <= $endTs) {
+            $dateStr = date('Y-m-d', $current);
+            $labels[] = date('d M', $current);
+            $data[] = ($sales[$dateStr]['cash'] ?? 0) + ($sales[$dateStr]['debit'] ?? 0);
+            $current = strtotime('+1 day', $current);
+        }
+
+        return ['labels' => $labels, 'data' => $data];
+    }
+
+    private function getAuditRows(string $start, string $end): array
+    {
+        $histories = $this->chekinHistoryModel
+            ->select(
+                'ch.*,
+                c.name AS checkpoint_name,
+                t.ticket_code,
+                t.ticket_category,
+                gu.username AS gate_username'
+            )
+            ->from('checkin_history ch')
+            ->join('checkpoints c', 'c.id = ch.checkpoint_id', 'left')
+            ->join('tickets t', 't.id = ch.ticket_id', 'left')
+            ->join('gate_users gu', 'gu.id = ch.gate_user_id', 'left')
+            ->where('DATE(ch.scanned_at) >=', $start)
+            ->where('DATE(ch.scanned_at) <=', $end)
+            ->orderBy('ch.scanned_at', 'ASC')
+            ->findAll();
+
+        return array_map(function ($r) {
+            return [
+                date('d-m-Y', strtotime($r['scanned_at'])) . ' ' . date('H:i', strtotime($r['scanned_at'])) . ' WITA',
+                $r['checkpoint_name'] ?? '-',
+                $r['ticket_code'] ?? '-',
+                $r['ticket_category'] ?? '-',
+                $r['gate_username'] ?? '-',
+                $this->getStatusLabel($r['result']),
+                $this->getResultNote($r['result']),
+            ];
+        }, $histories);
+    }
+
+    private function getStatusLabel(string $result): string
+    {
+        return match ($result) {
+            'VALID' => 'Diterima',
+            'ALREADY_USED' => 'Tiket telah terpakai',
+            'EXPIRED' => 'Tiket telah kadaluarsa',
+            'NOT_YET_VALID' => 'Tiket belum bisa digunakan',
+            'CANCELLED' => 'Tiket telah dibatalkan',
+            default => $result,
+        };
+    }
+
+    private function getResultNote(string $result): string
+    {
+        return match ($result) {
+            'VALID' => 'Scan berhasil, tiket masuk.',
+            'ALREADY_USED' => 'Tiket sudah pernah di-scan sebelumnya.',
+            'EXPIRED' => 'Tiket lewat dari masa berlaku.',
+            'NOT_YET_VALID' => 'Tiket belum pada jam aktif.',
+            'CANCELLED' => 'Tiket sudah dibatalkan sistem.',
+            default => '-',
+        };
     }
 }

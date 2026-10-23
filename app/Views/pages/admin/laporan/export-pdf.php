@@ -7,7 +7,19 @@ $demography = $demography ?? [];
 $chartData = $chartData ?? [];
 $auditRows = $auditRows ?? [];
 $filters = $filters ?? [];
+$bulanNames = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
 $filterLabels = [];
+if (!empty($filters['bulan']) && !empty($filters['tahun'])) {
+    $bulanSel = array_map('intval', (array) $filters['bulan']);
+    sort($bulanSel);
+    $minB = $bulanSel[0];
+    $maxB = end($bulanSel);
+    $rangeLabel = count($bulanSel) === 1
+        ? $bulanNames[$minB] . ' ' . $filters['tahun']
+        : $bulanNames[$minB] . ' s/d ' . $bulanNames[$maxB] . ' ' . $filters['tahun'];
+    $filterLabels[] = $rangeLabel;
+    $reportDateDisplay = $rangeLabel;
+}
 if (!empty($filters['checkpoint_id'])) $filterLabels[] = 'Checkpoint #' . $filters['checkpoint_id'];
 if (!empty($filters['payment_method'])) $filterLabels[] = ucfirst($filters['payment_method']);
 if (!empty($filters['ticket_category'])) $filterLabels[] = ucfirst($filters['ticket_category']);
@@ -79,7 +91,7 @@ table.audit tr:nth-child(even) td { background: #fafafa; }
 <td><div class="panel"><div class="panel-title">Demografi Pengunjung</div><div class="demography-row"><span class="origin">Domestik</span><span class="origin-value"><?= esc($demography['domestic_percent'] ?? '0%') ?> (<?= esc($demography['domestic_count'] ?? '0 orang') ?>)</span></div><div class="demography-row"><span class="origin">Mancanegara</span><span class="origin-value"><?= esc($demography['mancanegara_percent'] ?? '0%') ?> (<?= esc($demography['mancanegara_count'] ?? '0 orang') ?>)</span></div><div class="demography-row"><span class="origin">Individual</span><span class="origin-value"><?= esc($demography['individual_label'] ?? '0 orang') ?></span></div><div class="demography-row"><span class="origin">Rombongan</span><span class="origin-value"><?= esc($demography['group_label'] ?? '0 nota') ?></span></div></div></td>
 </tr></table>
 
-<div class="section-title">Penjualan 7 Hari Terakhir</div>
+<div class="section-title">Penjualan Periode <?= esc($reportDateDisplay) ?></div>
 <div class="panel"><table class="audit"><tr><th>HARI</th><th>TOTAL PENJUALAN</th></tr><?php foreach (($chartData['labels'] ?? []) as $index => $label): ?><tr><td><?= esc($label) ?></td><td>Rp <?= number_format((float)($chartData['data'][$index] ?? 0), 0, ',', '.') ?></td></tr><?php endforeach; ?><?php if (empty($chartData['labels'])): ?><tr><td colspan="2">Tidak ada data penjualan.</td></tr><?php endif; ?></table></div>
 
 <div class="section-title">Audit Log Scan Tiket &amp; Kehadiran Per Gate</div>

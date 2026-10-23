@@ -7,10 +7,47 @@
         <h4 style="color:#2c3136">Laporan &amp; Ekspor</h4>
         <p style="color:#2c3136">Ringkasan rekapitulasi penjualan, diskon, demografi, dan audit gate per hari dagang berjalan.</p>
       </div>
-      <div class="d-flex gap-2 flex-wrap">
-        <a href="#" class="btn-transaksi"><i class="bi bi-file-earmark-pdf"></i> Export PDF</a>
+    </div>
+
+    <div class="filter-export card border-0 shadow-sm bg-white mb-3">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-end gap-3" style="flex-wrap:nowrap;">
+          <div>
+            <label class="form-label filter-label">Periode Bulan</label>
+            <div class="dropdown">
+              <button class="btn btn-filter dropdown-toggle" id="btn-bulan-label" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <span id="bulan-label-text">Pilih bulan</span>
+              </button>
+              <div class="dropdown-menu filter-dropdown-menu p-4" id="filter-bulan-menu">
+                <?php
+                $bulanList = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
+                foreach ($bulanList as $no => $nama): ?>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="bulan-<?= $no ?>" value="<?= $no ?>">
+                    <label class="form-check-label" for="bulan-<?= $no ?>"><?= $nama ?></label>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="form-label filter-label">Tahun</label>
+            <select id="filter-tahun" class="form-select">
+              <?php for ($y = 2020; $y <= date('Y') + 1; $y++): ?>
+                <option value="<?= $y ?>" <?= $y === (int)date('Y') ? 'selected' : '' ?>><?= $y ?></option>
+              <?php endfor; ?>
+            </select>
+          </div>
+          <div>
+            <a id="btn-export-pdf" class="btn btn-transaksi" href="#">
+              <i class="bi bi-file-earmark-pdf"></i> Export PDF
+            </a>
+          </div>
+        </div>
       </div>
     </div>
+
+
 
     <div class="row g-3">
       <div class="col-lg-3 col-md-3 col-sm-6">
@@ -225,6 +262,53 @@
           </table>
         </div>
     </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const monthBoxes = Array.from(document.querySelectorAll('#filter-bulan-menu .form-check-input'));
+        const tahunSelect = document.getElementById('filter-tahun');
+        const exportBtn = document.getElementById('btn-export-pdf');
+        const labelEl = document.getElementById('bulan-label-text');
+        const shortNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const fullNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        monthBoxes.forEach(function (cb) {
+          if (parseInt(cb.value) === <?= (int)date('n') ?>) cb.checked = true;
+        });
+
+        function selectedMonths() {
+          return monthBoxes
+            .filter(function (cb) { return cb.checked; })
+            .map(function (cb) { return parseInt(cb.value); })
+            .sort(function (a, b) { return a - b; });
+        }
+
+        function updateExportUrl() {
+          const selected = selectedMonths();
+
+          if (selected.length === 0) {
+            labelEl.textContent = 'Pilih bulan...';
+            exportBtn.href = '#';
+            exportBtn.classList.add('disabled');
+            return;
+          }
+
+          exportBtn.classList.remove('disabled');
+
+          const minS = shortNames[selected[0] - 1];
+          const maxS = shortNames[selected[selected.length - 1] - 1];
+          labelEl.textContent = selected.length === 1
+            ? fullNames[selected[0] - 1]
+            : minS + ' s/d ' + maxS;
+
+          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?bulan=' + selected.join(',') + '&tahun=' + tahunSelect.value;
+        }
+
+        monthBoxes.forEach(function (cb) { cb.addEventListener('change', updateExportUrl); });
+        tahunSelect.addEventListener('change', updateExportUrl);
+        updateExportUrl();
+      });
+    </script>
   </div>
 </div>
 </div>
