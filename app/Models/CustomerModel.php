@@ -70,7 +70,7 @@ class CustomerModel extends Model
         // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
         $groupBy = $groupBy === 'MONTH' ? 'MONTH' : 'DATE';
 
-        return $this->select("$groupBy(created_at) AS periode, COUNT(*) as total")
+        return $this->select("$groupBy(created_at) AS periode, origin_type, COUNT(*) as total")
             ->where('created_at >=', $start . ' 00:00:00')
             ->where('created_at <=', $end . ' 23:59:59')
             ->groupBy("$groupBy(created_at), origin_type")

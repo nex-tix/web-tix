@@ -445,6 +445,8 @@
 
       .btn-chart-laporan:hover {
         background-color: #f8f9fa;
+        border-color: #0d6efd;
+        color: #0d6efd;
       }
 
       /* Content Body */
@@ -568,6 +570,16 @@
         border-radius: 8px;
         padding: 1.2rem;
         height: 100%;
+      }
+
+      .chart-card-header {
+        color: #2c3136;
+        background: #fff;
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 0.6rem;
+        height: 100%;
+        margin-bottom: 0px;
       }
 
       .chart-card .card-header-custom {

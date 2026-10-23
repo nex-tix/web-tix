@@ -79,7 +79,7 @@
           <h3 class="sub-text">Rekap penjualan</h3>
 
           <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
-            <button class="btn-chart-laporan active" data-range="7days">7 hari</button>
+            <button class="btn-chart-laporan" data-range="7days">7 hari</button>
             <select id="select-bulan" class="input-chart-laporan">
               <option value="">Pilih bulan</option>
               <option value="1">Januari</option>
@@ -111,47 +111,71 @@
       <script>
         const serverDonutChartData = <?= json_encode($donut_chart_data) ?>;
       </script>
-      <div class="row g-3">
-        <div class="col-lg-4 col-md-4 col-sm-12">
-          <div class="chart-card">
-            <div class="card-header">
-              <h3 class="sub-text">Metode Bayar</h3>
+      <div class="chart-card-header container-fluid">
+        <div class="card-header d-flex">
+          <h3 class="sub-text">Analisa Penjualan Bulanan</h3>
 
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <div id="donut-chart-1"></div>
-            </div>
-            <!-- /.card-body -->
+          <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
+            <select id="select-donut-bulan" class="input-chart-laporan select-donut-bulan">
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
           </div>
         </div>
+        <!-- /.card-header -->
 
-        <div class="col-lg-4 col-md-4 col-sm-12">
-          <div class="chart-card">
-            <div class="card-header">
-              <h3 class="sub-text">Asal pengunjung</h3>
+        <div class="row g-3 mt-1">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="chart-card shadow-sm">
+              <div class="card-header d-flex flex-wrap align-items-center">
+                <h3 class="sub-text">Metode Bayar</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div id="donut-chart-1"></div>
+              </div>
+              <!-- /.card-body -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <div id="donut-chart-2"></div>
-            </div>
-            <!-- /.card-body -->
           </div>
-        </div>
 
-        <div class="col-lg-4 col-md-4 col-sm-12">
-          <div class="chart-card">
-            <div class="card-header">
-              <h3 class="sub-text">Jenis Tiket</h3>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="chart-card shadow-sm">
+              <div class="card-header d-flex flex-wrap align-items-center">
+                <h3 class="sub-text">Asal pengunjung</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div id="donut-chart-2"></div>
+              </div>
+              <!-- /.card-body -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <div id="donut-chart-3"></div>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="chart-card shadow-sm">
+              <div class="card-header d-flex flex-wrap align-items-center">
+                <h3 class="sub-text">Jenis Tiket</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div id="donut-chart-3"></div>
+              </div>
+              <!-- /.card-body -->
             </div>
-            <!-- /.card-body -->
           </div>
         </div>
       </div>
+
     </section>
 
     <section id="table-laporan" class="pt-3">

@@ -129,7 +129,7 @@ class TransactionModel extends Model
         // whitelist supaya nilai $groupBy tidak bisa disisipi sembarang string
         $groupBy = $groupBy === 'MONTH' ? 'MONTH' : 'DATE';
 
-        return $this->select("$groupBy(created_at) AS period, payment_method, COUNT(*) as total")
+        return $this->select("$groupBy(created_at) AS periode, payment_method, COUNT(*) as total")
             ->where('status', 'completed')
             ->where('created_at >=', $start . ' 00:00:00')
             ->where('created_at <=', $end . ' 23:59:59')

@@ -96,7 +96,7 @@ const report_chart = new ApexCharts(
 report_chart.render();
 
 // ===== state tombol & dropdown =====
-const buttons = document.querySelectorAll(".btn-chart-laporan");
+const buttons = document.querySelectorAll(".btn-chart-laporan:not(.btn-donut-filter)");
 const selectBulan = document.getElementById("select-bulan");
 
 function updateChart(data) {
@@ -109,20 +109,12 @@ function updateChart(data) {
   });
 }
 
-function setActiveButton(range) {
-  buttons.forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.range === range);
-  });
-}
-
 // tombol 7 hari & 1 tahun
 buttons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const range = btn.dataset.range;
 
     selectBulan.value = "";
-    selectBulan.classList.remove("active");
-    setActiveButton(range);
     updateChart(chartData[range]);
   });
 });
@@ -133,17 +125,9 @@ selectBulan.addEventListener("change", () => {
 
   // kalau kembali ke "Pilih bulan", balik ke 7 hari
   if (!month) {
-    selectBulan.classList.remove("active");
-    setActiveButton("7days");
     updateChart(chartData["7days"]);
     return;
   }
 
-  const year = new Date().getFullYear();
-  const totalHari = new Date(year, month, 0).getDate(); // hari terakhir bulan tsb
-
-  updateChart(chartData.month[month])
-
-  setActiveButton(null); // matikan semua tombol
-  selectBulan.classList.add("active");
+  updateChart(chartData.month[month]);
 });
