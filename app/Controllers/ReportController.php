@@ -56,7 +56,7 @@ class ReportController extends BaseController
                 ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
-                ->first(),
+                ->first() ?? ['total_amount' => 0],
 
             //MENGAMBIL DATA DISKON HARI INI
             'stat_diskon' => $this->transactionModel
@@ -64,7 +64,7 @@ class ReportController extends BaseController
                 ->where('status', 'completed' )
                 ->where('created_at >=', $startOfToday)
                 ->where('created_at <=', $endsOfToday)
-                ->first(),
+                ->first() ?? ['discount_amount' => 0],
 
             //MENGAMBIL DATA PENGUNJUNG MASUK HARI INI
             'stat_pengunjung' => $this->chekinHistoryModel
