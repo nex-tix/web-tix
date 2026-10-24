@@ -115,11 +115,7 @@ class ReportController extends BaseController
 
         $data = [
             'reportDate' => $startDate,
-            'stats' => $this->getStatsForRange($startDate, $endDate),
-            'payment' => $this->getPaymentComposition($startDate, $endDate),
-            'demography' => $this->getDemography($startDate, $endDate),
-            'chartData' => $this->getChartDataForRange($startDate, $endDate),
-            'auditRows' => $this->getAuditRows($startDate, $endDate),
+            'dailyData' => $this->getDailyTicketData($startDate, $endDate),
             'filters' => ['bulan' => $bulanArr, 'tahun' => $tahun],
         ];
 
@@ -130,7 +126,7 @@ class ReportController extends BaseController
             'tempDir' => WRITEPATH . 'temp',
         ]);
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
         $bulanNames = [
@@ -144,6 +140,95 @@ class ReportController extends BaseController
             : "laporan-{$bulanNames[$startMonth]}-s/d-{$bulanNames[$endMonth]}-{$tahun}.pdf";
 
         $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    private function getDailyTicketData(string $startDate, string $endDate): array
+    {
+        $dates = [];
+        $current = strtotime($startDate);
+        $endTs = strtotime($endDate);
+
+        while ($current <= $endTs) {
+            $dates[] = date('Y-m-d', $current);
+            $current = strtotime('+1 day', $current);
+        }
+
+        $dailyData = [];
+        $totalTiketTerbit = 0;
+        $totalPengunjung = 0;
+        $totalUsed = 0;
+        $totalActive = 0;
+        $totalCancelled = 0;
+        $totalPendapatan = 0;
+
+        foreach ($dates as $no => $date) {
+            $tiketTerbit = $this->ticketModel
+                ->where('DATE(valid_date)', $date)
+                ->countAllResults();
+
+            $pengunjung = 0;
+            $tickets = $this->ticketModel
+                ->where('DATE(valid_date)', $date)
+                ->findAll();
+            foreach ($tickets as $ticket) {
+                $pengunjung += (int) $ticket['total_visitors'];
+            }
+
+            $used = $this->ticketModel
+                ->where('DATE(valid_date)', $date)
+                ->where('status', 'used')
+                ->countAllResults();
+
+            $active = $this->ticketModel
+                ->where('DATE(valid_date)', $date)
+                ->where('status', 'active')
+                ->countAllResults();
+
+            $cancelled = $this->ticketModel
+                ->where('DATE(valid_date)', $date)
+                ->where('status', 'cancelled')
+                ->countAllResults();
+
+            $pendapatan = 0;
+            $transactions = $this->transactionModel
+                ->where('DATE(created_at)', $date)
+                ->where('status', 'completed')
+                ->findAll();
+            foreach ($transactions as $tx) {
+                $pendapatan += (float) $tx['total_amount'];
+            }
+
+            $dailyData[] = [
+                'no' => $no + 1,
+                'tanggal' => $date,
+                'tanggal_display' => date('d/m/Y', strtotime($date)),
+                'tiket_terbit' => $tiketTerbit,
+                'pengunjung' => $pengunjung,
+                'used' => $used,
+                'active' => $active,
+                'cancelled' => $cancelled,
+                'pendapatan' => $pendapatan,
+            ];
+
+            $totalTiketTerbit += $tiketTerbit;
+            $totalPengunjung += $pengunjung;
+            $totalUsed += $used;
+            $totalActive += $active;
+            $totalCancelled += $cancelled;
+            $totalPendapatan += $pendapatan;
+        }
+
+        return [
+            'rows' => $dailyData,
+            'totals' => [
+                'tiket_terbit' => $totalTiketTerbit,
+                'pengunjung' => $totalPengunjung,
+                'used' => $totalUsed,
+                'active' => $totalActive,
+                'cancelled' => $totalCancelled,
+                'pendapatan' => $totalPendapatan,
+            ],
+        ];
     }
 
     private function getStatsForRange(string $start, string $end): array

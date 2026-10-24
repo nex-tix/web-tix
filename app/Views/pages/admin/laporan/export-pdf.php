@@ -1,101 +1,245 @@
 <?php
 $reportDate = $reportDate ?? date('Y-m-d');
-$reportDateDisplay = date('d F Y', strtotime($reportDate));
-$stats = $stats ?? [];
-$payment = $payment ?? [];
-$demography = $demography ?? [];
-$chartData = $chartData ?? [];
-$auditRows = $auditRows ?? [];
+$dailyData = $dailyData ?? [];
 $filters = $filters ?? [];
+
 $bulanNames = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
-$filterLabels = [];
-if (!empty($filters['bulan']) && !empty($filters['tahun'])) {
-    $bulanSel = array_map('intval', (array) $filters['bulan']);
-    sort($bulanSel);
-    $minB = $bulanSel[0];
-    $maxB = end($bulanSel);
-    $rangeLabel = count($bulanSel) === 1
-        ? $bulanNames[$minB] . ' ' . $filters['tahun']
-        : $bulanNames[$minB] . ' s/d ' . $bulanNames[$maxB] . ' ' . $filters['tahun'];
-    $filterLabels[] = $rangeLabel;
-    $reportDateDisplay = $rangeLabel;
-}
-if (!empty($filters['checkpoint_id'])) $filterLabels[] = 'Checkpoint #' . $filters['checkpoint_id'];
-if (!empty($filters['payment_method'])) $filterLabels[] = ucfirst($filters['payment_method']);
-if (!empty($filters['ticket_category'])) $filterLabels[] = ucfirst($filters['ticket_category']);
-if (!empty($filters['search'])) $filterLabels[] = 'Tiket: ' . $filters['search'];
+
+$filterBulan = $filters['bulan'] ?? [];
+$filterTahun = $filters['tahun'] ?? date('Y');
+
+$minBulan = !empty($filterBulan) ? min($filterBulan) : 1;
+$maxBulan = !empty($filterBulan) ? max($filterBulan) : 12;
+$rangeLabel = count($filterBulan) === 1
+    ? $bulanNames[$minBulan] . ' ' . $filterTahun
+    : $bulanNames[$minBulan] . ' s/d ' . $bulanNames[$maxBulan] . ' ' . $filterTahun;
+
+$dailyRows = $dailyData['rows'] ?? [];
+$totals = $dailyData['totals'] ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Laporan <?= esc($reportDateDisplay) ?></title>
-<style>
-@page { margin: 34px 32px 42px; }
-* { box-sizing: border-box; }
-body { margin: 0; color: #263238; font-family: DejaVu Sans, sans-serif; font-size: 9px; }
-.header { border-bottom: 3px solid #cf4647; padding-bottom: 14px; margin-bottom: 18px; }
-.brand { color: #cf4647; font-size: 10px; font-weight: bold; letter-spacing: 1.4px; text-transform: uppercase; }
-h1 { margin: 5px 0 3px; color: #1f2529; font-size: 22px; }
-.subtitle { color: #68737b; font-size: 9px; }
-.meta { margin-top: 12px; color: #4f5b62; font-size: 9px; }
-.pill { background: #f1f3f4; border-radius: 10px; color: #4f5b62; display: inline-block; margin-left: 4px; padding: 4px 8px; }
-.section-title { border-left: 4px solid #cf4647; color: #263238; font-size: 12px; font-weight: bold; margin: 18px 0 8px; padding-left: 7px; }
-.grid { width: 100%; }
-.grid td { padding: 0 5px 8px 0; vertical-align: top; width: 25%; }
-.grid td:last-child { padding-right: 0; }
-.stat-card { background: #f6f7f8; border: 1px solid #e1e5e7; border-radius: 5px; min-height: 62px; padding: 9px; }
-.stat-label { color: #68737b; font-size: 8px; text-transform: uppercase; }
-.stat-value { color: #1f2529; font-size: 13px; font-weight: bold; margin-top: 7px; }
-.stat-sub { color: #68737b; font-size: 8px; margin-top: 3px; }
-.two-col { width: 100%; }
-.two-col td { padding-right: 12px; vertical-align: top; width: 50%; }
-.two-col td:last-child { padding: 0; }
-.panel { border: 1px solid #e1e5e7; border-radius: 5px; padding: 11px; }
-.panel-title { color: #263238; font-size: 10px; font-weight: bold; margin-bottom: 9px; }
-.bar-bg { background: #edf0f1; height: 12px; width: 100%; }
-.bar-cash { background: #263238; height: 12px; }
-.bar-debit { background: #cf4647; height: 12px; }
-.legend { color: #4f5b62; font-size: 8px; line-height: 18px; }
-.dot { display: inline-block; height: 7px; margin-right: 4px; width: 7px; }
-.demography-row { border-bottom: 1px solid #edf0f1; padding: 5px 0; }
-.demography-row:last-child { border-bottom: 0; }
-.origin { color: #4f5b62; }
-.origin-value { float: right; font-weight: bold; }
-table.audit { border-collapse: collapse; margin-top: 6px; width: 100%; }
-table.audit th { background: #263238; color: #fff; font-size: 7px; padding: 7px 5px; text-align: left; }
-table.audit td { border-bottom: 1px solid #e1e5e7; color: #4f5b62; font-size: 7.5px; padding: 6px 5px; vertical-align: top; }
-table.audit tr:nth-child(even) td { background: #fafafa; }
-.note { color: #68737b; font-size: 8px; margin-top: 8px; }
-.footer { border-top: 1px solid #e1e5e7; color: #8a949b; font-size: 7px; margin-top: 18px; padding-top: 7px; text-align: center; }
-</style>
+    <meta charset="UTF-8">
+    <title>Laporan Rekapitulasi Tiket <?= esc($rangeLabel) ?></title>
+    <style>
+        @page {
+            margin: 20px;
+            @bottom-center {
+                content: "Halaman " counter(page) " dari " counter(pages);
+                font-size: 9px;
+                color: #999;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-family: DejaVu Sans, Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1f1f1f;
+            margin: 0 0 5px 0;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 8px 0;
+        }
+
+        .header-period {
+            font-size: 11px;
+            color: #666;
+            margin: 0;
+        }
+
+        .header-date {
+            font-size: 9px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+        table.daily-report {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            table-layout: fixed;
+        }
+
+        table.daily-report thead {
+            display: table-header-group;
+        }
+
+        table.daily-report th {
+            color: #000000;
+            padding: 8px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 9px;
+            border: 1px solid #1a1f26;
+            word-wrap: break-word;
+        }
+
+        table.daily-report th:first-child {
+            text-align: center;
+        }
+
+        table.daily-report th:nth-child(2) {
+            text-align: center;
+        }
+
+        table.daily-report td {
+            padding: 7px 5px;
+            text-align: center;
+            border: 1px solid #000000;
+            font-size: 9px;
+            color: #333;
+        }
+
+        table.daily-report td:first-child {
+            text-align: center;
+            width: 5%;
+        }
+
+        table.daily-report td:nth-child(2) {
+            text-align: center;
+            width: 10%;
+        }
+
+        table.daily-report tr.total-row {
+            font-weight: bold;
+            border-top: 2px solid #333;
+        }
+
+        table.daily-report tr.total-row td {
+            border: 1px solid #333;
+            padding: 9px 5px;
+        }
+
+        .summary-section {
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+
+        .summary-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #1f1f1f;
+            margin-bottom: 10px;
+        }
+
+        .summary-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 8px;
+        }
+
+        .summary-label {
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .summary-value {
+            font-size: 12px;
+            font-weight: bold;
+            color: #1f1f1f;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 8px;
+            color: #999;
+        }
+    </style>
 </head>
 <body>
-<div class="header">
-  <div class="brand">Laporan Operasional</div>
-  <h1>Laporan &amp; Ekspor</h1>
-  <div class="subtitle">Ringkasan penjualan, pembayaran, demografi pengunjung, dan audit gate.</div>
-  <div class="meta">Tanggal laporan: <strong><?= esc($reportDateDisplay) ?></strong><?php if ($filterLabels): ?><?php foreach ($filterLabels as $filterLabel): ?><span class="pill"><?= esc($filterLabel) ?></span><?php endforeach; ?><?php endif; ?></div>
-</div>
+    <div class="header">
+        <div class="header-title">LAPORAN REKAPITULASI TIKET</div>
+        <div class="header-subtitle">PERTUNJUKAN KECAK ULUWATU</div>
+        <div class="header-period">Periode: <?= esc($rangeLabel) ?></div>
+        <div class="header-date">Tanggal Laporan: <?= date('d/m/Y H:i') ?> WITA</div>
+    </div>
 
-<div class="section-title">Ringkasan Statistik</div>
-<table class="grid"><tr>
-<?php foreach (['sales' => 'Penjualan', 'discount' => 'Diskon', 'attendance' => 'Pengunjung Masuk', 'remaining' => 'Belum Dipakai'] as $key => $label): ?>
-<td><div class="stat-card"><div class="stat-label"><?= esc($label) ?></div><div class="stat-value"><?= $stats[$key]['value'] ?? ($key === 'attendance' || $key === 'remaining' ? '0' : 'Rp 0') ?></div><div class="stat-sub"><?= $stats[$key]['sub'] ?? '' ?></div></div></td>
-<?php endforeach; ?>
-</tr></table>
+    <table class="daily-report">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Tanggal</th>
+                <th>Tiket Terbit</th>
+                <th>Pengunjung</th>
+                <th>Used</th>
+                <th>Active</th>
+                <th>Cancelled</th>
+                <th>Pendapatan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($dailyRows as $row): ?>
+                <tr>
+                    <td><?= (int)$row['no'] ?></td>
+                    <td><?= esc($row['tanggal_display']) ?></td>
+                    <td><?= number_format((int)$row['tiket_terbit'], 0, ',', '.') ?></td>
+                    <td><?= number_format((int)$row['pengunjung'], 0, ',', '.') ?></td>
+                    <td><?= number_format((int)$row['used'], 0, ',', '.') ?></td>
+                    <td><?= number_format((int)$row['active'], 0, ',', '.') ?></td>
+                    <td><?= number_format((int)$row['cancelled'], 0, ',', '.') ?></td>
+                    <td>Rp <?= number_format((float)$row['pendapatan'], 0, ',', '.') ?></td>
+                </tr>
+            <?php endforeach; ?>
+            <tr class="total-row">
+                <td colspan="2">TOTAL PERIODE</td>
+                <td><?= number_format((int)$totals['tiket_terbit'], 0, ',', '.') ?></td>
+                <td><?= number_format((int)$totals['pengunjung'], 0, ',', '.') ?></td>
+                <td><?= number_format((int)$totals['used'], 0, ',', '.') ?></td>
+                <td><?= number_format((int)$totals['active'], 0, ',', '.') ?></td>
+                <td><?= number_format((int)$totals['cancelled'], 0, ',', '.') ?></td>
+                <td>Rp <?= number_format((float)$totals['pendapatan'], 0, ',', '.') ?></td>
+            </tr>
+        </tbody>
+    </table>
 
-<div class="section-title">Pembayaran &amp; Demografi</div>
-<table class="two-col"><tr>
-<td><div class="panel"><div class="panel-title">Komposisi Metode Pembayaran</div><div class="bar-bg"><div class="bar-cash" style="width:<?= esc($payment['cash_pct'] ?? 0) ?>%;"></div></div><div class="legend"><span class="dot" style="background:#263238;"></span><?= esc($payment['cash_text'] ?? 'Tunai Rp 0') ?><br><span class="dot" style="background:#cf4647;"></span><?= esc($payment['debit_text'] ?? 'Debit / EDC Rp 0') ?><br><strong>Total: <?= esc($payment['total'] ?? 'Rp 0') ?></strong></div></div></td>
-<td><div class="panel"><div class="panel-title">Demografi Pengunjung</div><div class="demography-row"><span class="origin">Domestik</span><span class="origin-value"><?= esc($demography['domestic_percent'] ?? '0%') ?> (<?= esc($demography['domestic_count'] ?? '0 orang') ?>)</span></div><div class="demography-row"><span class="origin">Mancanegara</span><span class="origin-value"><?= esc($demography['mancanegara_percent'] ?? '0%') ?> (<?= esc($demography['mancanegara_count'] ?? '0 orang') ?>)</span></div><div class="demography-row"><span class="origin">Individual</span><span class="origin-value"><?= esc($demography['individual_label'] ?? '0 orang') ?></span></div><div class="demography-row"><span class="origin">Rombongan</span><span class="origin-value"><?= esc($demography['group_label'] ?? '0 nota') ?></span></div></div></td>
-</tr></table>
+    <div class="summary-section">
+        <div class="summary-title">Ringkasan Periode</div>
+        <div class="summary-item">
+            <div class="summary-label">Total Tiket Diterbitkan</div>
+            <div class="summary-value"><?= number_format((int)$totals['tiket_terbit'], 0, ',', '.') ?> Tiket</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Total Pengunjung Tercatat</div>
+            <div class="summary-value"><?= number_format((int)$totals['pengunjung'], 0, ',', '.') ?> Orang</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Total Pendapatan Periode</div>
+            <div class="summary-value">Rp <?= number_format((float)$totals['pendapatan'], 0, ',', '.') ?></div>
+        </div>
+    </div>
 
-<div class="section-title">Penjualan Periode <?= esc($reportDateDisplay) ?></div>
-<div class="panel"><table class="audit"><tr><th>HARI</th><th>TOTAL PENJUALAN</th></tr><?php foreach (($chartData['labels'] ?? []) as $index => $label): ?><tr><td><?= esc($label) ?></td><td>Rp <?= number_format((float)($chartData['data'][$index] ?? 0), 0, ',', '.') ?></td></tr><?php endforeach; ?><?php if (empty($chartData['labels'])): ?><tr><td colspan="2">Tidak ada data penjualan.</td></tr><?php endif; ?></table></div>
-
-<div class="section-title">Audit Log Scan Tiket &amp; Kehadiran Per Gate</div>
-<table class="audit"><tr><th>WAKTU SCAN</th><th>CHECKPOINT / GATE</th><th>KODE TIKET</th><th>KATEGORI</th><th>ADMIN / KASIR</th><th>STATUS</th><th>KETERANGAN</th></tr><?php if ($auditRows): ?><?php foreach ($auditRows as $row): ?><tr><?php foreach ($row as $cell): ?><td><?= $cell ?></td><?php endforeach; ?></tr><?php endforeach; ?><?php else: ?><tr><td colspan="7">Tidak ada data audit scan untuk filter yang dipilih.</td></tr><?php endif; ?></table>
-<div class="footer">Dokumen dibuat otomatis oleh sistem pada <?= date('d/m/Y H:i') ?> WITA</div>
+    <div class="footer">
+        Dokumen ini dibuat otomatis oleh sistem pada <?= date('d/m/Y H:i:s') ?> WITA
+    </div>
 </body>
 </html>
