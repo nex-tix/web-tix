@@ -157,7 +157,7 @@
                     <div class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewbox="0 0 20 20">
                             <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
                         </svg><span class="text-emerald-900 font-medium" id="mode-desc">Mode Individual: Maksimal 2 tiket per transaksi.</span></div>
-                    <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">—</span> Orang</div>
+                    <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">—</span></div>
                 </div>
                 <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
                 <div class="space-y-3" id="tickets-container"></div>
@@ -172,7 +172,6 @@
                         </svg>
                         <div>
                             <h3 class="font-bold text-sm tracking-wide">Ringkasan Transaksi</h3>
-                            <p class="text-[11px] text-slate-300">No. Trx: <span class="font-mono text-brand-gold" id="trx-id">-</span></p>
                         </div>
                     </div>
                     <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider" id="summary-mode-badge">INDIVIDUAL</span>
@@ -407,7 +406,7 @@
         document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 3 orang.';
         document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
         document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
-        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">${limits[mode].max}</span> Orang`;
+        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">${mode === 'rombongan' ? 'unlimited' : limits[mode].max}</span>`;
         document.getElementById('group-warning').classList.add('hidden');
         clearFieldErrors();
         renderTickets();
@@ -465,10 +464,10 @@
         const badge = document.getElementById('total-qty-display');
         if (badge) badge.textContent = total;
         const maxDisplay = document.getElementById('max-display');
-        if (maxDisplay) maxDisplay.textContent = limits[posState.mode].max;
+        if (maxDisplay) maxDisplay.textContent = posState.mode === 'rombongan' ? 'unlimited' : limits[posState.mode].max;
         const countBadge = document.getElementById('visitor-count-badge');
         if (countBadge && !countBadge.querySelector('#total-qty-display')) {
-            countBadge.innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">${total}</span> / <span id="max-display">${limits[posState.mode].max}</span> Orang`;
+            countBadge.innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">${total}</span> / <span id="max-display">${posState.mode === 'rombongan' ? 'unlimited' : limits[posState.mode].max}</span>`;
         }
         document.getElementById('summary-visitor-origin').textContent = `${posState.origin === 'domestik' ? 'Domestik (WNI)' : 'Mancanegara (WNA)'} (${total} Orang)`;
         const itemsEl = document.getElementById('receipt-items-list');
