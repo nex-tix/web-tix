@@ -36,6 +36,65 @@ class ReportController extends BaseController
         $startOfToday = $today . ' 00:00:00';
         $endsOfToday = $today . ' 23:59:59';
 
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $startOfYesterday = $yesterday . ' 00:00:00';
+        $endsOfYesterday = $yesterday . ' 23:59:59';
+
+        $stat_penjualan = $this->transactionModel
+            ->select('IFNULL(SUM(total_amount), 0) AS total_amount', false)
+            ->where('status', 'completed')
+            ->where('created_at >=', $startOfToday)
+            ->where('created_at <=', $endsOfToday)
+            ->first() ?? ['total_amount' => 0];
+
+        $stat_penjualan_yesterday = $this->transactionModel
+            ->select('IFNULL(SUM(total_amount), 0) AS total_amount', false)
+            ->where('status', 'completed')
+            ->where('created_at >=', $startOfYesterday)
+            ->where('created_at <=', $endsOfYesterday)
+            ->first() ?? ['total_amount' => 0];
+
+        $comparison = $this->buildMoneyComparison(
+            (float) ($stat_penjualan['total_amount'] ?? 0),
+            (float) ($stat_penjualan_yesterday['total_amount'] ?? 0),
+            'penjualan',
+            'Belum ada transaksi hari ini'
+        );
+
+        //MENGAMBIL DATA DISKON HARI INI
+        $stat_diskon = $this->transactionModel
+            ->select('IFNULL(SUM(discount_amount), 0) AS discount_amount', false)
+            ->where('status', 'completed')
+            ->where('created_at >=', $startOfToday)
+            ->where('created_at <=', $endsOfToday)
+            ->first() ?? ['discount_amount' => 0];
+
+        //MENGAMBIL DATA PENGUNJUNG + TIKET TERJUAL HARI INI
+        $stat_pengunjung = $this->chekinHistoryModel
+            ->where('result', 'VALID')
+            ->where('DATE(scanned_at)', date('Y-m-d'))
+            ->countAllResults();
+
+        $tiket_terjual = $this->ticketModel
+            ->where('created_at >=', $startOfToday)
+            ->where('created_at <=', $endsOfToday)
+            ->where('status !=', 'cancelled')
+            ->countAllResults();
+
+        $stat_pengunjung_sub = 'Belum ada tiket terjual hari ini';
+        if ($tiket_terjual > 0) {
+            $stat_pengunjung_sub = $stat_pengunjung > 0
+                ? "{$stat_pengunjung} dari {$tiket_terjual} tiket terjual"
+                : 'Belum ada pengunjung masuk hari ini';
+        }
+
+        //MENGAMBIL DATA TIKET BELUM TERPAKAI HARI INI
+        $stat_tiket = $this->ticketModel
+            ->where('status', 'active')
+            ->where('created_at >=', $startOfToday)
+            ->where('created_at <=', $endsOfToday)
+            ->countAllResults();
+
         $data = [
             //MENGAMBIL DATA UNTUK TABLE
             'checkin_histories' => $this->chekinHistoryModel
@@ -54,33 +113,18 @@ class ReportController extends BaseController
                 ->findAll(),
 
             //MENGAMBIL DATA PENJUALAN HARI INI
-            'stat_penjualan' => $this->transactionModel
-                ->select('IFNULL(SUM(total_amount), 0) AS total_amount', false)
-                ->where('status', 'completed' )
-                ->where('created_at >=', $startOfToday)
-                ->where('created_at <=', $endsOfToday)
-                ->first() ?? ['total_amount' => 0],
+            'stat_penjualan' => $stat_penjualan,
+            'stat_penjualan_comparison' => $comparison,
 
             //MENGAMBIL DATA DISKON HARI INI
-            'stat_diskon' => $this->transactionModel
-                ->select('IFNULL(SUM(discount_amount), 0) AS discount_amount', false)
-                ->where('status', 'completed' )
-                ->where('created_at >=', $startOfToday)
-                ->where('created_at <=', $endsOfToday)
-                ->first() ?? ['discount_amount' => 0],
+            'stat_diskon' => $stat_diskon,
 
             //MENGAMBIL DATA PENGUNJUNG MASUK HARI INI
-            'stat_pengunjung' => $this->chekinHistoryModel
-                ->where('result', 'VALID')
-                ->where('DATE(scanned_at)', date('Y-m-d'))
-                ->countAllResults(),
+            'stat_pengunjung' => $stat_pengunjung,
+            'stat_pengunjung_sub' => $stat_pengunjung_sub,
 
             //MENGAMBIL DATA TIKET BELUM DIGUNAKAN HARI INI
-            'stat_tiket' => $this->ticketModel
-                ->where('status', 'active')
-                ->where('created_at >=', $startOfToday)
-                ->where('created_at <=', $endsOfToday)
-                ->countAllResults(),
+            'stat_tiket' => $stat_tiket,
 
             'chart_data' => (new LaporanService())->getChartData(),
             'donut_chart_data' => (new LaporanService())->getDonutChartData(),
@@ -89,6 +133,28 @@ class ReportController extends BaseController
 
 
         return view('pages/admin/laporan/index', $data);
+    }
+
+    private function buildMoneyComparison(float $today, float $yesterday, string $noun, string $neutralLabel): array
+    {
+        $comparison = [
+            'percentage' => 0,
+            'amount' => $yesterday,
+            'status' => 'neutral',
+            'label' => $neutralLabel,
+        ];
+
+        if ($yesterday > 0) {
+            $pct = (($today - $yesterday) / $yesterday) * 100;
+            $comparison['percentage'] = round($pct, 1);
+            $comparison['status'] = $pct > 0 ? 'up' : ($pct < 0 ? 'down' : 'neutral');
+            $sign = $pct > 0 ? '+' : '';
+            $comparison['label'] = "{$sign}{$comparison['percentage']}% dari {$noun} kemarin (Rp " . number_format($yesterday, 0, ',', '.') . ")";
+        } elseif ($today > 0) {
+            $comparison['label'] = 'Naik dari Rp 0';
+        }
+
+        return $comparison;
     }
 
     public function exportPdf()

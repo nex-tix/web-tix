@@ -59,7 +59,10 @@
             <h4>Rp <?= esc(number_format($stat_penjualan['total_amount'], 0, ',', '.')) ?></h4>
           </div>
           <div class="stat-sub">
-            <h4>+23% dari penjualan kemarin (Rp 12.234.000)</h4>
+            <?php $cmpStatus = $stat_penjualan_comparison['status'] ?? 'neutral'; ?>
+            <h4 style="<?= $cmpStatus === 'up' ? 'color:#198754' : ($cmpStatus === 'down' ? 'color:#dc3545' : '') ?>">
+              <?= esc($stat_penjualan_comparison['label'] ?? 'Belum ada transaksi hari ini') ?>
+            </h4>
           </div>
         </div>
       </div>
@@ -85,7 +88,7 @@
             <h4><?= esc($stat_pengunjung) ?></h4>
           </div>
           <div class="stat-sub">
-            <h4>22 dari 44 tiket terjual</h4>
+            <h4><?= esc($stat_pengunjung_sub ?? 'Belum ada tiket terjual hari ini') ?></h4>
           </div>
         </div>
       </div>
@@ -98,7 +101,7 @@
             <h4><?= esc($stat_tiket) ?></h4>
           </div>
           <div class="stat-sub">
-            <h4>Valid hingga tengah malam <br> (24:00 WITA)</h4>
+            <h4>Berlaku sampai tengah malam <br> (24:00 WITA)</h4>
           </div>
         </div>
       </div>
