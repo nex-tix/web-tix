@@ -13,30 +13,12 @@
       <div class="card-body p-3">
         <div class="d-flex align-items-end gap-3" style="flex-wrap:nowrap;">
           <div>
-            <label class="form-label filter-label">Periode Bulan</label>
-            <div class="dropdown">
-              <button class="btn btn-filter dropdown-toggle" id="btn-bulan-label" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                <span id="bulan-label-text">Pilih bulan</span>
-              </button>
-              <div class="dropdown-menu filter-dropdown-menu p-4" id="filter-bulan-menu">
-                <?php
-                $bulanList = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
-                foreach ($bulanList as $no => $nama): ?>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="bulan-<?= $no ?>" value="<?= $no ?>">
-                    <label class="form-check-label" for="bulan-<?= $no ?>"><?= $nama ?></label>
-                  </div>
-                <?php endforeach; ?>
-              </div>
-            </div>
+            <label class="form-label filter-label">Tanggal Awal</label>
+            <input type="date" id="filter-tanggal-awal" class="form-control" style="min-width: 170px;">
           </div>
           <div>
-            <label class="form-label filter-label">Tahun</label>
-            <select id="filter-tahun" class="form-select">
-              <?php for ($y = 2020; $y <= date('Y') + 1; $y++): ?>
-                <option value="<?= $y ?>" <?= $y === (int)date('Y') ? 'selected' : '' ?>><?= $y ?></option>
-              <?php endfor; ?>
-            </select>
+            <label class="form-label filter-label">Tanggal Akhir</label>
+            <input type="date" id="filter-tanggal-akhir" class="form-control" style="min-width: 170px;">
           </div>
           <div>
             <a id="btn-export-pdf" class="btn btn-transaksi" href="#">
@@ -268,47 +250,62 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-        const monthBoxes = Array.from(document.querySelectorAll('#filter-bulan-menu .form-check-input'));
-        const tahunSelect = document.getElementById('filter-tahun');
+        const startInput = document.getElementById('filter-tanggal-awal');
+        const endInput = document.getElementById('filter-tanggal-akhir');
         const exportBtn = document.getElementById('btn-export-pdf');
-        const labelEl = document.getElementById('bulan-label-text');
-        const shortNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        const fullNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        let alertEl = null;
 
-        monthBoxes.forEach(function (cb) {
-          if (parseInt(cb.value) === <?= (int)date('n') ?>) cb.checked = true;
-        });
+        function formatDateRegional(dateStr) {
+          if (!dateStr) return '';
+          const parts = dateStr.split('-');
+          return parts[2] + '-' + parts[1] + '-' + parts[0];
+        }
 
-        function selectedMonths() {
-          return monthBoxes
-            .filter(function (cb) { return cb.checked; })
-            .map(function (cb) { return parseInt(cb.value); })
-            .sort(function (a, b) { return a - b; });
+        function hideAlert() {
+          if (alertEl) {
+            alertEl.remove();
+            alertEl = null;
+          }
+        }
+
+        function showAlert(message) {
+          hideAlert();
+          alertEl = document.createElement('div');
+          alertEl.className = 'alert alert-warning alert-dismissible fade show mt-3';
+          alertEl.setAttribute('role', 'alert');
+          alertEl.innerHTML = message +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>';
+          document.querySelector('.filter-export').insertAdjacentElement('afterend', alertEl);
+          setTimeout(hideAlert, 3000);
         }
 
         function updateExportUrl() {
-          const selected = selectedMonths();
+          hideAlert();
 
-          if (selected.length === 0) {
-            labelEl.textContent = 'Pilih bulan...';
+          if (!startInput.value || !endInput.value) {
             exportBtn.href = '#';
-            exportBtn.classList.add('disabled');
             return;
           }
 
-          exportBtn.classList.remove('disabled');
-
-          const minS = shortNames[selected[0] - 1];
-          const maxS = shortNames[selected[selected.length - 1] - 1];
-          labelEl.textContent = selected.length === 1
-            ? fullNames[selected[0] - 1]
-            : minS + ' s/d ' + maxS;
-
-          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?bulan=' + selected.join(',') + '&tahun=' + tahunSelect.value;
+          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' +
+            formatDateRegional(startInput.value) + '&end=' + formatDateRegional(endInput.value);
         }
 
-        monthBoxes.forEach(function (cb) { cb.addEventListener('change', updateExportUrl); });
-        tahunSelect.addEventListener('change', updateExportUrl);
+        startInput.addEventListener('change', updateExportUrl);
+        endInput.addEventListener('change', updateExportUrl);
+
+        exportBtn.addEventListener('click', function (e) {
+          if (!startInput.value || !endInput.value) {
+            e.preventDefault();
+            showAlert('Silahkan tentukan tanggal dahulu');
+            return;
+          }
+          if (endInput.value < startInput.value) {
+            e.preventDefault();
+            showAlert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
+          }
+        });
+
         updateExportUrl();
       });
     </script>

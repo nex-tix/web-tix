@@ -159,25 +159,46 @@ class ReportController extends BaseController
 
     public function exportPdf()
     {
-        $bulanInput = $this->request->getGet('bulan');
-        $tahun = (int) $this->request->getGet('tahun');
+        $startInput = $this->request->getGet('start');
+        $endInput = $this->request->getGet('end');
 
-        if (empty($bulanInput) || !$tahun) {
-            return redirect()->back()->with('error', 'Filter bulan/tahun tidak valid');
+        if (empty($startInput) || empty($endInput)) {
+            return redirect()->back()->with('error', 'Tanggal awal dan akhir harus diisi');
         }
 
-        $bulanArr = array_map('intval', explode(',', $bulanInput));
-        $bulanArr = array_unique(array_filter($bulanArr, fn($b) => $b >= 1 && $b <= 12));
-        sort($bulanArr);
+        $startDt = \DateTime::createFromFormat('d-m-Y', $startInput);
+        $endDt = \DateTime::createFromFormat('d-m-Y', $endInput);
 
-        if (empty($bulanArr) || count($bulanArr) > 12) {
-            return redirect()->back()->with('error', 'Maksimal 12 bulan, range bulan 1-12');
+        if ($startDt === false || $endDt === false
+            || $startDt->format('d-m-Y') !== $startInput
+            || $endDt->format('d-m-Y') !== $endInput) {
+            return redirect()->back()->with('error', 'Format tanggal tidak valid');
         }
 
-        $startMonth = $bulanArr[0];
-        $endMonth = end($bulanArr);
-        $startDate = sprintf('%04d-%02d-01', $tahun, $startMonth);
-        $endDate = sprintf('%04d-%02d-%02d', $tahun, $endMonth, cal_days_in_month(CAL_GREGORIAN, $endMonth, $tahun));
+        $startDate = $startDt->format('Y-m-d');
+        $endDate = $endDt->format('Y-m-d');
+
+        if ($startDate > $endDate) {
+            return redirect()->back()->with('error', 'Tanggal awal harus sebelum tanggal akhir');
+        }
+
+        $tahun = (int) $startDt->format('Y');
+        $startMonth = (int) $startDt->format('n');
+        $endMonth = (int) $endDt->format('n');
+
+        $bulanArr = [];
+        $y = (int) $startDt->format('Y');
+        $m = (int) $startDt->format('n');
+        $endY = (int) $endDt->format('Y');
+        $endM = (int) $endDt->format('n');
+        while ($y < $endY || ($y === $endY && $m <= $endM)) {
+            $bulanArr[] = $m;
+            $m++;
+            if ($m > 12) {
+                $m = 1;
+                $y++;
+            }
+        }
 
         $data = [
             'reportDate' => $startDate,
