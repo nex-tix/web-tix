@@ -122,7 +122,14 @@ class PricingService
         }
 
         if ($category === 'individual') {
-            $maxIndividual = (int) $this->settingModel->getSetting('max_individual_per_tx', 4);
+            $maxIndividual = (int) $this->settingModel->getSetting('max_individual_per_tx', 2);
+
+            if ($totalVisitors < 1) {
+                return [
+                    'valid'   => false,
+                    'message' => 'Minimal 1 tiket individual per transaksi.',
+                ];
+            }
 
             if ($totalVisitors > $maxIndividual) {
                 return [
@@ -133,8 +140,8 @@ class PricingService
         }
 
         if ($category === 'group') {
-            $minGroupSize    = (int) $this->settingModel->getSetting('min_group_size', 5);
-            $maxGroupMembers = (int) $this->settingModel->getSetting('max_group_members', 15);
+            $minGroupSize    = (int) $this->settingModel->getSetting('min_group_size', 3);
+            $maxGroupMembers = (int) $this->settingModel->getSetting('max_group_members', 999);
 
             if ($totalVisitors < $minGroupSize) {
                 return [

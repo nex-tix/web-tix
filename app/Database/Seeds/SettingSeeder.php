@@ -12,9 +12,9 @@ class SettingSeeder extends Seeder
 
         // Data awal sesuai PRD v2.5 baris 664–671
         $settings = [
-            'min_group_size'       => '5',
-            'max_individual_per_tx' => '4',
-            'max_group_members'   => '15',
+            'min_group_size'       => '3',
+            'max_individual_per_tx' => '2',
+            'max_group_members'   => '999',
             'retention_months'    => '12',
             'login_max_attempts'  => '5',
             'login_lock_minutes'  => '15',

@@ -49,8 +49,15 @@ class PosController extends BaseController
             ->orderBy('name', 'ASC')
             ->findAll();
 
+        $posLimits = [
+            'max_individual_per_tx' => (int) $this->settingModel->getSetting('max_individual_per_tx', 2),
+            'min_group_size'        => (int) $this->settingModel->getSetting('min_group_size', 3),
+            'max_group_members'     => (int) $this->settingModel->getSetting('max_group_members', 999),
+        ];
+
         return view('pages/admin/pos/index', [
             'ticketTypes' => $ticketTypes,
+            'posLimits'   => $posLimits,
         ]);
     }
 

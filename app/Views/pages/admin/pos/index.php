@@ -141,7 +141,7 @@
                             <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                             </svg>
-                            Individual (1 - 2 Orang)
+                            Individual (1 - <?= $posLimits['max_individual_per_tx'] ?> Orang)
                         </button>
                         <button class="py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" id="btn-mode-rombongan" onclick="setMode('rombongan')" type="button">
                             <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
@@ -157,7 +157,7 @@
                     <div class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewbox="0 0 20 20">
                             <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
                         </svg><span class="text-emerald-900 font-medium" id="mode-desc">Mode Individual: Maksimal 2 tiket per transaksi.</span></div>
-                    <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / 4 Orang</div>
+                    <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">—</span> Orang</div>
                 </div>
                 <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
                 <div class="space-y-3" id="tickets-container"></div>
@@ -275,6 +275,8 @@
     const ticketTypes = <?= json_encode($ticketTypes) ?>;
     const ticketTypesById = Object.fromEntries(ticketTypes.map(t => [t.id, t]));
     const csrfName = document.querySelector('meta[name="csrf-name"]')?.content || 'csrf_test_name';
+    const posLimits = <?= json_encode($posLimits) ?>;
+    
     const posState = {
         origin: 'domestik',
         mode: 'individual',
@@ -286,11 +288,11 @@
     const limits = {
         individual: {
             min: 1,
-            max: 2
+            max: posLimits?.max_individual_per_tx ?? 2
         },
         rombongan: {
-            min: 3,
-            max: 'unlimited'
+            min: posLimits?.min_group_size ?? 3,
+            max: posLimits?.max_group_members ?? 'unlimited'
         }
     };
     const posStateCategory = () => posState.mode === 'rombongan' ? 'group' : 'individual';
@@ -405,7 +407,7 @@
         document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 3 orang.';
         document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
         document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
-        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / ${limits[mode].max}`;
+        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">${limits[mode].max}</span> Orang`;
         document.getElementById('group-warning').classList.add('hidden');
         clearFieldErrors();
         renderTickets();
@@ -462,9 +464,11 @@
         const cat = posStateCategory();
         const badge = document.getElementById('total-qty-display');
         if (badge) badge.textContent = total;
+        const maxDisplay = document.getElementById('max-display');
+        if (maxDisplay) maxDisplay.textContent = limits[posState.mode].max;
         const countBadge = document.getElementById('visitor-count-badge');
         if (countBadge && !countBadge.querySelector('#total-qty-display')) {
-            countBadge.innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">${total}</span> / ${limits[posState.mode].max} Orang`;
+            countBadge.innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">${total}</span> / <span id="max-display">${limits[posState.mode].max}</span> Orang`;
         }
         document.getElementById('summary-visitor-origin').textContent = `${posState.origin === 'domestik' ? 'Domestik (WNI)' : 'Mancanegara (WNA)'} (${total} Orang)`;
         const itemsEl = document.getElementById('receipt-items-list');
