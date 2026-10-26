@@ -48,14 +48,6 @@
               </tr>
             </thead>
             <tbody class="table-light">
-              <?php if (empty($transactions)): ?>
-                <tr>
-                  <td colspan="8" class="text-center text-muted py-4">
-                    <i class="bi bi-inbox" style="font-size:2rem;opacity:.3"></i>
-                    <div class="mt-2">Tidak ada transaksi ditemukan.</div>
-                  </td>
-                </tr>
-              <?php else: ?>
                 <?php foreach ($transactions as $row): ?>
                   <tr>
                     <td>
@@ -99,7 +91,6 @@
                     </td>
                   </tr>
                 <?php endforeach; ?>
-              <?php endif; ?>
             </tbody>
           </table>
         </div>
