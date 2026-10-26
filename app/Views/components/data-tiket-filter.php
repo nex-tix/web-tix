@@ -11,7 +11,8 @@
       </div>
       <div class="col-sm-6 col-lg-3">
         <label class="form-label" style="font-size:.7rem;font-weight:600;letter-spacing:.5px;color:var(--text-muted);text-transform:uppercase">Tipe Tiket</label>
-        <select class="form-select form-select-sm" name="type_id" onchange="this.form.submit()">
+        <!-- input-design: khusus dropdown tipe tiket (pengganti Tailwind forms) -->
+        <select class="input-design form-select form-select-sm" name="type_id" onchange="this.form.submit()" data-has-arrow>
           <option value="">Semua Tipe</option>
           <?php foreach (($ticketTypes ?? []) as $type): ?>
             <option value="<?= esc($type['id']) ?>" <?= (int)($filters['type_id'] ?? 0) === (int)$type['id'] ? 'selected' : '' ?>><?= esc($type['name']) ?></option>

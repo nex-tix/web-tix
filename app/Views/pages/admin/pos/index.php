@@ -46,7 +46,7 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-name">
                             Nama Pengunjung / Perwakilan <span class="text-brand-red">*</span>
                         </label>
-                        <input class=" input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-name" placeholder="Contoh: Budi Santoso / John Doe" type="text" />
+                        <input class="input-design input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-name" placeholder="Contoh: Budi Santoso / John Doe" type="text" />
                         <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="customer_name"></p>
                     </div>
                     <div>
@@ -73,14 +73,14 @@
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-city">
                             Kota / Kabupaten Asal
                         </label>
-                        <input class=" input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-city" placeholder="Contoh: Jakarta Selatan, Surabaya, Denpasar" type="text" />
+                        <input class="input-design input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-city" placeholder="Contoh: Jakarta Selatan, Surabaya, Denpasar" type="text" />
                         <p class="field-error hidden text-xs text-rose-600" data-error="origin"></p>
                     </div>
                     <div class="space-y-1 hidden" id="field-mancanegara">
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-country">
                             Negara Asal (Country)
                         </label>
-                        <select class="w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-country">
+                        <select class="input-design w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-country" data-has-arrow>
                             <option value="Australia">Australia</option>
                             <option value="France">France</option>
                             <option value="India">India</option>
@@ -100,7 +100,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-semibold text-slate-500"></span>
-                                <input class="input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="081234567890" type="number" />
+                                <input class="input-design input-text w-full pl-12 text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2" id="visitor-phone" placeholder="081234567890" type="number" />
                             </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="phone"></p>
                         </div>
@@ -108,7 +108,7 @@
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-address">
                                 Hotel / Alamat di Bali
                             </label>
-                            <input class=" input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-address" placeholder="Contoh: Hotel Padang-Padang / Villa Jimbaran" type="text" />
+                            <input class="input-design input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-address" placeholder="Contoh: Hotel Padang-Padang / Villa Jimbaran" type="text" />
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="address"></p>
                         </div>
                     </div>
@@ -233,9 +233,10 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="cash-received">Nominal Uang Diterima</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-bold text-slate-500">Rp</span>
-                                <input class=" input-text w-full pl-10 text-base font-bold rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition py-2 text-slate-900" id="cash-received" min="0" placeholder="0" step="5000" type="number" />
+                            <!-- Prefix "Rp" di luar input (bukan overlay) agar tidak menindih nominal -->
+                            <div class="flex items-stretch">
+                                <span class="input-design input-prefix flex items-center px-3 text-xs font-bold text-slate-700 rounded-r-none border-r-0">Rp</span>
+                                <input class="input-design input-text flex-1 text-base font-bold rounded-l-none text-slate-900" id="cash-received" min="0" placeholder="0" step="5000" type="number" />
                             </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="cash_paid"></p>
                         </div>

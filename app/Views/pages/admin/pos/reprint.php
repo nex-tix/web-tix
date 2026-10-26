@@ -35,7 +35,7 @@
             <form method="GET" action="<?= base_url('admin/pos/reprint') ?>" class="flex flex-col sm:flex-row sm:items-end gap-3">
                 <div class="flex-1">
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="invoice_code">Kode Invoice</label>
-                    <input class="w-full mb-2 text-black text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2.5" id="invoice_code" name="invoice_code" value="<?= esc($search) ?>" placeholder="Contoh: INV-20261008-ABC123" type="text" autocomplete="off" />
+                    <input class="input-design w-full mb-2 text-black text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2.5" id="invoice_code" name="invoice_code" value="<?= esc($search) ?>" placeholder="Contoh: INV-20261008-ABC123" type="text" autocomplete="off" />
                     <div class="d-flex justify-end flex-column">
                         <div class="flex items-center gap-2">
                             <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-sm transition">

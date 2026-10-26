@@ -7,7 +7,8 @@
       </div>
       <div class="col-sm-6 col-lg-3">
         <label class="form-label" style="font-size:.7rem;font-weight:600;letter-spacing:.5px;color:var(--text-muted);text-transform:uppercase">Metode Bayar</label>
-        <select class="form-select form-select-sm" name="payment" onchange="this.form.submit()">
+        <!-- input-design: khusus dropdown metode bayar (pengganti Tailwind forms) -->
+        <select class="input-design form-select form-select-sm" name="payment" onchange="this.form.submit()" data-has-arrow>
           <option value="">Semua</option>
           <option value="cash" <?= ($filters['payment'] ?? '') === 'cash' ? 'selected' : '' ?>>Tunai (Cash)</option>
           <option value="debit" <?= ($filters['payment'] ?? '') === 'debit' ? 'selected' : '' ?>>Debit</option>
@@ -15,7 +16,8 @@
       </div>
       <div class="col-sm-6 col-lg-3">
         <label class="form-label" style="font-size:.7rem;font-weight:600;letter-spacing:.5px;color:var(--text-muted);text-transform:uppercase">Kasir / Admin</label>
-        <select class="form-select form-select-sm" name="user_id" onchange="this.form.submit()">
+        <!-- input-design: khusus dropdown kasir/admin (pengganti Tailwind forms) -->
+        <select class="input-design form-select form-select-sm" name="user_id" onchange="this.form.submit()" data-has-arrow>
           <option value="">Semua Kasir</option>
           <?php foreach (($users ?? []) as $user): ?>
             <option value="<?= esc($user['id']) ?>" <?= (int)($filters['user_id'] ?? 0) === (int)$user['id'] ? 'selected' : '' ?>><?= esc($user['name']) ?></option>

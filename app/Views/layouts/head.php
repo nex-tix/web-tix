@@ -31,7 +31,7 @@
   crossorigin="anonymous" />
 
 
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.tailwindcss.com?plugins=container-queries"></script>
 <!-- Tailwind Configuration for exact Brand Colors -->
 <script>
   tailwind.config = {

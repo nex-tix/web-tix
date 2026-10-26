@@ -28,6 +28,87 @@
         color: #1a1d20;
       }
 
+      /* ============================================================
+         INPUT DESIGN — khusus input di section DATA PENGUNJUNG (POS),
+         NOMINAL UANG DITERIMA (POS), KODE INVOICE (Cetak Ulang),
+         dropdown metode bayar & kasir (Riwayat Penjualan),
+         dropdown tipe tiket (Data Tiket).
+         Menggantikan Tailwind forms plugin yang sudah dihapus.
+         ============================================================ */
+      .input-design {
+        background-color: #fff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.375rem !important;
+        color: #1f2937 !important;
+        font-size: 0.875rem !important;
+        padding: 0.5rem 0.75rem !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+      }
+
+      /* Fokus: border merah brand + ring shadow lembut */
+      .input-design:focus {
+        border-color: #e24a3b !important;
+        box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.15) !important;
+        outline: none !important;
+      }
+
+      /* Placeholder abu-abu */
+      .input-design::placeholder {
+        color: #9ca3af !important;
+        opacity: 1 !important;
+      }
+
+      /* Prefix "Rp" di sebelah kiri input — menyatu dengan input (border kanan dihapus, radius kanan dihapus) */
+      .input-prefix {
+        background-color: #f8f9fa !important;
+        border-right: none !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        white-space: nowrap;
+      }
+
+      /* Input di sebelah kanan prefix — radius kiri dihapus */
+      .input-prefix + .input-design,
+      .input-prefix ~ input.input-design {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+      }
+
+      /* Sembunyikan spinner (up/down arrow) pada input type=number */
+      .input-design[type="number"]::-webkit-inner-spin-button,
+      .input-design[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+      }
+      .input-design[type="number"] {
+        -moz-appearance: textfield !important;
+      }
+
+      /* Panah dropdown untuk select — aktifkan via data-has-arrow */
+      .input-design[data-has-arrow] {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3e%3cpath d='M3 4l3 4 3-4' stroke='%236b7280' stroke-width='1.5'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 2.5rem;
+      }
+
+      /* ============================================================
+         RESET bare input/textarea/select — batalkan default Bootstrap
+         styling agar bare elements = unstyled HTML default.
+         Hanya berlaku untuk elements tanpa class input-design,
+         form-control, atau form-select.
+         ============================================================ */
+      input:not(.input-design):not(.form-control),
+      textarea:not(.input-design):not(.form-control),
+      select:not(.input-design):not(.form-select) {
+        background-color: #fff !important;
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+      }
+
       input[type="date"]::-webkit-calendar-picker-indicator {
         filter: brightness(0);
         cursor: pointer;
