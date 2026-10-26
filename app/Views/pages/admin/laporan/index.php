@@ -208,48 +208,50 @@
               <h4 style="color: #2c3136;" class="sub-text">Audit Scan Tiket</h4>
             </div>
           </div>
-          <table id="datatable" class="table table-hover datatable mb-0">
-            <thead>
-              <tr>
-                <th>Waktu Scan</th>
-                <th>Checkpoint</th>
-                <th>Kode Tiket</th>
-                <th>Kategori</th>
-                <th>Admin/kasir</th>
-                <th>Status Scan</th>
-              </tr>
-            </thead>
-            <tbody class="table-light">
-              <?php foreach ($checkin_histories as $ch) : ?>
+          <div class="table-responsive">
+            <table id="datatable" class="table table-hover datatable mb-0">
+              <thead>
                 <tr>
-                  <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
-                  <td><?= esc($ch['checkpoint_name']) ?></td>
-                  <td><?= esc($ch['ticket_code']) ?></td>
-                  <td><?= esc($ch['ticket_category']) ?></td>
-                  <td><?= esc($ch['gate_username']) ?></td>
-                  <td>
-                    <?php if ($ch['result'] == 'VALID') : ?>
-                      Diterima
-                    <?Php elseif ($ch['result'] == 'ALREADY_USED') : ?>
-                      Tiket telah terpakai
-                    <?Php elseif ($ch['result'] == 'EXPIRED') : ?>
-                      Tiket telah kadaluarwa
-                    <?Php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
-                      Tiket belum bisa digunakan
-                    <?Php elseif ($ch['result'] == 'CANCELLED') : ?>
-                      Tiket telah dibatalkan
-                    <?php endif; ?>
-                  </td>
+                  <th>Waktu Scan</th>
+                  <th>Checkpoint</th>
+                  <th>Kode Tiket</th>
+                  <th>Kategori</th>
+                  <th>Admin/kasir</th>
+                  <th>Status Scan</th>
                 </tr>
-              <?php endforeach ?>
+              </thead>
+              <tbody class="table-light">
+                <?php foreach ($checkin_histories as $ch) : ?>
+                  <tr>
+                    <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
+                    <td><?= esc($ch['checkpoint_name']) ?></td>
+                    <td><?= esc($ch['ticket_code']) ?></td>
+                    <td><?= esc($ch['ticket_category']) ?></td>
+                    <td><?= esc($ch['gate_username']) ?></td>
+                    <td>
+                      <?php if ($ch['result'] == 'VALID') : ?>
+                        Diterima
+                      <?Php elseif ($ch['result'] == 'ALREADY_USED') : ?>
+                        Tiket telah terpakai
+                      <?Php elseif ($ch['result'] == 'EXPIRED') : ?>
+                        Tiket telah kadaluarwa
+                      <?Php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
+                        Tiket belum bisa digunakan
+                      <?Php elseif ($ch['result'] == 'CANCELLED') : ?>
+                        Tiket telah dibatalkan
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
 
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
     </section>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', function() {
         const startInput = document.getElementById('filter-tanggal-awal');
         const endInput = document.getElementById('filter-tanggal-akhir');
         const exportBtn = document.getElementById('btn-export-pdf');
@@ -294,7 +296,7 @@
         startInput.addEventListener('change', updateExportUrl);
         endInput.addEventListener('change', updateExportUrl);
 
-        exportBtn.addEventListener('click', function (e) {
+        exportBtn.addEventListener('click', function(e) {
           if (!startInput.value || !endInput.value) {
             e.preventDefault();
             showAlert('Silahkan tentukan tanggal dahulu');
