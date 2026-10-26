@@ -34,7 +34,7 @@
         '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#gateUserModal" '
           . 'data-id="' . $u['id'] . '" data-name="' . esc($u['name']) . '" data-username="' . esc($u['username']) . '" '
           . 'data-phone="' . esc($u['phone'] ?? '') . '" data-active="' . $u['is_active'] . '"><i class="bi bi-pencil"></i></button>'
-          . '<form action="' . base_url('admin/gate-users/' . $u['id'] . '/delete') . '" method="POST" class="d-inline" onsubmit="return confirm(\'Yakin ingin menghapus user ini?\')">'
+          . '<form action="' . base_url('admin/gate-users/' . $u['id'] . '/delete') . '" method="POST" class="d-inline" data-confirm-delete="true" data-delete-message="Yakin ingin menghapus user ini?">'
           . csrf_field()
           . '<button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>'
           . '</form>',

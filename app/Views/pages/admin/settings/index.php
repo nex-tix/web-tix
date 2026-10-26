@@ -25,7 +25,7 @@
         $s['updated_at'] ?? '-',
         '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#settingModal" '
           . 'data-key="' . esc($s['setting_key']) . '" data-value="' . esc($s['setting_value']) . '"><i class="bi bi-pencil"></i></button>'
-          . '<form action="' . base_url('admin/settings/' . urlencode($s['setting_key']) . '/delete') . '" method="POST" class="d-inline" onsubmit="return confirm(\'Yakin ingin menghapus setting ini?\')">'
+          . '<form action="' . base_url('admin/settings/' . urlencode($s['setting_key']) . '/delete') . '" method="POST" class="d-inline" data-confirm-delete="true" data-delete-message="Yakin ingin menghapus setting ini?">'
           . csrf_field()
           . '<button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>'
           . '</form>',

@@ -152,3 +152,33 @@
       });
     }
 );
+
+/* ============================================================ DELETE CONFIRMATION (SweetAlert2) ============================================================ */
+// Centralized handler untuk semua form delete.
+// Cukup tambahkan data-confirm-delete="true" dan data-delete-message="[pesan]" pada tag <form>.
+document.addEventListener('submit', function (e) {
+  const form = e.target;
+
+  // Lewati jika form tidak punya atribut data-confirm-delete
+  if (!form.hasAttribute('data-confirm-delete')) return;
+
+  // Cegah submit langsung, tampilkan dialog SweetAlert2 dulu
+  e.preventDefault();
+
+  const message = form.getAttribute('data-delete-message') || 'Yakin ingin menghapus data ini?';
+
+  Swal.fire({
+    title: 'Konfirmasi Hapus',
+    text: message,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      form.submit();
+    }
+  });
+});
