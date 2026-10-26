@@ -46,14 +46,6 @@
               </tr>
             </thead>
             <tbody class="table-light">
-              <?php if (empty($tickets)): ?>
-                <tr>
-                  <td colspan="9" class="text-center text-muted py-4">
-                    <i class="bi bi-inbox" style="font-size:2rem;opacity:.3"></i>
-                    <div class="mt-2">Tidak ada tiket ditemukan.</div>
-                  </td>
-                </tr>
-              <?php else: ?>
                 <?php foreach ($tickets as $row): ?>
                   <tr>
                     <td data-order="<?= strtotime($row['created_at']) ?>">
@@ -98,7 +90,6 @@
                     </td>
                   </tr>
                 <?php endforeach; ?>
-              <?php endif; ?>
             </tbody>
           </table>
         </div>
