@@ -42,6 +42,10 @@ class CreateTicketTypesTable extends Migration
                 'type' => 'DATETIME',
                 'null' => false,
             ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
 
         ]);
         $this->forge->addKey('id', true);

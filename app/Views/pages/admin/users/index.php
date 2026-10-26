@@ -14,7 +14,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <?php endif; ?>
-
+    <?php if (session()->get('errors')): ?>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                <?php foreach (session()->get('errors') as $error): ?><li><?= esc($error) ?></li><?php endforeach; ?>
+              </ul>
+            </div>
+          <?php endif; ?>
     <?php
     $headers = ['Nama', 'Username', 'Role', 'Status', 'Dibuat', 'Aksi'];
     $rows = [];
@@ -58,13 +64,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <?php if (session()->get('errors')): ?>
-            <div class="alert alert-danger">
-              <ul class="mb-0">
-                <?php foreach (session()->get('errors') as $error): ?><li><?= esc($error) ?></li><?php endforeach; ?>
-              </ul>
-            </div>
-          <?php endif; ?>
+          
           <input type="hidden" id="user_id" name="id" value="">
           <div class="row g-3">
             <div class="col-md-6">
