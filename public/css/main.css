@@ -28,6 +28,11 @@
         color: #1a1d20;
       }
 
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: brightness(0);
+        cursor: pointer;
+}
+
       /* --- SIDEBAR OVERRIDE (Hanya warna & padding) --- */
       /* ========================================================= ADMINLTE 4 SIDEBAR ========================================================= */
       /* ========================================
