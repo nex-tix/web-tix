@@ -52,6 +52,7 @@ class GateUserController extends BaseController
         $rules = [
             'name'      => 'required|max_length[100]',
             'username'  => "required|alpha_numeric|min_length[3]|max_length[50]|is_unique[gate_users.username,id,$id]",
+            'password'  => 'permit_empty|min_length[8]',
             'phone'     => 'permit_empty|max_length[25]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];

@@ -53,6 +53,7 @@ class UserController extends BaseController
         $rules = [
             'name'     => 'required|max_length[100]',
             'username' => "required|alpha_numeric|min_length[3]|max_length[50]|is_unique[users.username,id,$id]",
+            'password' => 'permit_empty|min_length[8]',
             'role'     => 'required|in_list[admin,staff]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];
