@@ -147,7 +147,7 @@
                             <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                                 <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                             </svg>
-                            Rombongan (3 Orang+)
+                            Rombongan (<?= $posLimits['min_group_size'] ?> Orang+)
                         </button>
                     </div>
                     <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="ticket_category"></p>
@@ -403,7 +403,7 @@
         const individual = mode === 'individual';
         document.getElementById('btn-mode-individual').className = individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
         document.getElementById('btn-mode-rombongan').className = !individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
-        document.getElementById('mode-desc').textContent = individual ? 'Mode Individual: Maksimal 2 tiket per transaksi.' : 'Khusus Rombongan/Group: Minimal 3 orang.';
+        document.getElementById('mode-desc').textContent = individual ? `Mode Individual: Maksimal ${posLimits?.max_individual_per_tx ?? 2} tiket per transaksi.` : `Khusus Rombongan/Group: Minimal ${posLimits?.min_group_size ?? 3} orang.`;
         document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
         document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
         document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">${mode === 'rombongan' ? 'unlimited' : limits[mode].max}</span>`;
