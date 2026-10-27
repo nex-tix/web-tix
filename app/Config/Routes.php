@@ -49,11 +49,11 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('settings/(:segment)/delete', 'Admin\SettingController::delete/$1');
 
     //Pos Management
-    $routes->get('pos', 'Admin\PosController::index');
-    $routes->post('pos/store', 'Admin\PosController::store');
-    $routes->get('pos/receipt/(:num)', 'Admin\PosController::receipt/$1');
+    $routes->get('pos', 'admin\PosController::index');
+    $routes->post('pos/store', 'admin\PosController::store');
+    $routes->get('pos/receipt/(:num)', 'admin\PosController::receipt/$1');
     $routes->get('pos/reprint', 'Admin\PosController::reprint');
-    $routes->post('pos/reprint/(:num)', 'Admin\PosController::doReprint/$1');
+    $routes->post('pos/reprint/(:num)', 'admin\PosController::doReprint/$1');
 
     //laporan
     $routes->get('laporan', 'ReportController::index');
