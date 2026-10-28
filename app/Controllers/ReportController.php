@@ -98,19 +98,14 @@ class ReportController extends BaseController
         $data = [
             //MENGAMBIL DATA UNTUK TABLE
             'checkin_histories' => $this->chekinHistoryModel
-                ->select(
-                    'ch.*, 
-                    c.name AS checkpoint_name,
-                    t.ticket_code, 
-                    t.ticket_category,
-                    gu.username AS gate_username'
-                )
-                ->from('checkin_history ch')
+                ->builder('checkin_history ch')
+                ->select('ch.*, c.name AS checkpoint_name, t.ticket_code, t.ticket_category, gu.username AS gate_username')
                 ->join('checkpoints c', 'c.id = ch.checkpoint_id', 'left')
                 ->join('tickets t', 't.id = ch.ticket_id', 'left')
                 ->join('gate_users gu', 'gu.id = ch.gate_user_id', 'left')
-                ->orderBy('scanned_at', 'ASC')
-                ->findAll(),
+                ->orderBy('ch.scanned_at', 'ASC')
+                ->get()
+                ->getResultArray(),
 
             //MENGAMBIL DATA PENJUALAN HARI INI
             'stat_penjualan' => $stat_penjualan,
@@ -169,9 +164,11 @@ class ReportController extends BaseController
         $startDt = \DateTime::createFromFormat('d-m-Y', $startInput);
         $endDt = \DateTime::createFromFormat('d-m-Y', $endInput);
 
-        if ($startDt === false || $endDt === false
+        if (
+            $startDt === false || $endDt === false
             || $startDt->format('d-m-Y') !== $startInput
-            || $endDt->format('d-m-Y') !== $endInput) {
+            || $endDt->format('d-m-Y') !== $endInput
+        ) {
             return redirect()->back()->with('error', 'Format tanggal tidak valid');
         }
 
@@ -217,9 +214,18 @@ class ReportController extends BaseController
         $dompdf->render();
 
         $bulanNames = [
-            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
-            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
         ];
 
         $filename = count($bulanArr) === 1
