@@ -16,6 +16,11 @@ class UserController extends BaseController
 
     public function index()
     {
+        $data =
+        [
+            'activeKey' => 'admin',
+            'crumbs'    => 'Operasional | Administrator',
+        ];
         $data['users'] = $this->userModel->findAll();
         return view('pages/admin/users/index', $data);
     }

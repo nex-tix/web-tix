@@ -58,6 +58,8 @@ class PosController extends BaseController
         return view('pages/admin/pos/index', [
             'ticketTypes' => $ticketTypes,
             'posLimits'   => $posLimits,
+            'activeKey' => 'pos',
+            'crumbs'    => 'Operasional | Pos Loket',
         ]);
     }
 
@@ -203,6 +205,8 @@ class PosController extends BaseController
             'tickets'     => $tickets,
             'error'       => $error,
             'search'      => $invoice,
+            'activeKey' => 'reprint',
+            'crumbs'    => 'Operasional | Cetak Ulang Tiket',
         ]);
     }
 

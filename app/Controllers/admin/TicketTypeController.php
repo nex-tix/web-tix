@@ -16,6 +16,10 @@ class TicketTypeController extends BaseController
 
     public function index()
     {
+        $data = [
+            'activeKey' => 'jenis-tiket',
+            'crumbs'    => 'Operasional | Jenis Tiket',
+        ];
         $data['ticketTypes'] = $this->ticketTypeModel->findAll();
         return view('pages/admin/ticket_types/index', $data);
     }

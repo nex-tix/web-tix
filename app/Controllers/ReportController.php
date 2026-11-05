@@ -123,6 +123,9 @@ class ReportController extends BaseController
 
             'chart_data' => (new LaporanService())->getChartData(),
             'donut_chart_data' => (new LaporanService())->getDonutChartData(),
+
+            'activeKey' => 'laporan',
+            'crumbs'    => 'Operasional | Laporan',
         ];
 
 

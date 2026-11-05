@@ -16,6 +16,11 @@ class SettingController extends BaseController
 
     public function index()
     {
+        $data =
+        [
+            'activeKey' => 'setting',
+            'crumbs'    => 'Operasional | Settings',
+        ];
         $data['settings'] = $this->settingModel->findAll();
         return view('pages/admin/settings/index', $data);
     }

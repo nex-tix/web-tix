@@ -16,6 +16,11 @@ class CheckpointController extends BaseController
 
     public function index()
     {
+        $data =
+        [
+            'activeKey' => 'checkpoint',
+            'crumbs'    => 'Operasional | Checkpoint',
+        ];
         $data['checkpoints'] = $this->checkpointModel->findAll();
         return view('pages/admin/checkpoints/index', $data);
     }

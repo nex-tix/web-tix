@@ -55,6 +55,8 @@ class TransactionHistoryController extends BaseController
         $transactions = $builder->get()->getResultArray();
 
         return view('pages/admin/transaction-history/index', [
+            'activeKey' => 'riwayat',
+            'crumbs'    => 'Operasional | Riwayat Transaksi',
             'transactions' => $transactions,
             'users'        => $users,
             'filters'      => [

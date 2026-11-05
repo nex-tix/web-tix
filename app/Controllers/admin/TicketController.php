@@ -57,6 +57,8 @@ class TicketController extends BaseController
         $tickets = $builder->get()->getResultArray();
 
         return view('pages/admin/data-tiket/index', [
+            'activeKey' => 'data-tiket',
+            'crumbs'    => 'Operasional | Data Tiket',
             'tickets'     => $tickets,
             'ticketTypes' => $ticketTypes,
             'filters'     => [

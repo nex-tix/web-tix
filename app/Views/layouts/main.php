@@ -15,7 +15,7 @@
   <?= $this->include('layouts/head.php') ?>
 </head>
 
-<body data-active="dashboard" data-crumbs="">
+<body data-active="<?= esc($activeKey ?? '') ?>" data-crumbs="<?= esc($crumbs ?? '') ?>">
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

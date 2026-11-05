@@ -61,7 +61,7 @@ class Home extends BaseController
             $debitByDate[$row['tanggal']] = (float) $row['total'];
         }
 
-        
+
         $report = $service->getDailyReport();
         // Siapkan format yang dibutuhkan ApexCharts.
         $report['labels'] = array_map(
@@ -71,6 +71,11 @@ class Home extends BaseController
         $report['cash'] = array_values($cashByDate);
         $report['debit'] = array_values($debitByDate);
         $report['transactions'] = $service->getRecentTransactions($page, 7);
-        return view('pages/admin/dashboard/index', ['report' => $report]);
+
+        return view('pages/admin/dashboard/index', [
+            'report'    => $report,
+            'activeKey' => 'dashboard',
+            'crumbs'    => 'Operasional | Beranda',
+        ]);
     }
 }

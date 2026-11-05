@@ -15,6 +15,11 @@ class GateUserController extends BaseController
 
     public function index()
     {
+        $data = 
+        [
+            'activeKey' => 'gate',
+            'crumbs'    => 'Operasional | Penjaga Gate',
+        ];
         $data['gateUsers'] = $this->gateUserModel->findAll();
         return view('pages/admin/gate_users/index', $data);
     }
