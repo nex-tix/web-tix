@@ -20,12 +20,13 @@
  */
 
 const packageInfo = { version: '1.0.0' };
+const BASE = (document.querySelector('meta[name="base-url"]')?.content || '/').replace(/\/+$/, '') + '/';
 
 export const NAV = [
   {
     label: 'Workspace',
     items: [
-      { key: 'dashboard', text: 'Dashboard', href: 'dashboard',
+      { key: 'dashboard', text: 'Dashboard', href: BASE + 'admin/dashboard',
         icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
       { key: 'docs', text: 'Documentation', href: 'https://adminator.colorlib.com/docs/', badge: { kind: 'new', text: 'DOCS' },
         icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
@@ -91,12 +92,21 @@ const BRAND_LOGO = `<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
 
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>';
 
+function isExternal(href) {
+  try {
+    const url = new URL(href, window.location.origin);
+    return url.origin !== window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
 function renderNavLink(item, activeKey) {
   const active = item.key === activeKey ? ' is-active' : '';
   const badge = item.badge
     ? `<span class="nav-badge ${item.badge.kind}">${item.badge.text}</span>`
     : '';
-  const external = /^https?:\/\//.test(item.href) ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const external = isExternal(item.href) ? ' target="_blank" rel="noopener noreferrer"' : '';
   return `
     <a class="nav-link${active}" href="${item.href}"${external}>
       <svg viewBox="0 0 24 24">${item.icon}</svg>
