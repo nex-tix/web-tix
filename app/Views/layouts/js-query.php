@@ -33,4 +33,4 @@
 <script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
 
 <!-- TailPanel -->
- <script type="module" src="<?= base_url('js/tailpanel/Shell.js') ?>"></script>
+ <script type="module" src="<?= base_url('js/tailpanel/index.js') ?>"></script>

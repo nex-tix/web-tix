@@ -2,26 +2,29 @@
 <html lang="id">
 
 <head>
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('dash26-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
   <?= $this->include('layouts/head.php') ?>
 </head>
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-  <div class="app-wrapper">
-
-    <!-- ===================================================== SIDEBAR ====================================================== -->
-    <!-- Sidebar AdminLTE 4 -->
-    <?= $this->include('partials/sidebar.php') ?>
-
-    <!-- ===================================================== MAIN ====================================================== -->
-    <main class="app-main">
-      <!-- ================================================= TOP STATUS ================================================== -->
-      <?= $this->include('partials/header.php') ?>
-
-
-      <!-- ================================================= CONTENT ================================================== -->
-      <?= $this->renderSection('content') ?>
-
-    </main>
+<body data-active="dashboard" data-crumbs="">
+  <div class="shell">
+    <div data-shell-sidebar></div>
+    <div class="main">
+      <div data-shell-topbar></div>
+      <main class="content">
+        <?= $this->renderSection('content') ?>
+      </main>
+      <div data-shell-footer></div>
+    </div>
   </div>
   <!-- ========================================================= JAVASCRIPT ========================================================== -->
   <!-- jQuery -->

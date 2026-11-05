@@ -11,7 +11,6 @@
  * [data-shell-footer]) inside the .shell wrapper.
  */
 
-import '../../styles/2026/index.scss';
 import { mountShell } from './Shell.js';
 import { initShellBehaviors } from './init.js';
 import { initCharts } from './charts.js';

@@ -19,13 +19,13 @@
  * NAV is the single source of truth — adding a page is one entry here.
  */
 
-import packageInfo from '../../../package.json';
+const packageInfo = { version: '1.0.0' };
 
 export const NAV = [
   {
     label: 'Workspace',
     items: [
-      { key: 'dashboard', text: 'Dashboard', href: 'index.html',
+      { key: 'dashboard', text: 'Dashboard', href: 'dashboard',
         icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
       { key: 'docs', text: 'Documentation', href: 'https://adminator.colorlib.com/docs/', badge: { kind: 'new', text: 'DOCS' },
         icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
