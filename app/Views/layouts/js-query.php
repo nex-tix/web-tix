@@ -31,4 +31,6 @@
 <script src="<?= base_url('js/report-chart.js') ?>"></script>
 <script src="<?= base_url('js/donut-report-chart.js') ?>"></script>
 <script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
-<script>
+
+<!-- TailPanel -->
+ <script type="module" src="<?= base_url('js/tailpanel/Shell.js') ?>"></script>

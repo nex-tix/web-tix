@@ -19,7 +19,7 @@
  * NAV is the single source of truth — adding a page is one entry here.
  */
 
-import packageInfo from '../../../../package.json';
+import packageInfo from '../../../package.json';
 
 export const NAV = [
   {
@@ -315,3 +315,7 @@ export function mountShell() {
   if (topbarHost)  topbarHost.outerHTML  = renderTopbar(crumbs);
   if (footerHost)  footerHost.outerHTML  = renderFooter();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    mountShell();
+});

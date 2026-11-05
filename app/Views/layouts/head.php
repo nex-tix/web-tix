@@ -1,5 +1,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="base-url" content="<?= rtrim(base_url(), '/') ?>/">
 <title>Kecak Uluwatu - Dashboard (AdminLTE 4)</title>
 
 <!-- Bootstrap 5 CSS -->
@@ -22,6 +23,9 @@
 
 <link rel="stylesheet" href="<?= base_url('css/main.css') ?>">
 <link rel="stylesheet" href="<?= base_url('css/modal.css') ?>">
+
+<!-- TailPanel -->
+ <link rel="stylesheet" href="<?= base_url('css/tailpanel/tailpanel.css') ?>">
 
 <!-- Apexchart -->
 <link
