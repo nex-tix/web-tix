@@ -19,47 +19,99 @@
  * NAV is the single source of truth — adding a page is one entry here.
  */
 
-const packageInfo = { version: '1.0.0' };
-const BASE = (document.querySelector('meta[name="base-url"]')?.content || '/').replace(/\/+$/, '') + '/';
+const packageInfo = { version: "1.0.0" };
+const BASE =
+  (document.querySelector('meta[name="base-url"]')?.content || "/").replace(
+    /\/+$/,
+    "",
+  ) + "/";
 
 export const NAV = [
   {
-    label: 'OPERASIONAL',
+    label: "OPERASIONAL",
     items: [
-      { key: 'dashboard', text: 'Dashboard', href: BASE + 'admin/dashboard',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'pos', text: 'Pos Loket', href: BASE + 'admin/pos',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'reprint', text: 'Cetak Ulang Tiket', href: BASE + 'admin/pos/reprint',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'riwayat', text: 'Riwayat Penjualan', href: BASE + 'admin/transaction-history',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'laporan', text: 'Laporan', href: BASE + 'admin/laporan',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'data-tiket', text: 'Data Tiket', href: BASE + 'admin/data-tiket',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'jenis-tiket', text: 'Jenis Tiket', href: BASE + 'admin/ticket-types',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
-      { key: 'checkpoint', text: 'Checkpoint', href: BASE + 'admin/checkpoints',
-        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>' },
+      {
+        key: "dashboard",
+        text: "Dashboard",
+        href: BASE + "admin/dashboard",
+        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>',
+      },
+      {
+        key: "pos",
+        text: "Pos Loket",
+        href: BASE + "admin/pos",
+        icon: ' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display" viewBox="0 0 16 16"> <path d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0m2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0M9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5M1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2z"/>',
+      },
+      {
+        key: "reprint",
+        text: "Cetak Ulang Tiket",
+        href: BASE + "admin/pos/reprint",
+        icon: 'xmlns="http://www.w3.org/2000/svg" width="50" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16"> <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/> <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>',
+      },
+      {
+        key: "riwayat",
+        text: "Riwayat Penjualan",
+        href: BASE + "admin/transaction-history",
+        icon: 'xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16"> <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/> <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/> <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/> ',
+      },
+      {
+        key: "laporan",
+        text: "Laporan",
+        href: BASE + "admin/laporan",
+        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>',
+      },
+      {
+        key: "data-tiket",
+        text: "Data Tiket",
+        href: BASE + "admin/data-tiket",
+        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>',
+      },
+      {
+        key: "jenis-tiket",
+        text: "Jenis Tiket",
+        href: BASE + "admin/ticket-types",
+        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>',
+      },
+      {
+        key: "checkpoint",
+        text: "Checkpoint",
+        href: BASE + "admin/checkpoints",
+        icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>',
+      },
     ],
   },
   {
-    label: 'USERS',
+    label: "USERS",
     items: [
-      { key: 'admin', text: 'Admin', href: BASE + 'admin/users',
-        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>' },
-      { key: 'gate', text: 'Penjaga Gate', href: BASE + 'admin/gate-users',
-        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>' },
-      { key: 'guide', text: 'Guides', href: '#',
-        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>' },
+      {
+        key: "admin",
+        text: "Admin",
+        href: BASE + "admin/users",
+        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      },
+      {
+        key: "gate",
+        text: "Penjaga Gate",
+        href: BASE + "admin/gate-users",
+        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      },
+      {
+        key: "guide",
+        text: "Guides",
+        href: "#",
+        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      },
     ],
   },
   {
-    label: 'SISTEM',
+    label: "SISTEM",
     items: [
-      { key: 'setting', text: 'Settings', href: BASE + 'admin/settings',
-        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>' }
+      {
+        key: "setting",
+        text: "Settings",
+        href: BASE + "admin/settings",
+        icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      },
     ],
   },
 ];
@@ -68,7 +120,8 @@ const BRAND_LOGO = `<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
   <path fill="#ffffff" d="M14.747 9.125c.527-1.426 1.736-2.573 3.317-2.573c1.643 0 2.792 1.085 3.318 2.573l6.077 16.867c.186.496.248.931.248 1.147c0 1.209-.992 2.046-2.139 2.046c-1.303 0-1.954-.682-2.264-1.611l-.931-2.915h-8.62l-.93 2.884c-.31.961-.961 1.642-2.232 1.642c-1.24 0-2.294-.93-2.294-2.17c0-.496.155-.868.217-1.023l6.233-16.867zm.34 11.256h5.891l-2.883-8.992h-.062l-2.946 8.992z"/>
 </svg>`;
 
-const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>';
+const CHEV =
+  '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>';
 
 function isExternal(href) {
   try {
@@ -80,11 +133,13 @@ function isExternal(href) {
 }
 
 function renderNavLink(item, activeKey) {
-  const active = item.key === activeKey ? ' is-active' : '';
+  const active = item.key === activeKey ? " is-active" : "";
   const badge = item.badge
     ? `<span class="nav-badge ${item.badge.kind}">${item.badge.text}</span>`
-    : '';
-  const external = isExternal(item.href) ? ' target="_blank" rel="noopener noreferrer"' : '';
+    : "";
+  const external = isExternal(item.href)
+    ? ' target="_blank" rel="noopener noreferrer"'
+    : "";
   return `
     <a class="nav-link${active}" href="${item.href}"${external}>
       <svg viewBox="0 0 24 24">${item.icon}</svg>
@@ -94,10 +149,10 @@ function renderNavLink(item, activeKey) {
 }
 
 function renderNavGroup(item, activeKey) {
-  const open = item.children.some((c) => c.key === activeKey) ? ' is-open' : '';
+  const open = item.children.some((c) => c.key === activeKey) ? " is-open" : "";
   const submenu = item.children
     .map((c) => `<a href="${c.href}">${c.text}</a>`)
-    .join('');
+    .join("");
   return `
     <div class="nav-item-group${open}" data-nav-group>
       <a class="nav-link" href="javascript:void(0)" data-nav-toggle>
@@ -110,9 +165,13 @@ function renderNavGroup(item, activeKey) {
 }
 
 function renderSection(section, activeKey) {
-  const items = section.items.map((item) => (
-    item.children ? renderNavGroup(item, activeKey) : renderNavLink(item, activeKey)
-  )).join('');
+  const items = section.items
+    .map((item) =>
+      item.children
+        ? renderNavGroup(item, activeKey)
+        : renderNavLink(item, activeKey),
+    )
+    .join("");
   return `
     <nav class="nav-section">
       <div class="nav-label">${section.label}</div>
@@ -121,7 +180,7 @@ function renderSection(section, activeKey) {
 }
 
 function renderSidebar(activeKey) {
-  const sections = NAV.map((s) => renderSection(s, activeKey)).join('');
+  const sections = NAV.map((s) => renderSection(s, activeKey)).join("");
   return `
     <aside class="d-sidebar">
       <div class="brand">
@@ -148,13 +207,19 @@ function renderSidebar(activeKey) {
 }
 
 function renderCrumbs(crumbsAttr) {
-  if (!crumbsAttr) return '';
-  const parts = crumbsAttr.split('|').map((p) => p.trim()).filter(Boolean);
-  const sep = '<svg class="sep" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
-  return parts.map((p, i) => {
-    const cls = i === parts.length - 1 ? ' class="current"' : '';
-    return `${i > 0 ? sep : ''}<span${cls}>${p}</span>`;
-  }).join('');
+  if (!crumbsAttr) return "";
+  const parts = crumbsAttr
+    .split("|")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const sep =
+    '<svg class="sep" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
+  return parts
+    .map((p, i) => {
+      const cls = i === parts.length - 1 ? ' class="current"' : "";
+      return `${i > 0 ? sep : ""}<span${cls}>${p}</span>`;
+    })
+    .join("");
 }
 
 function renderTopbar(crumbsAttr) {
@@ -292,18 +357,18 @@ function renderFooter() {
 
 export function mountShell() {
   const body = document.body;
-  const activeKey = body.getAttribute('data-active') || '';
-  const crumbs = body.getAttribute('data-crumbs') || '';
+  const activeKey = body.getAttribute("data-active") || "";
+  const crumbs = body.getAttribute("data-crumbs") || "";
 
-  const sidebarHost = document.querySelector('[data-shell-sidebar]');
-  const topbarHost  = document.querySelector('[data-shell-topbar]');
-  const footerHost  = document.querySelector('[data-shell-footer]');
+  const sidebarHost = document.querySelector("[data-shell-sidebar]");
+  const topbarHost = document.querySelector("[data-shell-topbar]");
+  const footerHost = document.querySelector("[data-shell-footer]");
 
   if (sidebarHost) sidebarHost.outerHTML = renderSidebar(activeKey);
-  if (topbarHost)  topbarHost.outerHTML  = renderTopbar(crumbs);
-  if (footerHost)  footerHost.outerHTML  = renderFooter();
+  if (topbarHost) topbarHost.outerHTML = renderTopbar(crumbs);
+  if (footerHost) footerHost.outerHTML = renderFooter();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    mountShell();
+document.addEventListener("DOMContentLoaded", () => {
+  mountShell();
 });

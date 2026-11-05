@@ -444,7 +444,6 @@
 
       /* Content Header (Page Title) */
       .app-content-header {
-        padding: 1.5rem 2rem 0.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;

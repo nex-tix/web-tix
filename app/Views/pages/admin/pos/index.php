@@ -4,7 +4,7 @@
 <meta name="csrf-token" content="<?= csrf_hash() ?>">
 <meta name="csrf-name" content="<?= csrf_token() ?>">
 
-<main class="flex-1 overflow-y-auto p-6" data-purpose="pos-workspace">
+<main class="flex-1 overflow-y-auto" data-purpose="pos-workspace">
     <div id="pos-alert" class="hidden mb-4 p-3 rounded-lg border text-sm"></div>
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 pb-2 border-b border-slate-200">
