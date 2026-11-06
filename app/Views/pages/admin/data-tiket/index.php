@@ -17,9 +17,9 @@
       </div>
     <?php endif; ?>
     <div class="app-content-header">
-      <div class="page-title">
-        <h4 style="color:#2c3136">Data Tiket</h4>
-        <p style="color:#2c3136">Seluruh tiket berdasarkan tanggal pembelian, tipe, dan kode tiket.</p>
+      <div class="page-title mb-3">
+        <h4 class="text-slate-900">Data Tiket</h4>
+        <p class="text-slate-500">Seluruh tiket berdasarkan tanggal pembelian, tipe, dan kode tiket.</p>
       </div>
     </div>
 

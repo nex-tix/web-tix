@@ -205,7 +205,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-5 bg-slate-50/80 border-t border-slate-200" data-purpose="payment-methods">
+                <div class="p-5 bg-white border-t border-slate-200" data-purpose="payment-methods">
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Metode Pembayaran</label>
                     <p class="field-error hidden text-xs text-rose-600 mb-2" data-error="payment_method"></p>
                     <div class="grid grid-cols-2 gap-2 mb-4">
@@ -240,7 +240,7 @@
                             </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="cash_paid"></p>
                         </div>
-                        <div class="p-3 rounded-lg border text-xs bg-slate-50 border-slate-200 text-slate-600 flex justify-between items-center" id="change-box">Kembalian: Rp 0</div>
+                        <div class="p-3 rounded-lg border text-xs bg-white border-slate-200 text-slate-600 flex justify-between items-center" id="change-box">Kembalian: Rp 0</div>
                     </div>
                     <div class="space-y-3 hidden" id="edc-container">
                         <div>
@@ -428,7 +428,7 @@
             const disc = parseFloat(t.discount_percent || 0);
             const hasDisc = disc > 0;
             const discounted = hasDisc ? price - price * disc / 100 : price;
-            return `<div class="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 hover:border-slate-300 transition bg-slate-50/50">
+            return `<div class="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 hover:border-slate-300 transition bg-white">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2"><span class="font-bold text-sm text-slate-800">${t.name}</span>${hasDisc ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">DISKON ${disc}%</span>` : ''}</div>
                             <p class="text-xs text-slate-500">${t.ticket_category === 'group' ? 'Rombongan' : 'Individual'} &middot; ${hasDisc ? `Diskon ${disc}%` : 'Harga normal'}</p>

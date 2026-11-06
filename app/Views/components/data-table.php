@@ -23,7 +23,7 @@
 
   <div class="card-body p-4">
     <div class="table-responsive">
-      <table class="table table-hover align-middle">
+      <table id="datatable" class="table table-hover datatable align-middle">
         <thead >
           <tr>
             <?php foreach ($headers as $index => $header): ?>

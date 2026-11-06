@@ -17,9 +17,9 @@
       </div>
     <?php endif; ?>
     <div class="app-content-header">
-      <div class="page-title">
-        <h4 style="color:#2c3136">Riwayat Penjualan</h4>
-        <p style="color:#2c3136">Daftar semua transaksi berdasarkan tanggal, metode bayar, dan kasir.</p>
+      <div class="page-title mb-3">
+        <h4 class="text-slate-900">Riwayat Penjualan</h4>
+        <p class="text-slate-500">Daftar semua transaksi berdasarkan tanggal, metode bayar, dan kasir.</p>
       </div>
     </div>
 

@@ -11,6 +11,18 @@
         --text-muted: #6c757d;
       }
 
+      :root[data-theme=dark] {
+        --sidebar-bg: #16191D;
+        --sidebar-hover: #2A2F35;
+        --sidebar-active: #f1c40f;
+        --sidebar-text: #8A949E;
+        --sidebar-text-active: #1a1d20;
+        --bg-main: #1A1D20;
+        --card-border: #2E3339;
+        --text-dark: #E8EAED;
+        --text-muted: #9AA0A6;
+      }
+
       body {
         background-color: var(--bg-main);
         font-family:
@@ -1002,3 +1014,382 @@
           padding-right: 1rem;
         }
       }
+
+      /* ============================================================
+         DARK MODE OVERRIDES — main.css
+         Semua hardcoded light-mode colors di-override di sini.
+         Selector pakai [data-theme=dark] supaya specificity cukup
+         menang atas rules !important di atas.
+         ============================================================ */
+
+      /* --- Input --- */
+      [data-theme=dark] input {
+        color: #E8EAED;
+      }
+      [data-theme=dark] .input-text {
+        color: #E8EAED;
+      }
+      [data-theme=dark] .input-design {
+        background-color: #22262B !important;
+        border-color: #2E3339 !important;
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .input-design::placeholder {
+        color: #6B7280 !important;
+      }
+      [data-theme=dark] .input-prefix {
+        background-color: #1E2226 !important;
+      }
+      [data-theme=dark] input:not(.input-design):not(.form-control),
+      [data-theme=dark] textarea:not(.input-design):not(.form-control),
+      [data-theme=dark] select:not(.input-design):not(.form-select) {
+        background-color: #22262B !important;
+        color: #E8EAED !important;
+        border-color: #2E3339 !important;
+      }
+      [data-theme=dark] input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: brightness(0) invert(1);
+      }
+
+      /* --- Buttons outline --- */
+      [data-theme=dark] .btn-laporan {
+        border-color: #2E3339;
+      }
+      [data-theme=dark] .btn-laporan:hover {
+        background-color: #2A2F35;
+      }
+      [data-theme=dark] .btn-chart-laporan {
+        border-color: #2E3339;
+      }
+      [data-theme=dark] .btn-chart-laporan:hover {
+        background-color: #2A2F35;
+      }
+      [data-theme=dark] .input-chart-laporan {
+        border-color: #2E3339;
+      }
+
+      /* --- Stat Cards --- */
+      [data-theme=dark] .stat-card {
+        color: #E8EAED;
+        background: #22262B;
+      }
+      [data-theme=dark] .stat-card:hover {
+        background: #2A2F35;
+      }
+      [data-theme=dark] .sub-text {
+        color: #E8EAED !important;
+      }
+
+      /* --- Progress --- */
+      [data-theme=dark] .custom-progress {
+        background-color: #2E3339;
+      }
+
+      /* --- Chart Cards --- */
+      [data-theme=dark] .chart-card {
+        color: #E8EAED;
+        background: #22262B;
+      }
+      [data-theme=dark] .chart-card-header {
+        color: #E8EAED;
+        background: #22262B;
+      }
+      [data-theme=dark] .badge-hari-ini {
+        background-color: #1E2226;
+        border-color: #2E3339;
+      }
+
+      /* --- Cash Card --- */
+      [data-theme=dark] .cash-card {
+        background: #22262B;
+      }
+      [data-theme=dark] .cash-row .bar-container {
+        background-color: #2E3339;
+      }
+      [data-theme=dark] .cash-row .value {
+        color: #E8EAED;
+      }
+      [data-theme=dark] .cash-row.sub-row {
+        border-top-color: #2E3339;
+      }
+
+      /* --- Info Box --- */
+      [data-theme=dark] .info-box {
+        background-color: #1A2740;
+        color: #E8EAED;
+      }
+      [data-theme=dark] .info-box i {
+        color: #60A5FA;
+      }
+
+      /* --- Table Card --- */
+      [data-theme=dark] .table-card {
+        background: #22262B;
+      }
+
+      /* --- DataTables --- */
+      [data-theme=dark] table.dataTable tbody td {
+        background-color: #22262B !important;
+        color: #E8EAED;
+        border-bottom-color: #2E3339;
+      }
+      [data-theme=dark] .dataTables_wrapper .dataTables_length select,
+      [data-theme=dark] .dataTables_wrapper .dataTables_filter input {
+        border-color: #2E3339;
+        color: #E8EAED;
+        background-color: #22262B;
+      }
+      [data-theme=dark] .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #2E3339 !important;
+        color: #E8EAED !important;
+        border-color: #2E3339 !important;
+      }
+      [data-theme=dark] .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #2A2F35 !important;
+        color: #E8EAED !important;
+        border-color: #2A2F35 !important;
+      }
+
+      /* --- Filter Buttons --- */
+      [data-theme=dark] .btn-filter {
+        border-color: #2E3339;
+        background: #22262B;
+      }
+      [data-theme=dark] .btn-filter:hover,
+      [data-theme=dark] .btn-filter[aria-expanded="true"] {
+        background: #2A2F35;
+        border-color: #3A3F45;
+      }
+      [data-theme=dark] .filter-dropdown-menu .form-check:hover {
+        background: #2A2F35;
+      }
+
+      /* --- Bootstrap / AdminLTE variable bridge ---
+         adminlte.min.css mengikat dark mode ke [data-bs-theme="dark"],
+         tapi app pakai data-theme (TailPanel). Bridge di sini supaya
+         .card, .table, .form-control, dsb ikut gelap. */
+      [data-theme=dark] {
+        color-scheme: dark;
+        --bs-body-bg: #1A1D20;
+        --bs-body-bg-rgb: 26, 29, 32;
+        --bs-body-color: #E8EAED;
+        --bs-body-color-rgb: 232, 234, 237;
+        --bs-emphasis-color: #fff;
+        --bs-border-color: #2E3339;
+        --bs-border-color-translucent: rgba(255, 255, 255, 0.15);
+        --bs-heading-color: inherit;
+        --bs-link-color: #60A5FA;
+        --bs-link-hover-color: #93C5FD;
+        --bs-table-bg: #22262B;
+        --bs-table-color: #E8EAED;
+        --bs-table-border-color: #2E3339;
+        --bs-table-striped-bg: #1E2226;
+        --bs-table-striped-color: #E8EAED;
+        --bs-table-hover-bg: #2A2F35;
+        --bs-table-hover-color: #E8EAED;
+        --bs-table-active-bg: #2A2F35;
+        --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+        --bs-secondary-bg: #2A2F35;
+        --bs-tertiary-bg: #22262B;
+        --bs-emphasis-color: #fff;
+      }
+
+      /* --- .form-control / .form-select (hardcoded #fff + #1a1d20 di adminlte L2015/2018) --- */
+      [data-theme=dark] .form-control,
+      [data-theme=dark] .form-select {
+        background-color: #22262B !important;
+        color: #E8EAED !important;
+        border-color: #2E3339 !important;
+        box-shadow: none;
+      }
+      [data-theme=dark] .form-control::placeholder,
+      [data-theme=dark] .form-select::placeholder {
+        color: #6B7280 !important;
+      }
+      [data-theme=dark] .form-control:focus,
+      [data-theme=dark] .form-select:focus {
+        background-color: #2A2F35 !important;
+        color: #E8EAED !important;
+        border-color: #60A5FA !important;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+      }
+      [data-theme=dark] .form-control:disabled,
+      [data-theme=dark] .form-select:disabled {
+        background-color: #1E2226 !important;
+        color: #6B7280 !important;
+      }
+
+      /* --- .input-prefix (Tailwind text-slate-700 hardcoded di view) --- */
+      [data-theme=dark] .input-prefix {
+        color: #E8EAED !important;
+      }
+
+      /* --- Bootstrap .card body text --- */
+      [data-theme=dark] .card {
+        color: #E8EAED;
+      }
+      [data-theme=dark] .card-header,
+      [data-theme=dark] .card-footer {
+        background-color: #1E2226;
+        border-color: #2E3339;
+        color: #E8EAED;
+      }
+      [data-theme=dark] .card-title {
+        color: #E8EAED;
+      }
+      [data-theme=dark] .card-text,
+      [data-theme=dark] .card-subtitle {
+        color: #9AA0A6;
+      }
+
+      /* --- Bootstrap .table text --- */
+      [data-theme=dark] .table {
+        color: #E8EAED;
+        --bs-table-color: #E8EAED;
+        --bs-table-bg: #22262B;
+        --bs-table-border-color: #2E3339;
+      }
+      [data-theme=dark] .table > :not(caption) > * > * {
+        color: #E8EAED;
+        background-color: transparent;
+        border-bottom-color: #2E3339;
+      }
+
+      /* --- Bootstrap form text / labels --- */
+      [data-theme=dark] .form-label,
+      [data-theme=dark] .form-check-label,
+      [data-theme=dark] .col-form-label {
+        color: #9AA0A6;
+      }
+      [data-theme=dark] .form-text {
+        color: #6B7280;
+      }
+      [data-theme=dark] .input-group-text {
+        background-color: #1E2226;
+        border-color: #2E3339;
+        color: #E8EAED;
+      }
+
+      /* --- View components: utility class paksa warna light --- */
+      [data-theme=dark] .bg-white {
+        background-color: #22262B !important;
+      }
+      [data-theme=dark] .table-light,
+      [data-theme=dark] .table-light > * > * {
+        --bs-table-bg-state: #1E2226;
+        --bs-table-bg-type: #1E2226;
+        background-color: #1E2226 !important;
+        color: #E8EAED;
+      }
+      [data-theme=dark] .text-dark {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .text-black {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .text-muted {
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .btn-light {
+        background-color: #2A2F35 !important;
+        border-color: #3A3F45 !important;
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .btn-light:hover {
+        background-color: #343A40 !important;
+        border-color: #495057 !important;
+        color: #fff !important;
+      }
+      [data-theme=dark] .btn-outline-secondary {
+        border-color: #3A3F45 !important;
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .btn-outline-secondary:hover {
+        background-color: #2A2F35 !important;
+        border-color: #495057 !important;
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .btn-dark {
+        background-color: #E8EAED !important;
+        border-color: #E8EAED !important;
+        color: #1A1D20 !important;
+      }
+      [data-theme=dark] .btn-dark:hover {
+        background-color: #fff !important;
+        border-color: #fff !important;
+        color: #1A1D20 !important;
+      }
+      [data-theme=dark] .input-group-text.bg-white {
+        background-color: #1E2226 !important;
+        border-color: #2E3339 !important;
+        color: #9AA0A6 !important;
+      }
+
+      /* --- View components: inline style hardcoded (tanpa !important) --- */
+      [data-theme=dark] .cash-card h6,
+      [data-theme=dark] .chart-card h6,
+      [data-theme=dark] .table-card h6 {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .cash-card .sub,
+      [data-theme=dark] .chart-card .card-header-custom p,
+      [data-theme=dark] .table-card .card-header-custom p {
+        color: #9AA0A6 !important;
+      }
+      /* --- demography-card.php: inline style hardcoded --- */
+      [data-theme=dark] .cash-card .rounded-3 {
+        background: #1E2226 !important;
+        border-color: #2E3339 !important;
+      }
+      [data-theme=dark] .cash-card .progress {
+        background: #2E3339 !important;
+      }
+      [data-theme=dark] .cash-card [style*="color:#2c3136"],
+      [data-theme=dark] .cash-card [style*="color: #2c3136"] {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .cash-card [style*="color:#e74c3c"],
+      [data-theme=dark] .cash-card [style*="color: #e74c3c"] {
+        color: #F87171 !important;
+      }
+
+      /* --- Tailwind utility overrides (POS & halaman lain pakai class Tailwind murni) --- */
+      /* Backgrounds */
+      [data-theme=dark] .bg-slate-50 { background-color: #1E2226 !important; }
+      [data-theme=dark] .bg-slate-100 { background-color: #22262B !important; }
+      [data-theme=dark] .bg-slate-200 { background-color: #2E3339 !important; }
+      [data-theme=dark] .bg-slate-800 { background-color: #2A2F35 !important; }
+      [data-theme=dark] .bg-slate-900 { background-color: #343A40 !important; }
+      [data-theme=dark] .bg-rose-50 { background-color: #2A0F14 !important; }
+      [data-theme=dark] .bg-emerald-50 { background-color: #0F2A20 !important; }
+      [data-theme=dark] .bg-emerald-100 { background-color: #143528 !important; }
+      [data-theme=dark] .bg-emerald-500 { background-color: #10B981 !important; }
+
+      /* Text — slate */
+      [data-theme=dark] .text-slate-900 { color: #E8EAED !important; }
+      [data-theme=dark] .text-slate-800 { color: #E8EAED !important; }
+      [data-theme=dark] .text-slate-700 { color: #E8EAED !important; }
+      [data-theme=dark] .text-slate-600 { color: #9AA0A6 !important; }
+      [data-theme=dark] .text-slate-500 { color: #9AA0A6 !important; }
+      [data-theme=dark] .text-slate-400 { color: #6B7280 !important; }
+
+      /* Text — emerald (semantic success) */
+      [data-theme=dark] .text-emerald-600 { color: #34D399 !important; }
+      [data-theme=dark] .text-emerald-700 { color: #34D399 !important; }
+      [data-theme=dark] .text-emerald-800 { color: #34D399 !important; }
+      [data-theme=dark] .text-emerald-900 { color: #34D399 !important; }
+
+      /* Text - rose (errors ) */
+      [data-theme=dark] .text-rose-800 { color: #F87171 !important; }
+
+      /* Borders — slate */
+      [data-theme=dark] .border-slate-100 { border-color: #25292E !important; }
+      [data-theme=dark] .border-slate-200 { border-color: #2E3339 !important; }
+      [data-theme=dark] .border-slate-300 { border-color: #3A3F45 !important; }
+
+      /* Borders — emerald */
+      [data-theme=dark] .border-emerald-200 { border-color: #1F4A38 !important; }
+      [data-theme=dark] .border-emerald-300 { border-color: #276B4F !important; }
+
+      /* Borders - rose (errors) */
+      [data-theme=dark] .border-rose-300 { border-color: #7A2531 !important; }

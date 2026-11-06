@@ -5,9 +5,9 @@
 <div class="app-content">
   <div class="container-fluid px-0">
     <div class="app-content-header">
-      <div class="page-title">
-        <h4 style="color:#2c3136">Detail Tiket</h4>
-        <p style="color:#2c3136">Kode: <?= esc($ticket['ticket_code'] ?? '-') ?></p>
+      <div class="page-title mb-3">
+        <h4 class="text-slate-900">Detail Tiket</h4>
+        <p class="text-slate-500">Kode: <?= esc($ticket['ticket_code'] ?? '-') ?></p>
       </div>
     </div>
 

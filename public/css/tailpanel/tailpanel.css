@@ -49,21 +49,22 @@
 }
 
 :root[data-theme=dark] {
-  --bg-body: #0B1120;
-  --bg-card: #141B2D;
-  --bg-sidebar: #141B2D;
-  --bg-hover: #1C2438;
-  --bg-muted: #1A2237;
-  --t-base: #F1F5F9;
-  --t-muted: #94A3B8;
-  --t-light: #64748B;
-  --t-inverse: #0B1120;
-  --border: #222C42;
-  --border-soft: #1A2237;
+  --bg-body: #1A1D20;
+  --bg-card: #22262B;
+  --bg-sidebar: #16191D;
+  --bg-hover: #2A2F35;
+  --bg-muted: #1E2226;
+  --t-sidebar: #8A949E;
+  --t-base: #E8EAED;
+  --t-muted: #9AA0A6;
+  --t-light: #6B7280;
+  --t-inverse: #1A1D20;
+  --border: #2E3339;
+  --border-soft: #25292E;
   --primary: #60A5FA;
   --primary-light: #93C5FD;
   --primary-dark: #3B82F6;
-  --primary-soft: #0F2847;
+  --primary-soft: #1A2740;
   --primary-ring: rgba(96, 165, 250, 0.24);
   --success: #34D399;
   --success-soft: #0F2A20;
@@ -84,7 +85,7 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
   --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.25);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --overlay: rgba(11, 17, 32, 0.72);
+  --overlay: rgba(26, 29, 32, 0.72);
 }
 
 /* ============ RESET + BASE — 2026 ============ */
@@ -286,7 +287,7 @@ body {
   gap: 12px;
   padding: 9px 12px;
   border-radius: 8px;
-  color: #AEB9C2;
+  color: var(--t-sidebar);
   font-size: 13px;
   font-weight: 500;
   transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
@@ -494,7 +495,7 @@ body {
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--overlay);
   backdrop-filter: blur(2px);
   z-index: 90;
   opacity: 0;
