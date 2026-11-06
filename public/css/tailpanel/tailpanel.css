@@ -5,12 +5,13 @@
 /* ============ DESIGN TOKENS — 2026 ============ */
 :root[data-theme=light] {
   /* Surfaces */
-  --bg-body: #F0F4F8;
+  --bg-body: #F8F6F6;
   --bg-card: #FFFFFF;
-  --bg-sidebar: #FFFFFF;
-  --bg-hover: #F8FAFC;
+  --bg-sidebar: #2C3136;
+  --bg-hover: #3B4248;
   --bg-muted: #F1F5F9;
   /* Text */
+  --t-sidebar: #AEB9C2;
   --t-base: #1E293B;
   --t-muted: #64748B;
   --t-light: #94A3B8;
@@ -233,13 +234,11 @@ body {
 }
 
 .brand-logo {
-  width: 32px;
-  height: 32px;
-  background: var(--primary);
+  width: 60px;
+  height: 60px;
   border-radius: 8px;
   display: grid;
   place-items: center;
-  box-shadow: 0 4px 10px -2px color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
 .brand-logo svg {
@@ -254,9 +253,9 @@ body {
 .brand-name {
   font-family: "Inter Tight", "Inter", sans-serif;
   font-weight: 700;
-  font-size: 15.5px;
-  color: var(--t-base);
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  color: var(--t-inverse);
+  letter-spacing: 0.07rem;
 }
 
 .brand-tag {
@@ -287,7 +286,7 @@ body {
   gap: 12px;
   padding: 9px 12px;
   border-radius: 8px;
-  color: var(--t-muted);
+  color: #AEB9C2;
   font-size: 13px;
   font-weight: 500;
   transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
@@ -314,13 +313,13 @@ body {
 
 .nav-link:hover {
   background: var(--bg-hover);
-  color: var(--t-base);
+  color: var(--t-sidebar);
 }
 
 .nav-link.is-active {
-  color: var(--primary);
-  background: var(--primary-soft);
-  box-shadow: inset 3px 0 0 var(--primary);
+  color: var(--bg-sidebar);
+  background: #F1C40F;
+  box-shadow: inset 3px 0 0 #E74C3C;
 }
 
 .nav-badge {
@@ -521,7 +520,7 @@ body.has-drawer-open .drawer-backdrop {
   z-index: 10;
   backdrop-filter: saturate(140%) blur(10px);
   -webkit-backdrop-filter: saturate(140%) blur(10px);
-  background: var(--overlay);
+  background: var(--bg-body);
 }
 
 .crumbs {

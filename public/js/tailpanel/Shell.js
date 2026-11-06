@@ -25,6 +25,7 @@ const BASE =
     /\/+$/,
     "",
   ) + "/";
+  const LOGOUT = BASE + "logout"
 
 export const NAV = [
   {
@@ -116,9 +117,7 @@ export const NAV = [
   },
 ];
 
-const BRAND_LOGO = `<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-  <path fill="#ffffff" d="M14.747 9.125c.527-1.426 1.736-2.573 3.317-2.573c1.643 0 2.792 1.085 3.318 2.573l6.077 16.867c.186.496.248.931.248 1.147c0 1.209-.992 2.046-2.139 2.046c-1.303 0-1.954-.682-2.264-1.611l-.931-2.915h-8.62l-.93 2.884c-.31.961-.961 1.642-2.232 1.642c-1.24 0-2.294-.93-2.294-2.17c0-.496.155-.868.217-1.023l6.233-16.867zm.34 11.256h5.891l-2.883-8.992h-.062l-2.946 8.992z"/>
-</svg>`;
+const BRAND_LOGO = `<img src="/img/logo_nextix.png">`;
 
 const CHEV =
   '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>';
@@ -186,8 +185,8 @@ function renderSidebar(activeKey) {
       <div class="brand">
         <div class="brand-logo">${BRAND_LOGO}</div>
         <div class="brand-text">
-          <div class="brand-name">Adminator</div>
-          <div class="brand-tag">v${packageInfo.version} · preview</div>
+          <div class="brand-name">NEXTIX</div>
+          <div class="brand-tag">Loket & Gate</div>
         </div>
       </div>
       ${sections}
@@ -238,79 +237,7 @@ function renderTopbar(crumbsAttr) {
           <kbd class="kbd">⌘K</kbd>
         </button>
 
-        <div class="dd-wrap">
-          <button class="icon-btn" data-dropdown aria-label="Notifications">
-            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="count danger">3</span>
-          </button>
-          <div class="dd-menu" role="menu">
-            <div class="dd-head">
-              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              Notifications
-            </div>
-            <div class="dd-list">
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a1">JD</div>
-                <div class="dd-body">
-                  <div class="dd-text"><strong>John Doe</strong> liked your <em>post</em></div>
-                  <div class="dd-time">5 MIN AGO</div>
-                </div>
-              </a>
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a2">MD</div>
-                <div class="dd-body">
-                  <div class="dd-text"><strong>Moo Doe</strong> liked your <em>cover image</em></div>
-                  <div class="dd-time">7 MIN AGO</div>
-                </div>
-              </a>
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a3">LD</div>
-                <div class="dd-body">
-                  <div class="dd-text"><strong>Lee Doe</strong> commented on your <em>video</em></div>
-                  <div class="dd-time">10 MIN AGO</div>
-                </div>
-              </a>
-            </div>
-            <a class="dd-footer" href="#">View all notifications →</a>
-          </div>
-        </div>
-
-        <div class="dd-wrap">
-          <button class="icon-btn" data-dropdown aria-label="Messages">
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-            <span class="count info">3</span>
-          </button>
-          <div class="dd-menu" role="menu">
-            <div class="dd-head">
-              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              Messages
-            </div>
-            <div class="dd-list">
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a1">JD</div>
-                <div class="dd-body">
-                  <div class="dd-row-head"><strong>John Doe</strong><span class="dd-time">5 MIN</span></div>
-                  <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-                </div>
-              </a>
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a2">MD</div>
-                <div class="dd-body">
-                  <div class="dd-row-head"><strong>Moo Doe</strong><span class="dd-time">15 MIN</span></div>
-                  <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-                </div>
-              </a>
-              <a class="dd-item" href="#">
-                <div class="dd-avatar a3">LD</div>
-                <div class="dd-body">
-                  <div class="dd-row-head"><strong>Lee Doe</strong><span class="dd-time">25 MIN</span></div>
-                  <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-                </div>
-              </a>
-            </div>
-            <a class="dd-footer" href="#">View all messages →</a>
-          </div>
-        </div>
+        
 
         <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"></button>
 
@@ -321,20 +248,8 @@ function renderTopbar(crumbsAttr) {
               <div class="dd-profile-name">John Doe</div>
               <div class="dd-profile-email">john@adminator.app</div>
             </div>
-            <a class="dd-menu-item" href="#">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              Settings
-            </a>
-            <a class="dd-menu-item" href="#">
-              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Profile
-            </a>
-            <a class="dd-menu-item" href="email.html">
-              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              Messages
-            </a>
             <div class="dd-divider"></div>
-            <a class="dd-menu-item danger" href="#">
+            <a class="dd-menu-item danger" href=${LOGOUT}>
               <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
               Logout
             </a>
