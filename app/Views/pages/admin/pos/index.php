@@ -276,6 +276,7 @@
     const ticketTypesById = Object.fromEntries(ticketTypes.map(t => [t.id, t]));
     const csrfName = document.querySelector('meta[name="csrf-name"]')?.content || 'csrf_test_name';
     const posLimits = <?= json_encode($posLimits) ?>;
+
     
     const posState = {
         origin: 'domestik',
@@ -701,7 +702,10 @@
             if (res.ok && data && data.success) {
                 const trxId = data.data?.transaction?.id;
                 const inv = data.data?.transaction?.invoice_code || '-';
-                showAlert(`Transaksi berhasil! Invoice: ${inv}. Mengalihkan ke halaman cetak...`, 'success');
+                toastr.success(`Transaksi berhasil! Invoice: ${inv}. Mengalihkan ke halaman cetak...`, 'Pembayaran Sukses', {
+                    timeOut: 1500,
+                    extendedTimeOut: 0
+                });
                 setTimeout(() => {
                     if (trxId) {
                         window.location.href = "<?= base_url('admin/pos/receipt') ?>/" + trxId;

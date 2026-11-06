@@ -27,6 +27,9 @@
 <!-- TailPanel -->
  <link rel="stylesheet" href="<?= base_url('css/tailpanel/tailpanel.css') ?>">
 
+ <!-- Toastr -->
+  <link rel="stylesheet" href="<?= base_url('css/toastr.min.css') ?>">
+
 <!-- Apexchart -->
 <link
   rel="stylesheet"
