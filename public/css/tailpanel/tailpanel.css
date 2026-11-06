@@ -295,8 +295,8 @@ body {
 }
 
 .nav-link > svg {
-  width:26px;
-  height: 26px;
+  width: 30px;
+  height: 40px;
   stroke: currentColor;
   stroke-width: 1.75;
   fill: none;
