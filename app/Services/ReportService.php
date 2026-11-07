@@ -54,7 +54,11 @@ class ReportService
         $salesDiff = $prevSales > 0 ? (($totalSales - $prevSales) / $prevSales) * 100 : 0;
 
         $ticketsBuilder = $this->db->table('tickets t')
-            ->select('t.status, SUM(CASE WHEN t.status = "used" THEN COALESCE(t.actual_visitors, t.total_visitors) ELSE t.total_visitors END) as count')
+            ->select('
+                t.status,
+                COUNT(t.id) as ticket_count,
+                SUM(CASE WHEN t.status = "used" THEN COALESCE(t.actual_visitors, t.total_visitors) ELSE t.total_visitors END) as visitor_count
+            ')
             ->join('transactions tx', 'tx.id = t.transaction_id')
             ->where('tx.status', 'completed')
             ->where('t.valid_date', $date)
@@ -62,14 +66,23 @@ class ReportService
         $this->applyTicketFilters($ticketsBuilder, $filters, 't', 'tx');
         $tickets = $ticketsBuilder->get()->getResultArray();
 
-        $ticketStats = ['active' => 0, 'used' => 0, 'cancelled' => 0];
+        $activeTickets  = 0;
+        $usedTickets    = 0;
+        $activeVisitors = 0;
+        $usedVisitors   = 0;
+
         foreach ($tickets as $t) {
-            if (isset($ticketStats[$t['status']])) {
-                $ticketStats[$t['status']] = (int)$t['count'];
+            if ($t['status'] === 'active') {
+                $activeTickets  += (int)$t['ticket_count'];
+                $activeVisitors += (int)$t['visitor_count'];
+            } elseif ($t['status'] === 'used') {
+                $usedTickets  += (int)$t['ticket_count'];
+                $usedVisitors += (int)$t['visitor_count'];
             }
         }
 
-        $totalTickets = array_sum($ticketStats);
+        $totalIssuedTickets = $activeTickets + $usedTickets;
+        $totalVisitors      = $activeVisitors + $usedVisitors;
 
         return [
             'sales' => [
@@ -83,16 +96,26 @@ class ReportService
                 'value' => 'Rp ' . number_format($transactions['total_discount'] ?? 0, 0, ',', '.'),
                 'sub'   => 'Total diskon dari transaksi selesai',
             ],
+            'issued' => [
+                'label' => 'Tiket Terbit',
+                'value' => $totalIssuedTickets . ' <small>tiket</small>',
+                'sub'   => 'individual & rombongan',
+            ],
             'attendance' => [
                 'label' => 'Pengunjung Sudah Masuk',
-                'value' => $ticketStats['used'] . ' <small>orang</small>',
-                'sub'   => round($totalTickets > 0 ? ($ticketStats['used'] / $totalTickets) * 100 : 0) . '% dari ' . $totalTickets . ' tiket terjual',
+                'value' => $usedVisitors . ' <small>orang</small>',
+                'sub'   => round($totalVisitors > 0 ? ($usedVisitors / $totalVisitors) * 100 : 0) . '% dari ' . $totalVisitors . ' tiket terjual',
             ],
             'remaining' => [
                 'label'     => 'Belum Dipakai',
-                'value'     => $ticketStats['active'] . ' <small>tiket</small>',
+                'value'     => $activeTickets . ' <small>tiket</small>',
                 'sub'       => 'Valid sampai akhir hari ini',
                 'dot_class' => 'dot-yellow',
+            ],
+            'total_visitors' => [
+                'label' => 'Total Pengunjung',
+                'value' => $totalVisitors . ' <small>orang</small>',
+                'sub'   => 'individual & rombongan',
             ]
         ];
     }

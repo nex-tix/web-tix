@@ -18,7 +18,7 @@
           <a href="<?= base_url('admin/data-tiket') ?>">
             <?= view('components/stat-card', [
               'label' => 'Tiket Terbit',
-              'value' => ((int)str_replace(' <small>orang</small>', '', $report['stats']['attendance']['value']) + (int)str_replace(' <small>tiket</small>', '', $report['stats']['remaining']['value'])) . ' <small>tiket</small>',
+              'value' => $report['stats']['issued']['value'],
               'sub'   => 'individual & rombongan'
             ]) ?>
           </a>
@@ -33,12 +33,11 @@
           </a>
         </div>
         <div class="col-md-3">
-          <a href="<?= base_url('admin/data-tiket?status=aktif') ?>">
+          <a href="<?= base_url('admin/data-tiket') ?>">
             <?= view('components/stat-card', [
-              'label'     => $report['stats']['remaining']['label'],
-              'value'     => $report['stats']['remaining']['value'],
-              'sub'       => $report['stats']['remaining']['sub'],
-              'dot_class' => $report['stats']['remaining']['dot_class']
+              'label'     => $report['stats']['total_visitors']['label'],
+              'value'     => $report['stats']['total_visitors']['value'],
+              'sub'       => $report['stats']['total_visitors']['sub'],
             ]) ?>
           </a>
         </div>
@@ -69,17 +68,23 @@
       
       <div class="row g-3 mb-3">
         <!-- Chart -->
-                <div class="col-lg-8 chart-card">
-                  <div class="card-header">
-                    <h3 class="card-title sub-text">Penjualan tujuh hari</h3> <br>
-                    <p class="font-sm text-secondary"> Total dibayar per hari dagang (WITA), termasuk void</p>
-                  </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    <div id="column-chart"></div>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
+        <div class="col-lg-8 chart-card">
+          <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="card-title sub-text mb-0" id="dashboard-chart-title">Penjualan</h3> <br>
+              <p class="font-sm text-secondary mb-0">Total dibayar per hari dagang (WITA), termasuk void</p>
+            </div>
+            <div class="btn-chart d-flex gap-2" style="margin-left: auto;">
+              <button type="button" class="btn-chart-laporan active" data-range="7days">7 hari</button>
+              <button type="button" class="btn-chart-laporan" data-range="30days">1 bulan terakhir</button>
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div id="column-chart"></div>
+          </div>
+          <!-- /.card-body -->
+        </div>
 
         <!-- Cash -->
         <div class="col-lg-4">
@@ -99,8 +104,8 @@
 
       <script>
         window.dashboardChartData = {
-          labels: <?= json_encode($report['chartData']['labels']) ?>,
-          data: <?= json_encode($report['chartData']['data']) ?>
+          labels: <?= json_encode($report['chartData']['labels'] ?? []) ?>,
+          data: <?= json_encode($report['chartData']['data'] ?? []) ?>
         };
       </script>
       <!-- ========================================= TABLE ========================================== -->

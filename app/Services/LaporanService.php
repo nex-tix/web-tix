@@ -29,6 +29,52 @@ class LaporanService
         ];
     }
 
+    // Dashboard column chart (7 hari & 1 bulan terakhir)
+    public function getDashboardChartData(): array
+    {
+        $start = date('Y-m-d', strtotime('-29 days'));
+        $end   = date('Y-m-d');
+        $rows  = $this->transactionModel->getSalesByRange($start, $end, 'DATE');
+
+        $sales = [];
+        foreach ($rows as $row) {
+            $sales[$row['periode']][$row['payment_method']] = (float) $row['total'];
+        }
+
+        $bulanIndo = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+            7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+        ];
+
+        $allCategories = [];
+        $allTunai      = [];
+        $allDebit      = [];
+
+        for ($i = 29; $i >= 0; $i--) {
+            $tanggal         = date('Y-m-d', strtotime("-$i days"));
+            $day             = date('d', strtotime($tanggal));
+            $monthNum        = (int) date('m', strtotime($tanggal));
+            $allCategories[] = $day . ' ' . $bulanIndo[$monthNum];
+            $allTunai[]      = $sales[$tanggal]['cash'] ?? 0;
+            $allDebit[]      = $sales[$tanggal]['debit'] ?? 0;
+        }
+
+        return [
+            '7days' => [
+                'title'      => 'Penjualan tujuh hari',
+                'categories' => array_slice($allCategories, -7),
+                'tunai'      => array_slice($allTunai, -7),
+                'debit'      => array_slice($allDebit, -7),
+            ],
+            '30days' => [
+                'title'      => 'Penjualan 1 bulan terakhir',
+                'categories' => $allCategories,
+                'tunai'      => $allTunai,
+                'debit'      => $allDebit,
+            ],
+        ];
+    }
+
     //donut chart
     public function getDonutChartData(): array
     {
