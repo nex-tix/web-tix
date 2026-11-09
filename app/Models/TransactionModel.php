@@ -12,7 +12,7 @@ class TransactionModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['invoice_code', 'customer_id', 'created_by', 'payment_method', 'payment_reference', 'subtotal', 'discount_amount', 'total_amount', 'cash_paid', 'cash_change', 'status', 'voided_by', 'voided_at', 'void_reason'];
+    protected $allowedFields    = ['invoice_code', 'customer_id', 'created_by', 'payment_method', 'payment_reference', 'bank_id' ,'subtotal', 'discount_amount', 'total_amount', 'cash_paid', 'cash_change', 'status', 'voided_by', 'voided_at', 'void_reason'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -22,6 +22,7 @@ class TransactionModel extends Model
         'customer_id' => 'int',
         'created_by' => 'int',
         'subtotal' => 'float',
+        'bank_id' => '?int',
         'discount_amount' => 'float',
         'total_amount' => 'float',
         'cash_paid' => '?float',
@@ -46,6 +47,7 @@ class TransactionModel extends Model
         // === Payment fields ===
         'payment_method' => 'required|in_list[cash,debit]',
         'payment_reference' => 'permit_empty|max_length[100]',
+        'bank_id' => 'permit_empty|integer|is_not_unique[banks.id]',
 
         // === Amount fields (non-negatif) ===
         'subtotal'        => 'required|numeric|greater_than_equal_to[0]',
