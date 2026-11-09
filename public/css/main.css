@@ -81,7 +81,6 @@
         border-bottom-right-radius: 0 !important;
         white-space: nowrap;
       }
-
       /* Input di sebelah kanan prefix — radius kiri dihapus */
       .input-prefix + .input-design,
       .input-prefix ~ input.input-design {

@@ -238,6 +238,11 @@
                                 <span class="input-design input-prefix flex items-center px-3 text-xs font-bold text-slate-700 rounded-r-none border-r-0">Rp</span>
                                 <input class="input-design input-text flex-1 text-base font-bold rounded-l-none text-slate-900" id="cash-received" min="0" placeholder="0" step="5000" type="number" />
                             </div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 mt-3" for="discount_given">Jumlah Diskon</label>
+                            <div class="flex items-stretch">
+                                <span class="input-design input-prefix flex items-center px-3 text-xs font-bold text-slate-700 rounded-r-none border-r-0">%</span>
+                                <input name="discount_percent" class="input-design input-text flex-1 text-base font-bold rounded-l-none text-slate-900" id="discount_given" min="0" max="100" placeholder="0" step="1" type="number" />
+                            </div>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="cash_paid"></p>
                         </div>
                         <div class="p-3 rounded-lg border text-xs bg-white border-slate-200 text-slate-600 flex justify-between items-center" id="change-box">Kembalian: Rp 0</div>
@@ -303,17 +308,24 @@
         maximumFractionDigits: 0
     }).format(value || 0);
     const totalQty = () => Object.values(posState.quantities).reduce((a, b) => a + b, 0);
-    const totalPrice = () => {
+    const globalDiscountPercent = () => {
+        const v = parseFloat(document.getElementById('discount_given')?.value) || 0;
+        return Math.max(0, Math.min(100, v));
+    };
+    const subtotalPrice = () => {
         let sum = 0;
         for (const t of ticketTypes) {
             if (t.ticket_category !== posStateCategory()) continue;
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
-            const gross = qty * parseFloat(t.price);
-            const disc = gross * parseFloat(t.discount_percent || 0) / 100;
-            sum += gross - disc;
+            sum += qty * parseFloat(t.price);
         }
         return Math.round(sum);
+    };
+    const totalPrice = () => {
+        const subtotal = subtotalPrice();
+        const discount = Math.round(subtotal * globalDiscountPercent() / 100);
+        return subtotal - discount;
     };
 
     function getCsrfToken() {
@@ -426,15 +438,12 @@
         container.innerHTML = list.map(t => {
             const qty = posState.quantities[t.id] || 0;
             const price = parseFloat(t.price);
-            const disc = parseFloat(t.discount_percent || 0);
-            const hasDisc = disc > 0;
-            const discounted = hasDisc ? price - price * disc / 100 : price;
             return `<div class="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 hover:border-slate-300 transition bg-white">
                         <div class="space-y-1">
-                            <div class="flex items-center gap-2"><span class="font-bold text-sm text-slate-800">${t.name}</span>${hasDisc ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">DISKON ${disc}%</span>` : ''}</div>
-                            <p class="text-xs text-slate-500">${t.ticket_category === 'group' ? 'Rombongan' : 'Individual'} &middot; ${hasDisc ? `Diskon ${disc}%` : 'Harga normal'}</p>
+                            <div class="flex items-center gap-2"><span class="font-bold text-sm text-slate-800">${t.name}</span></div>
+                            <p class="text-xs text-slate-500">${t.ticket_category === 'group' ? 'Rombongan' : 'Individual'} &middot; Harga normal</p>
                             <div class="flex items-baseline gap-2">
-                                <p class="text-sm font-extrabold text-brand-red">${rupiah(discounted)} <span class="text-xs font-normal text-slate-500">/ orang</span></p>${hasDisc ? `<span class="text-xs text-slate-400 line-through">${rupiah(price)}</span>` : ''}
+                                <p class="text-sm font-extrabold text-brand-red">${rupiah(price)} <span class="text-xs font-normal text-slate-500">/ orang</span></p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2"><button class="w-8 h-8 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 active:bg-slate-200 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, -1)" type="button">-</button><span class="w-10 text-center text-base font-extrabold text-slate-800">${qty}</span><button class="w-8 h-8 rounded-lg bg-brand-charcoal text-white hover:bg-slate-800 active:bg-slate-900 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, 1)" type="button">+</button></div>
@@ -481,29 +490,23 @@
             if (!qty) continue;
             hasItems = true;
             const price = parseFloat(t.price);
-            const disc = parseFloat(t.discount_percent || 0);
-            const unit = disc > 0 ? price - price * disc / 100 : price;
-            itemsEl.innerHTML += `<div class="flex justify-between items-center text-xs"><div><span class="font-bold text-slate-800">${t.name}</span><span class="text-slate-400 ml-1">× ${qty}</span><p class="text-[10px] text-slate-400">@ ${rupiah(unit)}${disc > 0 ? ` (reg ${rupiah(price)})` : ''}</p></div><span class="font-bold text-slate-800">${rupiah(qty * unit)}</span></div>`;
+            itemsEl.innerHTML += `<div class="flex justify-between items-center text-xs"><div><span class="font-bold text-slate-800">${t.name}</span><span class="text-slate-400 ml-1">× ${qty}</span><p class="text-[10px] text-slate-400">@ ${rupiah(price)}</p></div><span class="font-bold text-slate-800">${rupiah(qty * price)}</span></div>`;
         }
         if (!hasItems) itemsEl.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Belum ada tiket yang dipilih.</p>';
 
-        let subtotal = 0,
-            totalAmt = 0;
+        let subtotal = 0;
         for (const t of ticketTypes) {
             if (t.ticket_category !== cat) continue;
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
             const price = parseFloat(t.price);
-            const disc = parseFloat(t.discount_percent || 0);
-            const gross = qty * price;
-            const discounted = disc > 0 ? gross - gross * disc / 100 : gross;
-            subtotal += gross;
-            totalAmt += discounted;
+            subtotal += qty * price;
         }
         subtotal = Math.round(subtotal);
-        totalAmt = Math.round(totalAmt);
+        const discountAmount = Math.round(subtotal * globalDiscountPercent() / 100);
+        const totalAmt = subtotal - discountAmount;
         document.getElementById('summary-subtotal').textContent = rupiah(subtotal);
-        document.getElementById('summary-discount').textContent = `- ${rupiah(subtotal - totalAmt)}`;
+        document.getElementById('summary-discount').textContent = `- ${rupiah(discountAmount)}`;
         document.getElementById('summary-total').textContent = rupiah(totalAmt);
 
         const warn = document.getElementById('group-warning');
@@ -572,6 +575,7 @@
         document.getElementById('visitor-address').value = '';
         document.getElementById('visitor-country').value = 'Australia';
         document.getElementById('cash-received').value = '';
+        document.getElementById('discount_given').value = '';
         document.getElementById('edc-ref').value = '';
         Object.keys(posState.quantities).forEach(k => posState.quantities[k] = 0);
         document.getElementById('summary-visitor-name').textContent = '- Belum Diisi -';
@@ -672,6 +676,7 @@
         payload.append('payment_method', paymentMethod);
         if (paymentMethod === 'cash') payload.append('cash_paid', document.getElementById('cash-received').value);
         if (paymentMethod === 'debit') payload.append('payment_reference', document.getElementById('edc-ref').value.trim());
+        payload.append('discount_percent', document.getElementById('discount_given').value || '0');
         ticketItems.forEach((item, idx) => {
             payload.append(`ticket_items[${idx}][ticket_type_id]`, item.ticket_type_id);
             payload.append(`ticket_items[${idx}][qty]`, item.qty);
@@ -757,6 +762,10 @@
         clearFieldErrors();
     });
     document.getElementById('visitor-country').addEventListener('change', clearFieldErrors);
+    document.getElementById('discount_given').addEventListener('input', () => {
+        renderCart();
+        calculateChange();
+    });
 
     (function handleSuccessParam() {
         const inv = new URLSearchParams(window.location.search).get('success');

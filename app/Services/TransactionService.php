@@ -34,8 +34,9 @@ class TransactionService
 
     public function create(array $data, int $userId): array
     {
-        $ticketItems    = $data['ticket_items'] ?? [];
-        $ticketCategory = $data['ticket_category'] ?? '';
+        $ticketItems           = $data['ticket_items'] ?? [];
+        $ticketCategory        = $data['ticket_category'] ?? '';
+        $globalDiscountPercent = (float) ($data['discount_percent'] ?? 0);
 
         if (empty($ticketItems)) {
             throw new \InvalidArgumentException('Ticket items tidak boleh kosong');
@@ -45,7 +46,7 @@ class TransactionService
             throw new \InvalidArgumentException('Kategori tiket tidak valid');
         }
 
-        $pricing = $this->pricingService->calculateTicketDetails($ticketItems);
+        $pricing = $this->pricingService->calculateTicketDetails($ticketItems, $globalDiscountPercent);
 
         $limitCheck = $this->pricingService->validateTicketLimits($ticketItems, $ticketCategory);
         if (!$limitCheck['valid']) {

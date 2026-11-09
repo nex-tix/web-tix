@@ -78,6 +78,7 @@ class PosController extends BaseController
             'ticket_category' => 'required|in_list[individual,group]',
             'payment_method'  => 'required|in_list[cash,debit]',
             'ticket_items'    => 'required',
+            'discount_percent' => 'permit_empty|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
 
         if (!$this->validate($rules)) {

@@ -16,13 +16,12 @@ class PricingService
         $this->settingModel = new SettingModel();
     }
 
-    public function calculateTicketDetails(array $ticketItems): array
+    public function calculateTicketDetails(array $ticketItems, float $globalDiscountPercent = 0): array
     {
         $ticketItems = $this->normalizeItems($ticketItems);
 
         $details = [];
         $subtotalGross = 0;
-        $totalDiscountAmount = 0;
         $totalVisitors = 0;
 
         foreach ($ticketItems as $item) {
@@ -36,14 +35,13 @@ class PricingService
                 throw new \InvalidArgumentException("Jenis tiket {$ticketType['name']} tidak aktif");
             }
 
-            $qty             = $item['qty'];
-            $unitPrice       = (float) $ticketType['price'];
-            $discountPercent = (float) $ticketType['discount_percent'];
+            $qty       = $item['qty'];
+            $unitPrice = (float) $ticketType['price'];
+            $lineGross = $qty * $unitPrice;
 
-            // Diskon dibulatkan per unit lalu dikali qty,
-            // supaya total transaksi == jumlah ticket_details (individual maupun group).
-            $unitDiscount = $this->calculateUnitDiscount($unitPrice, $discountPercent);
-            $lineGross    = $qty * $unitPrice;
+            // Diskon global dibagi per unit lalu dikali qty,
+            // supaya subtotal tiap detail konsisten dgn total transaksi.
+            $unitDiscount = $this->calculateUnitDiscount($unitPrice, $globalDiscountPercent);
             $lineDiscount = $qty * $unitDiscount;
 
             $details[] = [
@@ -52,21 +50,22 @@ class PricingService
                 'ticket_category'  => $ticketType['ticket_category'],
                 'qty'              => $qty,
                 'unit_price'       => $unitPrice,
-                'discount_percent' => $discountPercent,
+                'discount_percent' => $globalDiscountPercent,
                 'unit_discount'    => $unitDiscount,
                 'discount_amount'  => $lineDiscount,
                 'subtotal'         => $lineGross - $lineDiscount,
             ];
 
-            $subtotalGross       += $lineGross;
-            $totalDiscountAmount += $lineDiscount;
-            $totalVisitors       += $qty;
+            $subtotalGross += $lineGross;
+            $totalVisitors += $qty;
         }
+
+        $globalDiscountAmount = $this->calculateUnitDiscount($subtotalGross, $globalDiscountPercent);
 
         return [
             'subtotal'        => $subtotalGross,
-            'discount_amount' => $totalDiscountAmount,
-            'total_amount'    => $subtotalGross - $totalDiscountAmount,
+            'discount_amount' => $globalDiscountAmount,
+            'total_amount'    => $subtotalGross - $globalDiscountAmount,
             'total_visitors'  => $totalVisitors,
             'details'         => $details,
         ];
