@@ -36,7 +36,7 @@
         <tbody class="table-light">
           <?php if (empty($rows)): ?>
             <tr>
-              <td colspan="<?= count($headers) ?>" class="text-center py-4 text-muted">
+              <td colspan="<?= count($headers) ?>" class="text-center py-4 text-white">
                 <?= esc($empty_message ?? 'Belum ada data.') ?>
               </td>
             </tr>

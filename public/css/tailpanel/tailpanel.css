@@ -1816,7 +1816,6 @@ body.has-drawer-open .drawer-backdrop {
   letter-spacing: 0.02em;
   line-height: 1.4;
   background: var(--bg-muted);
-  color: var(--t-muted);
 }
 
 .badge.primary {

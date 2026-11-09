@@ -30,7 +30,6 @@ class TicketTypeController extends BaseController
             'name' => 'required|max_length[100]',
             'price' => 'required|decimal|greater_than_equal_to[0]',
             'ticket_category' => 'required|in_list[individual,group]',
-            'discount_percent' => 'permit_empty|decimal|greater_than_equal_to[0]|less_than_equal_to[100]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];
 
@@ -42,7 +41,6 @@ class TicketTypeController extends BaseController
             'name' => $this->request->getPost('name'),
             'price' => $this->request->getPost('price'),
             'ticket_category' => $this->request->getPost('ticket_category'),
-            'discount_percent' => $this->request->getPost('discount_percent') ?: 0,
             'is_active' => $this->request->getPost('is_active') ? 1 : 0,
         ];
 
@@ -65,7 +63,6 @@ class TicketTypeController extends BaseController
             'name' => 'required|max_length[100]',
             'price' => 'required|decimal|greater_than_equal_to[0]',
             'ticket_category' => 'required|in_list[individual,group]',
-            'discount_percent' => 'permit_empty|decimal|greater_than_equal_to[0]|less_than_equal_to[100]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];
 
@@ -77,7 +74,6 @@ class TicketTypeController extends BaseController
             'name' => $this->request->getPost('name'),
             'price' => $this->request->getPost('price'),
             'ticket_category' => $this->request->getPost('ticket_category'),
-            'discount_percent' => $this->request->getPost('discount_percent') ?: 0,
             'is_active' => $this->request->getPost('is_active') ? 1 : 0,
         ];
 

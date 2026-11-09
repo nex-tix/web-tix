@@ -12,9 +12,9 @@ class TicketTypeSeeder extends Seeder
 
         // Data awal sesuai PRD v2.5 baris 376 & 165–170
         $types = [
-            ['name' => 'Adult', 'ticket_category' => 'individual', 'price' => 100000.00, 'discount_percent' => 0.00],
-            ['name' => 'Child', 'ticket_category' => 'individual', 'price' => 60000.00, 'discount_percent' => 0.00],
-            ['name' => 'Group', 'ticket_category' => 'group', 'price' => 100000.00, 'discount_percent' => 10.00],
+            ['name' => 'Adult', 'ticket_category' => 'individual', 'price' => 100000.00],
+            ['name' => 'Child', 'ticket_category' => 'individual', 'price' => 60000.00],
+            ['name' => 'Group', 'ticket_category' => 'group', 'price' => 100000.00],
         ];
 
         foreach ($types as $type) {
@@ -30,7 +30,6 @@ class TicketTypeSeeder extends Seeder
                 'name'             => $type['name'],
                 'ticket_category'  => $type['ticket_category'],
                 'price'            => $type['price'],
-                'discount_percent' => $type['discount_percent'],
                 'is_active'        => 1,
                 'created_at'       => $now,
             ]);
