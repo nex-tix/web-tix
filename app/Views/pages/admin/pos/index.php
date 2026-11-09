@@ -253,6 +253,20 @@
                             <input class=" input-text w-full text-sm font-mono rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="edc-ref" placeholder="Contoh: EDC-BCA-982314" type="text" />
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="payment_reference"></p>
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="edc-bank">Bank EDC <span class="text-brand-red">*</span></label>
+                            <select class="input-design w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" <?= empty($banks) ? 'disabled' : '' ?> id="edc-bank" data-has-arrow>
+                                <?php if (empty($banks)): ?>
+                                    <option value="">Belum ada bank aktif — tambahkan di menu Bank</option>
+                                <?php else: ?>
+                                    <option value="">-- Pilih Bank --</option>
+                                    <?php foreach ($banks as $bank): ?>
+                                        <option value="<?= (int) $bank['id'] ?>"><?= esc($bank['name']) ?> (<?= esc($bank['code']) ?>)</option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="bank_id"></p>
+                        </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs">
                             <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewbox="0 0 20 20">
                                 <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
@@ -365,6 +379,8 @@
             address: 'address',
             ticket_category: 'ticket_category',
             payment_method: 'payment_method',
+            payment_reference: 'payment_reference',
+            bank_id: 'bank_id',
             ticket_items: 'ticket_items'
         };
         let generalMessages = [];
@@ -577,6 +593,7 @@
         document.getElementById('cash-received').value = '';
         document.getElementById('discount_given').value = '';
         document.getElementById('edc-ref').value = '';
+        document.getElementById('edc-bank').value = '';
         Object.keys(posState.quantities).forEach(k => posState.quantities[k] = 0);
         document.getElementById('summary-visitor-name').textContent = '- Belum Diisi -';
         document.getElementById('trx-id').textContent = '-';
@@ -646,9 +663,15 @@
                 return;
             }
         }
-        if (paymentMethod === 'debit' && !document.getElementById('edc-ref').value.trim()) {
-            setFieldError('payment_reference', 'Nomor referensi EDC wajib diisi.');
-            return;
+        if (paymentMethod === 'debit') {
+            if (!document.getElementById('edc-bank').value) {
+                setFieldError('bank_id', 'Bank EDC wajib dipilih.');
+                return;
+            }
+            if (!document.getElementById('edc-ref').value.trim()) {
+                setFieldError('payment_reference', 'Nomor referensi EDC wajib diisi.');
+                return;
+            }
         }
 
         const ticketItems = [];
@@ -675,7 +698,10 @@
         payload.append('ticket_category', ticketCategory);
         payload.append('payment_method', paymentMethod);
         if (paymentMethod === 'cash') payload.append('cash_paid', document.getElementById('cash-received').value);
-        if (paymentMethod === 'debit') payload.append('payment_reference', document.getElementById('edc-ref').value.trim());
+        if (paymentMethod === 'debit') {
+            payload.append('payment_reference', document.getElementById('edc-ref').value.trim());
+            payload.append('bank_id', document.getElementById('edc-bank').value);
+        }
         payload.append('discount_percent', document.getElementById('discount_given').value || '0');
         ticketItems.forEach((item, idx) => {
             payload.append(`ticket_items[${idx}][ticket_type_id]`, item.ticket_type_id);
@@ -762,6 +788,7 @@
         clearFieldErrors();
     });
     document.getElementById('visitor-country').addEventListener('change', clearFieldErrors);
+    document.getElementById('edc-bank').addEventListener('change', clearFieldErrors);
     document.getElementById('discount_given').addEventListener('input', () => {
         renderCart();
         calculateChange();

@@ -7,6 +7,7 @@ use App\Models\TransactionModel;
 use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
 use App\Models\PrintLogModel;
+use App\Models\BankModel;
 use Config\Database;
 
 class TransactionService
@@ -16,6 +17,7 @@ class TransactionService
     protected TicketModel $ticketModel;
     protected TicketDetailModel $ticketDetailModel;
     protected PrintLogModel $printLogModel;
+    protected BankModel $bankModel;
     protected PricingService $pricingService;
     protected CodeGeneratorService $codeGeneratorService;
     protected $db;
@@ -27,6 +29,7 @@ class TransactionService
         $this->ticketModel = new TicketModel();
         $this->ticketDetailModel = new TicketDetailModel();
         $this->printLogModel = new PrintLogModel();
+        $this->bankModel = new BankModel();
         $this->pricingService = new PricingService();
         $this->codeGeneratorService = new CodeGeneratorService();
         $this->db = Database::connect();
@@ -75,10 +78,22 @@ class TransactionService
             $cashChange = $cashPaid - $totalAmount;
         }
 
+        $bankId = null;
+
         if ($paymentMethod === 'debit') {
             $paymentReference = trim((string) ($data['payment_reference'] ?? ''));
             if ($paymentReference === '') {
                 throw new \InvalidArgumentException('Nomor referensi EDC wajib diisi untuk pembayaran debit');
+            }
+
+            $bankId = (int) ($data['bank_id'] ?? 0);
+            if ($bankId <= 0) {
+                throw new \InvalidArgumentException('Bank wajib dipilih untuk pembayaran EDC/debit');
+            }
+
+            $bank = $this->bankModel->where('is_active', 1)->find($bankId);
+            if (!$bank) {
+                throw new \InvalidArgumentException('Bank tidak ditemukan atau tidak aktif');
             }
         }
 
@@ -123,6 +138,7 @@ class TransactionService
                 'created_by'        => $userId,
                 'payment_method'    => $paymentMethod,
                 'payment_reference' => $paymentReference,
+                'bank_id'           => $bankId,
                 'subtotal'          => $pricing['subtotal'],
                 'discount_amount'   => $pricing['discount_amount'],
                 'total_amount'      => $pricing['total_amount'],

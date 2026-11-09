@@ -13,6 +13,7 @@ use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
 use App\Models\SettingModel;
 use App\Models\PrintLogModel;
+use App\Models\BankModel;
 
 class PosController extends BaseController
 {
@@ -26,6 +27,7 @@ class PosController extends BaseController
     protected TicketDetailModel $ticketDetailModel;
     protected SettingModel $settingModel;
     protected PrintLogModel $printLogModel;
+    protected BankModel $bankModel;
 
     public function __construct()
     {
@@ -39,6 +41,7 @@ class PosController extends BaseController
         $this->ticketDetailModel = new TicketDetailModel();
         $this->settingModel = new SettingModel();
         $this->printLogModel = new PrintLogModel();
+        $this->bankModel = new BankModel();
     }
 
     public function index()
@@ -55,11 +58,17 @@ class PosController extends BaseController
             'max_group_members'     => (int) $this->settingModel->getSetting('max_group_members', 999),
         ];
 
+        $banks = $this->bankModel
+            ->where('is_active', 1)
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
         return view('pages/admin/pos/index', [
             'ticketTypes' => $ticketTypes,
             'posLimits'   => $posLimits,
-            'activeKey' => 'pos',
-            'crumbs'    => 'Operasional | Pos Loket',
+            'banks'       => $banks,
+            'activeKey'   => 'pos',
+            'crumbs'      => 'Operasional | Pos Loket',
         ]);
     }
 
@@ -77,6 +86,8 @@ class PosController extends BaseController
             'address'         => 'permit_empty|max_length[255]',
             'ticket_category' => 'required|in_list[individual,group]',
             'payment_method'  => 'required|in_list[cash,debit]',
+            'payment_reference' => 'permit_empty|max_length[100]',
+            'bank_id'         => 'permit_empty|integer',
             'ticket_items'    => 'required',
             'discount_percent' => 'permit_empty|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
