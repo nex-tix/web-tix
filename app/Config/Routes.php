@@ -36,6 +36,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('ticket-types/(:num)/update', 'Admin\TicketTypeController::update/$1');
     $routes->post('ticket-types/(:num)/delete', 'Admin\TicketTypeController::delete/$1');
 
+    // Banks Management
+    $routes->get('banks', 'Admin\BankController::index');
+    $routes->post('banks/store', 'Admin\BankController::store');
+    $routes->post('banks/(:num)/update', 'Admin\BankController::update/$1');
+    $routes->post('banks/(:num)/delete', 'Admin\BankController::delete/$1');
+
     // Checkpoints Management
     $routes->get('checkpoints', 'Admin\CheckpointController::index');
     $routes->post('checkpoints/store', 'Admin\CheckpointController::store');

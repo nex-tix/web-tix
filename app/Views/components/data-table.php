@@ -34,13 +34,6 @@
           </tr>
         </thead>
         <tbody class="table-light">
-          <?php if (empty($rows)): ?>
-            <tr>
-              <td colspan="<?= count($headers) ?>" class="text-center py-4 text-white">
-                <?= esc($empty_message ?? 'Belum ada data.') ?>
-              </td>
-            </tr>
-          <?php else: ?>
             <?php foreach ($rows as $row): ?>
               <tr>
                 <?php foreach ($row as $index => $cell): ?>
@@ -50,7 +43,6 @@
                 <?php endforeach; ?>
               </tr>
             <?php endforeach; ?>
-          <?php endif; ?>
         </tbody>
       </table>
     </div>
