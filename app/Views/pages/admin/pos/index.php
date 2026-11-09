@@ -255,11 +255,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="edc-bank">Bank EDC <span class="text-brand-red">*</span></label>
-                            <select <?= empty($banks) ? 'disabled' : '' ?> id="edc-bank">
+                            <select class="input-design form-select" <?= empty($banks) ? 'disabled' : '' ?> id="edc-bank">
                                 <?php if (empty($banks)): ?>
-                                    <option value="">Belum ada bank aktif — tambahkan di menu Bank</option>
+                                    <option class="text-center" value="" selected>Belum ada bank aktif</option>
                                 <?php else: ?>
-                                    <option value="" selected disabled>-- Pilih Bank --</option>
+                                    <option value="" disabled>-- Pilih Bank --</option>
                                     <?php foreach ($banks as $bank): ?>
                                         <option value="<?= (int) $bank['id'] ?>"><?= esc($bank['name']) ?> (<?= esc($bank['code']) ?>)</option>
                                     <?php endforeach; ?>
