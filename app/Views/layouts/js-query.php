@@ -40,3 +40,6 @@
 
 <!-- TailPanel -->
  <script type="module" src="<?= base_url('js/tailpanel/index.js') ?>"></script>
+
+ <!-- Choices.js — searchable dropdown (UMD, set window.Choices) -->
+ <script src="https://cdn.jsdelivr.net/npm/choices.js@11.0.3/public/assets/scripts/choices.min.js"></script>

@@ -164,8 +164,8 @@
             </section>
         </div>
         <div class="lg:col-span-5 space-y-6">
-            <section class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden" data-purpose="checkout-card">
-                <div class="bg-brand-charcoal text-white px-5 py-4 flex items-center justify-between">
+            <section class="bg-white rounded-xl shadow-md border border-slate-200" data-purpose="checkout-card">
+                <div class="bg-brand-charcoal text-white px-5 py-4 flex items-center justify-between rounded-t-xl">
                     <div class="flex items-center gap-2.5">
                         <svg class="w-5 h-5 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                             <path d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
@@ -205,7 +205,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-5 bg-white border-t border-slate-200" data-purpose="payment-methods">
+                <div class="p-5 bg-white border-t border-slate-200 rounded-b-xl" data-purpose="payment-methods">
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Metode Pembayaran</label>
                     <p class="field-error hidden text-xs text-rose-600 mb-2" data-error="payment_method"></p>
                     <div class="grid grid-cols-2 gap-2 mb-4">
@@ -255,11 +255,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="edc-bank">Bank EDC <span class="text-brand-red">*</span></label>
-                            <select class="input-design w-full text-sm text-black rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" <?= empty($banks) ? 'disabled' : '' ?> id="edc-bank" data-has-arrow>
+                            <select <?= empty($banks) ? 'disabled' : '' ?> id="edc-bank">
                                 <?php if (empty($banks)): ?>
                                     <option value="">Belum ada bank aktif — tambahkan di menu Bank</option>
                                 <?php else: ?>
-                                    <option value="">-- Pilih Bank --</option>
+                                    <option value="" selected disabled>-- Pilih Bank --</option>
                                     <?php foreach ($banks as $bank): ?>
                                         <option value="<?= (int) $bank['id'] ?>"><?= esc($bank['name']) ?> (<?= esc($bank['code']) ?>)</option>
                                     <?php endforeach; ?>
@@ -593,7 +593,8 @@
         document.getElementById('cash-received').value = '';
         document.getElementById('discount_given').value = '';
         document.getElementById('edc-ref').value = '';
-        document.getElementById('edc-bank').value = '';
+                if (edcBankChoices) edcBankChoices.removeActiveItems();
+                document.getElementById('edc-bank').value = '';
         Object.keys(posState.quantities).forEach(k => posState.quantities[k] = 0);
         document.getElementById('summary-visitor-name').textContent = '- Belum Diisi -';
         document.getElementById('trx-id').textContent = '-';
@@ -793,6 +794,32 @@
         renderCart();
         calculateChange();
     });
+
+    // ---- Searchable dropdown Bank EDC (Choices.js) ----
+    let edcBankChoices = null;
+
+    function initBankSearch() {
+        const el = document.getElementById('edc-bank');
+        if (!el || !window.Choices || edcBankChoices) return;
+
+        edcBankChoices = new window.Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Cari nama atau kode bank...',
+            placeholder: true,
+            placeholderValue: '-- Pilih Bank --',
+            noResultsText: 'Bank tidak ditemukan',
+            noChoicesText: 'Belum ada bank aktif',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: false
+        });
+
+        // Bersihkan pesan error saat dropdown dibuka atau bank dipilih
+        edcBankChoices.containerOuter.element.addEventListener('click', clearFieldErrors);
+        edcBankChoices.containerOuter.element.addEventListener('change', clearFieldErrors);
+    }
+
+    window.addEventListener('load', initBankSearch);
 
     (function handleSuccessParam() {
         const inv = new URLSearchParams(window.location.search).get('success');

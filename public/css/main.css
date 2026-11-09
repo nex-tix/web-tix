@@ -107,6 +107,116 @@
       }
 
       /* ============================================================
+         CHOICES.JS — searchable dropdown (Bank EDC, dll)
+         Diselaraskan dengan gaya .input-design.
+         ============================================================ */
+      .choices {
+        width: 100%;
+        margin-bottom: 0 !important;
+      }
+
+      .choices__inner {
+        background-color: #fff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.375rem !important;
+        color: #1f2937 !important;
+        font-size: 0.875rem !important;
+        padding: 0.375rem 0.75rem !important;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .choices.is-focused .choices__inner,
+      .choices.is-open .choices__inner {
+        border-color: #e24a3b !important;
+        box-shadow: 0 0 0 3px rgba(226, 74, 59, 0.15) !important;
+      }
+
+      .choices[data-type*="select-one"] .choices__inner {
+        padding-right: 2.25rem !important;
+      }
+
+      /* Panah kanan */
+      .choices[data-type*="select-one"]::after {
+        border-color: #6b7280 transparent transparent transparent;
+        right: 12px;
+        margin-top: -3px;
+      }
+      .choices[data-type*="select-one"].is-open::after {
+        border-color: transparent transparent #6b7280 transparent;
+        margin-top: -6px;
+      }
+
+      .choices__list--single {
+        padding: 0 !important;
+        width: 100%;
+      }
+      .choices__list--single .choices__item {
+        padding: 0 !important;
+        color: #1f2937;
+      }
+      .choices__placeholder {
+        color: #9ca3af !important;
+        opacity: 1 !important;
+      }
+
+      /* Panel dropdown */
+      .choices__list--dropdown,
+      .choices__list[aria-expanded] {
+        background-color: #fff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.375rem !important;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12) !important;
+        margin-top: 4px !important;
+        z-index: 60 !important;
+      }
+      .choices__list--dropdown .choices__list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      /* Kolom pencarian di dalam dropdown */
+      .choices__list--dropdown .choices__input,
+      .choices__input--cloned {
+        background-color: #fff !important;
+        border: none !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        border-radius: 0 !important;
+        color: #1f2937 !important;
+        font-size: 0.875rem !important;
+        padding: 0.5rem 0.75rem !important;
+      }
+      .choices__list--dropdown .choices__input:focus {
+        box-shadow: none !important;
+        outline: none !important;
+      }
+
+      .choices__list--dropdown .choices__item--choice {
+        color: #1f2937 !important;
+        font-size: 0.875rem !important;
+        padding: 0.5rem 0.75rem !important;
+      }
+      .choices__list--dropdown .choices__item--choice.is-highlighted {
+        background-color: #e24a3b !important;
+        color: #fff !important;
+      }
+      .choices__list--dropdown .choices__item--choice.has-no-results,
+      .choices__list--dropdown .choices__item--choice.has-no-choices {
+        background-color: transparent !important;
+        color: #9ca3af !important;
+        font-style: italic;
+      }
+
+      /* Disabled */
+      .choices.is-disabled .choices__inner {
+        background-color: #f8f9fa !important;
+        color: #9ca3af !important;
+        cursor: not-allowed;
+      }
+
+      /* ============================================================
          RESET bare input/textarea/select — batalkan default Bootstrap
          styling agar bare elements = unstyled HTML default.
          Hanya berlaku untuk elements tanpa class input-design,

@@ -30,6 +30,10 @@
  <!-- Toastr -->
   <link rel="stylesheet" href="<?= base_url('css/toastr.min.css') ?>">
 
+  <!-- Choices.js - searchable dropdown -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@11.0.3/public/assets/styles/choices.min.css">
+
+
 <!-- Apexchart -->
 <link
   rel="stylesheet"
