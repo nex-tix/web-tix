@@ -2,19 +2,6 @@
 <?= $this->section('content') ?>
 <div class="app-content">
   <div class="container-fluid px-0">
-    <?php if (session()->get('success')): ?>
-      <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-        <?= session()->get('success') ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <?php endif; ?>
-    <?php if (session()->get('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-        <?= session()->get('error') ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <?php endif; ?>
-
     <?php
     $headers = ['Nama', 'Harga', 'Kategori', 'Status', 'Dibuat', 'Aksi'];
     $rows = [];
@@ -37,13 +24,13 @@
     ?>
 
     <?= view('components/data-table', [
-        'title'       => 'Kelola Jenis Tiket',
-        'subtitle'    => 'Daftar jenis tiket yang tersedia untuk dijual di loket.',
-        'headers'     => $headers,
-        'rows'        => $rows,
-        'create_modal_id' => 'ticketModal',
-        'create_text' => 'Tambah Jenis Tiket',
-        'empty_message' => 'Belum ada data jenis tiket.',
+      'title'       => 'Kelola Jenis Tiket',
+      'subtitle'    => 'Daftar jenis tiket yang tersedia untuk dijual di loket.',
+      'headers'     => $headers,
+      'rows'        => $rows,
+      'create_modal_id' => 'ticketModal',
+      'create_text' => 'Tambah Jenis Tiket',
+      'empty_message' => 'Belum ada data jenis tiket.',
     ]) ?>
   </div>
 </div>
@@ -117,6 +104,29 @@
     form.action = '<?= base_url('admin/ticket-types/store') ?>';
     form.reset();
     document.getElementById('modalTitle').innerText = 'Tambah Jenis Tiket';
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    <?php if (session()->get('success')): ?>
+      toastr.success(<?= json_encode(session()->get('success')) ?>, 'Berhasil', {
+        timeOut: 1500,
+        extendedTimeOut: 0
+      });
+    <?php endif; ?>
+
+    <?php if (session()->get('error')): ?>
+      toastr.error(<?= json_encode(session()->get('error')) ?>, 'Gagal', {
+        timeOut: 2000,
+        extendedTimeOut: 0
+      });
+    <?php endif; ?>
+
+    <?php if (session()->get('errors')): ?>
+      toastr.error('Silakan periksa kembali isian form jenis tiket.', 'Validasi Gagal', {
+        timeOut: 2500,
+        extendedTimeOut: 0
+      });
+    <?php endif; ?>
   });
 
   <?php if (session()->has('modal')): ?>
