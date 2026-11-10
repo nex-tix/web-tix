@@ -162,7 +162,7 @@
                 <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
 
                 <!-- Guide Selection Card (Tepat di atas pilihan tiket Adult) -->
-                <div class="mb-4 p-3.5 rounded-xl border border-slate-200 bg-slate-50/80 transition-all" id="guide-selection-section">
+                <div class="mb-4 p-3.5 rounded-xl border border-slate-200 bg-white transition-all" id="guide-selection-section">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-lg bg-brand-charcoal text-white flex items-center justify-center shrink-0">
