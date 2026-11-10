@@ -30,6 +30,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('gate-users/(:num)', 'Admin\GateUserController::update/$1');
     $routes->post('gate-users/(:num)/delete', 'Admin\GateUserController::delete/$1');
 
+    // Guides Management
+    $routes->get('guides', 'Admin\GuideController::index');
+    $routes->post('guides/store', 'Admin\GuideController::store');
+    $routes->post('guides/(:num)/update', 'Admin\GuideController::update/$1');
+    $routes->post('guides/(:num)/delete', 'Admin\GuideController::delete/$1');
+
     // Ticket Types Management
     $routes->get('ticket-types', 'Admin\TicketTypeController::index');
     $routes->post('ticket-types/store', 'Admin\TicketTypeController::store');

@@ -12,18 +12,36 @@ class TicketModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['transaction_id', 'ticket_code', 'ticket_category', 'valid_date', 'total_visitors', 'actual_visitors',  'status', 'used_at', 'used_by_gate_user_id', 'used_checkpoint_id',];
+    protected $allowedFields    = [
+        'transaction_id',
+        'ticket_code',
+        'ticket_category',
+        'valid_date',
+        'total_visitors',
+        'actual_visitors',
+        'status',
+        'used_at',
+        'used_by_gate_user_id',
+        'used_checkpoint_id',
+        'guide_id',
+        'guide_name_snapshot',
+        'guide_fee_percent',
+        'guide_fee_amount',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [
-        'id' => 'int',
-        'transaction_id' => 'int',
-        'total_visitors' => 'int',
+        'id'                   => 'int',
+        'transaction_id'       => 'int',
+        'total_visitors'       => 'int',
         'used_by_gate_user_id' => '?int',
-        'used_checkpoint_id' => '?int',
-        'actual_visitors' => '?int',
+        'used_checkpoint_id'   => '?int',
+        'actual_visitors'      => '?int',
+        'guide_id'             => '?int',
+        'guide_fee_percent'    => '?float',
+        'guide_fee_amount'     => '?float',
     ];
     protected array $castHandlers = [];
 

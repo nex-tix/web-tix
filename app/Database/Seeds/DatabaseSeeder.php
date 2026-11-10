@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
         $this->call('TicketTypeSeeder');
         $this->call('CheckpointSeeder');
         $this->call('SettingSeeder');
+        $this->call('GuideSeeder');
     }
 }

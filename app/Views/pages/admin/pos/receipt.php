@@ -64,6 +64,9 @@
                 <div class="flex justify-between"><span>Waktu Trx:</span> <span><?= esc($transaction['created_at']) ?> WITA</span></div>
                 <div class="flex justify-between"><span>Pengunjung:</span> <span class="font-bold"><?= esc($customer['name']) ?></span></div>
                 <div class="flex justify-between"><span>Asal:</span> <span><?= ucfirst($customer['origin_type']) ?> (<?= esc($customer['origin']) ?>)</span></div>
+                <?php if (!empty($tickets[0]['guide_name_snapshot'])): ?>
+                <div class="flex justify-between"><span>Pemandu / Guide:</span> <span class="font-bold"><?= esc($tickets[0]['guide_name_snapshot']) ?></span></div>
+                <?php endif; ?>
             </div>
 
             <div class="border-t border-dashed border-slate-300 pt-2 space-y-1">

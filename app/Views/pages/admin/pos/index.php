@@ -160,6 +160,67 @@
                     <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">—</span></div>
                 </div>
                 <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
+
+                <!-- Guide Selection Card (Tepat di atas pilihan tiket Adult) -->
+                <div class="mb-4 p-3.5 rounded-xl border border-slate-200 bg-slate-50/80 transition-all" id="guide-selection-section">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-brand-charcoal text-white flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4 text-brand-gold" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M10 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                                    <path d="M2 1a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM1 3a1 1 0 0 1 1-1h2v2H1zm4 10V2h9a1 1 0 0 1 1 1v9c0 .285-.12.543-.31.725C14.15 11.494 12.822 10 10 10c-3.037 0-4.345 1.73-4.798 3zm-4-2h3v2H2a1 1 0 0 1-1-1zm3-1H1V8h3zm0-3H1V5h3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase">Gunakan Layanan Pemandu / Tour Guide?</h4>
+                                <p class="text-[11px] text-slate-500">Opsional, tanpa biaya tambahan untuk pengunjung</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 shadow-xs">
+                            <button type="button" id="btn-guide-no" onclick="setGuideEnabled(false)" class="px-3 py-1 rounded text-xs font-bold transition-all bg-brand-charcoal text-white shadow-xs">
+                                Tidak
+                            </button>
+                            <button type="button" id="btn-guide-yes" onclick="setGuideEnabled(true)" class="px-3 py-1 rounded text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                                Ya
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown guide (hanya tampil jika Ya) -->
+                    <div id="guide-dropdown-container" class="mt-3 pt-3 border-t border-slate-200 hidden">
+                        <label for="select-guide" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Pilih Pemandu Wisata (Guide) <span class="text-brand-red">*</span>
+                        </label>
+                        <?php $guides = $guides ?? []; ?>
+                        <?php if (empty($guides)): ?>
+                            <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                                <svg class="w-4 h-4 text-amber-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Belum ada data guide aktif di sistem. Silakan tambahkan di menu <a href="<?= base_url('admin/guides') ?>" class="font-bold underline">Guides</a>.</span>
+                            </div>
+                        <?php else: ?>
+                            <select id="select-guide" onchange="onGuideSelected(this.value)" class="input-design form-select w-full text-sm font-semibold rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red">
+                                <option value="">-- Pilih Guide --</option>
+                                <?php foreach ($guides as $gd): ?>
+                                    <?php 
+                                        $langs = is_array($gd['languages']) ? $gd['languages'] : (is_string($gd['languages']) ? json_decode($gd['languages'], true) : []);
+                                        $langText = !empty($langs) && is_array($langs) ? ' (' . implode(', ', $langs) . ')' : '';
+                                    ?>
+                                    <option value="<?= $gd['id'] ?>" data-name="<?= esc($gd['name']) ?>" data-code="<?= esc($gd['code']) ?>">
+                                        [<?= esc($gd['code']) ?>] <?= esc($gd['name']) ?><?= esc($langText) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="guide_id"></p>
+                            <div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2 flex items-center justify-between hidden">
+                                <span class="font-medium">Guide terpilih: <strong id="guide-selected-name">-</strong></span>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Tercatat di Struk</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <div class="space-y-3" id="tickets-container"></div>
             </section>
         </div>
@@ -185,6 +246,10 @@
                         <span class="text-slate-400">Kategori:</span>
                         <span class="font-bold text-slate-800 ml-1" id="summary-visitor-origin">Domestik (0 Orang)</span>
                     </div>
+                </div>
+                <div class="px-5 py-2.5 bg-slate-50/70 border-b border-slate-200 text-xs flex justify-between items-center hidden" id="summary-guide-row">
+                    <span class="text-slate-500">Pemandu / Guide:</span>
+                    <span class="font-bold text-slate-800" id="summary-guide-name">-</span>
                 </div>
                 <div class="p-5 space-y-3 text-sm">
                     <div class="space-y-2 min-h-[70px]" id="receipt-items-list">
@@ -301,7 +366,10 @@
         origin: 'domestik',
         mode: 'individual',
         payment: 'cash',
-        quantities: {}
+        quantities: {},
+        guide_enabled: false,
+        guide_id: null,
+        guide_name: ''
     };
     ticketTypes.forEach(t => posState.quantities[t.id] = 0);
 
@@ -584,7 +652,73 @@
         calculateChange();
     }
 
+    function setGuideEnabled(enabled) {
+        posState.guide_enabled = enabled;
+        const btnNo = document.getElementById('btn-guide-no');
+        const btnYes = document.getElementById('btn-guide-yes');
+        const dropdownContainer = document.getElementById('guide-dropdown-container');
+        const summaryGuideRow = document.getElementById('summary-guide-row');
+        const selectGuide = document.getElementById('select-guide');
+
+        if (enabled) {
+            btnYes.className = 'px-3 py-1 rounded text-xs font-bold transition-all bg-brand-charcoal text-white shadow-xs';
+            btnNo.className = 'px-3 py-1 rounded text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+            if (dropdownContainer) dropdownContainer.classList.remove('hidden');
+        } else {
+            btnNo.className = 'px-3 py-1 rounded text-xs font-bold transition-all bg-brand-charcoal text-white shadow-xs';
+            btnYes.className = 'px-3 py-1 rounded text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+            if (dropdownContainer) dropdownContainer.classList.add('hidden');
+            if (guideChoices) {
+                guideChoices.removeActiveItems();
+            } else if (selectGuide) {
+                selectGuide.value = '';
+            }
+            posState.guide_id = null;
+            posState.guide_name = '';
+            const selectedInfo = document.getElementById('guide-selected-info');
+            if (selectedInfo) selectedInfo.classList.add('hidden');
+            if (summaryGuideRow) summaryGuideRow.classList.add('hidden');
+        }
+        clearFieldErrors();
+    }
+
+    function onGuideSelected(guideId) {
+        const selectGuide = document.getElementById('select-guide');
+        const summaryGuideRow = document.getElementById('summary-guide-row');
+        const summaryGuideName = document.getElementById('summary-guide-name');
+        const selectedInfo = document.getElementById('guide-selected-info');
+        const selectedNameEl = document.getElementById('guide-selected-name');
+
+        if (!guideId) {
+            posState.guide_id = null;
+            posState.guide_name = '';
+            if (selectedInfo) selectedInfo.classList.add('hidden');
+            if (summaryGuideRow) summaryGuideRow.classList.add('hidden');
+            return;
+        }
+
+        let guideName = '';
+        if (selectGuide) {
+            const opt = selectGuide.querySelector(`option[value="${guideId}"]`);
+            if (opt) guideName = opt.dataset.name || opt.text;
+        }
+
+        posState.guide_id = guideId;
+        posState.guide_name = guideName;
+
+        if (selectedInfo && selectedNameEl) {
+            selectedNameEl.textContent = guideName;
+            selectedInfo.classList.remove('hidden');
+        }
+        if (summaryGuideRow && summaryGuideName) {
+            summaryGuideName.textContent = guideName;
+            summaryGuideRow.classList.remove('hidden');
+        }
+        clearFieldErrors();
+    }
+
     function resetTransaction() {
+        setGuideEnabled(false);
         document.getElementById('visitor-name').value = '';
         document.getElementById('visitor-city').value = '';
         document.getElementById('visitor-phone').value = '';
@@ -675,6 +809,11 @@
             }
         }
 
+        if (posState.guide_enabled && !posState.guide_id) {
+            setFieldError('guide_id', 'Silakan pilih pemandu wisata atau pilih Tidak jika tidak menggunakan guide.');
+            return;
+        }
+
         const ticketItems = [];
         for (const t of ticketTypes) {
             if (t.ticket_category !== ticketCategory) continue;
@@ -704,6 +843,9 @@
             payload.append('bank_id', document.getElementById('edc-bank').value);
         }
         payload.append('discount_percent', document.getElementById('discount_given').value || '0');
+        if (posState.guide_enabled && posState.guide_id) {
+            payload.append('guide_id', posState.guide_id);
+        }
         ticketItems.forEach((item, idx) => {
             payload.append(`ticket_items[${idx}][ticket_type_id]`, item.ticket_type_id);
             payload.append(`ticket_items[${idx}][qty]`, item.qty);
@@ -819,7 +961,34 @@
         edcBankChoices.containerOuter.element.addEventListener('change', clearFieldErrors);
     }
 
-    window.addEventListener('load', initBankSearch);
+    // ---- Searchable dropdown Guide (Choices.js) ----
+    let guideChoices = null;
+
+    function initGuideSearch() {
+        const el = document.getElementById('select-guide');
+        if (!el || !window.Choices || guideChoices) return;
+
+        guideChoices = new window.Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Cari nama atau kode guide...',
+            placeholder: true,
+            placeholderValue: '-- Pilih Guide --',
+            noResultsText: 'Guide tidak ditemukan',
+            noChoicesText: 'Belum ada guide aktif',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: false
+        });
+
+        guideChoices.passedElement.element.addEventListener('change', function(e) {
+            onGuideSelected(e.detail.value);
+        });
+    }
+
+    window.addEventListener('load', () => {
+        initBankSearch();
+        initGuideSearch();
+    });
 
     (function handleSuccessParam() {
         const inv = new URLSearchParams(window.location.search).get('success');

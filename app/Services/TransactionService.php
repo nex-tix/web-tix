@@ -8,6 +8,8 @@ use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
 use App\Models\PrintLogModel;
 use App\Models\BankModel;
+use App\Models\GuideModel;
+use App\Models\SettingModel;
 use Config\Database;
 
 class TransactionService
@@ -18,6 +20,8 @@ class TransactionService
     protected TicketDetailModel $ticketDetailModel;
     protected PrintLogModel $printLogModel;
     protected BankModel $bankModel;
+    protected GuideModel $guideModel;
+    protected SettingModel $settingModel;
     protected PricingService $pricingService;
     protected CodeGeneratorService $codeGeneratorService;
     protected $db;
@@ -30,6 +34,8 @@ class TransactionService
         $this->ticketDetailModel = new TicketDetailModel();
         $this->printLogModel = new PrintLogModel();
         $this->bankModel = new BankModel();
+        $this->guideModel = new GuideModel();
+        $this->settingModel = new SettingModel();
         $this->pricingService = new PricingService();
         $this->codeGeneratorService = new CodeGeneratorService();
         $this->db = Database::connect();
@@ -151,20 +157,50 @@ class TransactionService
                 throw new \RuntimeException('Gagal menyimpan transaksi: ' . json_encode($this->transactionModel->errors()));
             }
 
+            // ---------- Resolusi Guide & Komisi ----------
+            $guideId = !empty($data['guide_id']) ? (int) $data['guide_id'] : null;
+            $guideNameSnapshot = null;
+            $guideFeePercent = null;
+
+            if ($guideId) {
+                $guide = $this->guideModel->find($guideId);
+                if ($guide) {
+                    $guideNameSnapshot = $guide['name'];
+                    $rawPercent = (float) $this->settingModel->getSetting('guide_commission_percent', 15.00);
+                    $guideFeePercent = $rawPercent > 0 ? $rawPercent : 15.00;
+                } else {
+                    $guideId = null;
+                }
+            }
+
             // Group  : 1 tiket menampung seluruh rombongan.
             // Individual: 1 tiket per orang (total_visitors = 1, qty detail = 1).
             $ticketIds = [];
 
             if ($ticketCategory === 'group') {
-                $ticketId = $this->createTicket($transactionId, 'group', (int) $pricing['total_visitors']);
+                // Hitung total komisi guide untuk rombongan (15% per orang dari harga setelah diskon)
+                $totalGroupGuideFee = null;
+                if ($guideId) {
+                    $totalGroupGuideFee = 0.0;
+                    foreach ($pricing['details'] as $detail) {
+                        $netUnitPrice = (float) $detail['unit_price'] - (float) $detail['unit_discount'];
+                        $feePerUnit = round($netUnitPrice * ($guideFeePercent / 100), 2);
+                        $totalGroupGuideFee += ($feePerUnit * (int) $detail['qty']);
+                    }
+                }
+
+                $ticketId = $this->createTicket($transactionId, 'group', (int) $pricing['total_visitors'], $guideId, $guideNameSnapshot, $guideFeePercent, $totalGroupGuideFee);
                 foreach ($pricing['details'] as $detail) {
                     $this->insertDetail($ticketId, $detail, (int) $detail['qty']);
                 }
                 $ticketIds[] = $ticketId;
             } else {
                 foreach ($pricing['details'] as $detail) {
+                    $netUnitPrice = (float) $detail['unit_price'] - (float) $detail['unit_discount'];
+                    $indivFee = $guideId ? round($netUnitPrice * ($guideFeePercent / 100), 2) : null;
+
                     for ($i = 0; $i < (int) $detail['qty']; $i++) {
-                        $ticketId = $this->createTicket($transactionId, 'individual', 1);
+                        $ticketId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideNameSnapshot, $guideFeePercent, $indivFee);
                         $this->insertDetail($ticketId, $detail, 1);
                         $ticketIds[] = $ticketId;
                     }
@@ -218,15 +254,26 @@ class TransactionService
         ];
     }
 
-    private function createTicket(int $transactionId, string $category, int $visitors): int
-    {
+    private function createTicket(
+        int $transactionId,
+        string $category,
+        int $visitors,
+        ?int $guideId = null,
+        ?string $guideName = null,
+        ?float $guidePercent = null,
+        ?float $guideFee = null
+    ): int {
         $id = $this->ticketModel->insert([
-            'transaction_id'  => $transactionId,
-            'ticket_code'     => $this->codeGeneratorService->generateTicketCode($category),
-            'ticket_category' => $category,
-            'valid_date'      => date('Y-m-d'),
-            'total_visitors'  => $visitors,
-            'status'          => 'active',
+            'transaction_id'      => $transactionId,
+            'ticket_code'         => $this->codeGeneratorService->generateTicketCode($category),
+            'ticket_category'     => $category,
+            'valid_date'          => date('Y-m-d'),
+            'total_visitors'      => $visitors,
+            'status'              => 'active',
+            'guide_id'            => $guideId,
+            'guide_name_snapshot' => $guideName,
+            'guide_fee_percent'   => $guidePercent,
+            'guide_fee_amount'    => $guideFee,
         ], true);
 
         if (!$id) {

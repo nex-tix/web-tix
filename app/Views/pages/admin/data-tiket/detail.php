@@ -34,7 +34,7 @@
                 <span class="fw-bold"> - </span>
               <?php endif; ?>
             </div>
-            <div class="mb-0"><strong>Status:</strong>
+            <div class="mb-2"><strong>Status:</strong>
               <?php if (($ticket['status'] ?? '') === 'active'): ?>
                 <span class="badge bg-success">Aktif</span>
               <?php elseif (($ticket['status'] ?? '') === 'used'): ?>
@@ -43,6 +43,15 @@
                 <span class="badge bg-danger">Dibatalkan</span>
               <?php endif; ?>
             </div>
+            <div class="mb-2"><strong>Pemandu (Guide):</strong>
+              <?= !empty($ticket['guide_name_snapshot']) ? '<span class="badge bg-dark">' . esc($ticket['guide_name_snapshot']) . '</span>' : '<span class="text-muted">Tidak ada</span>' ?>
+            </div>
+            <?php if (!empty($ticket['guide_fee_amount'])): ?>
+            <div class="mb-0"><strong>Komisi Guide:</strong>
+              <span class="text-success fw-bold">Rp <?= number_format($ticket['guide_fee_amount'], 0, ',', '.') ?></span>
+              <span class="small text-muted">(<?= number_format($ticket['guide_fee_percent'] ?? 15, 0) ?>%)</span>
+            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ use App\Models\TicketDetailModel;
 use App\Models\SettingModel;
 use App\Models\PrintLogModel;
 use App\Models\BankModel;
+use App\Models\GuideModel;
 
 class PosController extends BaseController
 {
@@ -28,6 +29,7 @@ class PosController extends BaseController
     protected SettingModel $settingModel;
     protected PrintLogModel $printLogModel;
     protected BankModel $bankModel;
+    protected GuideModel $guideModel;
 
     public function __construct()
     {
@@ -42,6 +44,7 @@ class PosController extends BaseController
         $this->settingModel = new SettingModel();
         $this->printLogModel = new PrintLogModel();
         $this->bankModel = new BankModel();
+        $this->guideModel = new GuideModel();
     }
 
     public function index()
@@ -63,10 +66,16 @@ class PosController extends BaseController
             ->orderBy('name', 'ASC')
             ->findAll();
 
+        $guides = $this->guideModel
+            ->where('status', 'active')
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
         return view('pages/admin/pos/index', [
             'ticketTypes' => $ticketTypes,
             'posLimits'   => $posLimits,
             'banks'       => $banks,
+            'guides'      => $guides,
             'activeKey'   => 'pos',
             'crumbs'      => 'Operasional | Pos Loket',
         ]);
@@ -88,6 +97,7 @@ class PosController extends BaseController
             'payment_method'  => 'required|in_list[cash,debit]',
             'payment_reference' => 'permit_empty|max_length[100]',
             'bank_id'         => 'permit_empty|integer',
+            'guide_id'        => 'permit_empty|integer',
             'ticket_items'    => 'required',
             'discount_percent' => 'permit_empty|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
         ];
