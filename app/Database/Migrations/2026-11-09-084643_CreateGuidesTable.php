@@ -36,7 +36,7 @@ class CreateGuidesTable extends Migration
             'gender' => [
                 'type'       => 'ENUM',
                 'constraint' => ['L', 'P'],
-                'null'       => true,
+                'null'       => false
             ],
             'languages' => [
                 'type' => 'JSON',

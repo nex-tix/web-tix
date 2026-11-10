@@ -1554,3 +1554,288 @@
 
       /* Borders - rose (errors) */
       [data-theme=dark] .border-rose-300 { border-color: #7A2531 !important; }
+
+      /* --- Amber utility overrides for dark mode --- */
+      [data-theme=dark] .bg-amber-50 { background-color: #2A1F0A !important; }
+      [data-theme=dark] .bg-amber-100 { background-color: #3A2A0E !important; }
+      [data-theme=dark] .border-amber-200 { border-color: #4D3410 !important; }
+      [data-theme=dark] .border-amber-300 { border-color: #634313 !important; }
+      [data-theme=dark] .text-amber-700 { color: #FCD34D !important; }
+      [data-theme=dark] .text-amber-800 { color: #FCD34D !important; }
+      [data-theme=dark] .text-amber-900 { color: #FDE68A !important; }
+      [data-theme=dark] .text-amber-950 { color: #FDE68A !important; }
+
+      /* Emerald & Brand overrides */
+      [data-theme=dark] .text-emerald-950 { color: #34D399 !important; }
+      [data-theme=dark] .text-brand-charcoal { color: #E8EAED !important; }
+
+      /* ============================================================ POS AUTO-MODE BANNER ============================================================ */
+      .pos-mode-banner {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.75rem;
+        border-width: 1px;
+        border-style: solid;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s ease-in-out;
+      }
+
+      /* State: Neutral (0 tiket) */
+      .pos-mode-banner.state-neutral {
+        background-color: #F8FAFC;
+        border-color: #E2E8F0;
+        color: #1E293B;
+      }
+      .pos-mode-banner.state-neutral .banner-icon {
+        background-color: #E2E8F0;
+        color: #64748B;
+      }
+      .pos-mode-banner.state-neutral .banner-title {
+        color: #1E293B;
+      }
+      .pos-mode-banner.state-neutral .banner-subtitle {
+        color: #64748B;
+      }
+      .pos-mode-banner.state-neutral .banner-badge {
+        background-color: #FFFFFF;
+        border-color: #E2E8F0;
+        color: #475569;
+      }
+      .pos-mode-banner.state-neutral .banner-qty {
+        color: #0F172A;
+      }
+
+      /* State: Individual (1 tiket) - Emerald */
+      .pos-mode-banner.state-individual {
+        background-color: #ECFDF5;
+        border-color: #6EE7B7;
+        color: #064E3B;
+      }
+      .pos-mode-banner.state-individual .banner-icon {
+        background-color: #059669;
+        color: #FFFFFF;
+      }
+      .pos-mode-banner.state-individual .banner-title {
+        color: #064E3B;
+      }
+      .pos-mode-banner.state-individual .banner-subtitle {
+        color: #047857;
+      }
+      .pos-mode-banner.state-individual .banner-badge {
+        background-color: #FFFFFF;
+        border-color: #A7F3D0;
+        color: #065F46;
+      }
+      .pos-mode-banner.state-individual .banner-qty {
+        color: #059669;
+      }
+
+      /* State: Group / Rombongan (>1 tiket) - Amber */
+      .pos-mode-banner.state-group {
+        background-color: #FFFBEB;
+        border-color: #FCD34D;
+        color: #78350F;
+      }
+      .pos-mode-banner.state-group .banner-icon {
+        background-color: #D97706;
+        color: #FFFFFF;
+      }
+      .pos-mode-banner.state-group .banner-title {
+        color: #78350F;
+      }
+      .pos-mode-banner.state-group .banner-subtitle {
+        color: #B45309;
+      }
+      .pos-mode-banner.state-group .banner-badge {
+        background-color: #FFFFFF;
+        border-color: #FDE68A;
+        color: #92400E;
+      }
+      .pos-mode-banner.state-group .banner-qty {
+        color: #B45309;
+      }
+
+      /* ------------------- DARK MODE ([data-theme=dark]) ------------------- */
+      [data-theme=dark] .pos-mode-banner.state-neutral {
+        background-color: #1E2226 !important;
+        border-color: #2E3339 !important;
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-neutral .banner-icon {
+        background-color: #2E3339 !important;
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-neutral .banner-title {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-neutral .banner-subtitle {
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-neutral .banner-badge {
+        background-color: #22262B !important;
+        border-color: #2E3339 !important;
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-neutral .banner-qty {
+        color: #E8EAED !important;
+      }
+
+      /* Dark Mode: Individual (Emerald) */
+      [data-theme=dark] .pos-mode-banner.state-individual {
+        background-color: #0F2A20 !important;
+        border-color: #276B4F !important;
+        color: #34D399 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-individual .banner-icon {
+        background-color: #059669 !important;
+        color: #FFFFFF !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-individual .banner-title {
+        color: #34D399 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-individual .banner-subtitle {
+        color: #A7F3D0 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-individual .banner-badge {
+        background-color: #143528 !important;
+        border-color: #276B4F !important;
+        color: #A7F3D0 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-individual .banner-qty {
+        color: #34D399 !important;
+      }
+
+      /* Dark Mode: Group / Rombongan (Amber / Warm Gold) */
+      [data-theme=dark] .pos-mode-banner.state-group {
+        background-color: #2A1F0A !important;
+        border-color: #634313 !important;
+        color: #FBBF24 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-group .banner-icon {
+        background-color: #D97706 !important;
+        color: #FFFFFF !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-group .banner-title {
+        color: #FBBF24 !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-group .banner-subtitle {
+        color: #FDE68A !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-group .banner-badge {
+        background-color: #3A2A0E !important;
+        border-color: #634313 !important;
+        color: #FDE68A !important;
+      }
+      [data-theme=dark] .pos-mode-banner.state-group .banner-qty {
+        color: #FBBF24 !important;
+      }
+
+      /* ============================================================ GUIDE TABLE BADGES ============================================================ */
+      .badge-guide-code {
+        background-color: #F1F5F9;
+        color: #334155;
+        border: 1px solid #CBD5E1;
+        font-family: monospace;
+        font-size: 0.75rem;
+        padding: 0.35em 0.6em;
+        border-radius: 6px;
+      }
+      .badge-gender-l {
+        background-color: #E0F2FE;
+        color: #0369A1;
+        border: 1px solid #BAE6FD;
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+      .badge-gender-p {
+        background-color: #FCE7F3;
+        color: #BE185D;
+        border: 1px solid #FBCFE8;
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+      .badge-guide-lang {
+        background-color: #F8FAFC;
+        color: #334155;
+        border: 1px solid #E2E8F0;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 0.3em 0.6em;
+        border-radius: 6px;
+      }
+      .badge-status-active {
+        background-color: #DEF7EC;
+        color: #03543F;
+        border: 1px solid #BCF0DA;
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+      .badge-status-inactive {
+        background-color: #FDE8E8;
+        color: #9B1C1C;
+        border: 1px solid #FBD5D5;
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+
+      /* ------------------- DARK MODE: Guide Badges & Modals ------------------- */
+      [data-theme=dark] .badge-guide-code {
+        background-color: #2A2F35 !important;
+        color: #E8EAED !important;
+        border-color: #3A3F45 !important;
+      }
+      [data-theme=dark] .badge-gender-l {
+        background-color: #0C2B47 !important;
+        color: #38BDF8 !important;
+        border-color: #0F4370 !important;
+      }
+      [data-theme=dark] .badge-gender-p {
+        background-color: #3B1428 !important;
+        color: #F472B6 !important;
+        border-color: #5C1D3E !important;
+      }
+      [data-theme=dark] .badge-guide-lang {
+        background-color: #262A30 !important;
+        color: #E8EAED !important;
+        border-color: #3A3F45 !important;
+      }
+      [data-theme=dark] .badge-status-active {
+        background-color: #0F2A20 !important;
+        color: #34D399 !important;
+        border-color: #1F4A38 !important;
+      }
+      [data-theme=dark] .badge-status-inactive {
+        background-color: #2A0F14 !important;
+        color: #F87171 !important;
+        border-color: #7A2531 !important;
+      }
+
+      /* Modal dark enhancements */
+      [data-theme=dark] .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%) !important;
+        opacity: 0.7;
+      }
+      [data-theme=dark] .modal-header .btn-close:hover {
+        opacity: 1;
+      }
+      [data-theme=dark] .modal .invalid-feedback {
+        color: #F87171 !important;
+      }
+      [data-theme=dark] .modal .form-select option {
+        background-color: #1E2226;
+        color: #E8EAED;
+      }
+      [data-theme=dark] .modal .form-select option:disabled {
+        color: #6B7280;
+      }

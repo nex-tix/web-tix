@@ -51,7 +51,8 @@ class PosController extends BaseController
     {
         $ticketTypes = $this->ticketTypeModel
             ->where('is_active', 1)
-            ->orderBy('ticket_category', 'ASC')
+            ->where('ticket_category !=', 'group')
+            ->where('LOWER(name) !=', 'group')
             ->orderBy('name', 'ASC')
             ->findAll();
 

@@ -39,32 +39,8 @@ class GuideModel extends Model
     protected $updatedField  = 'updated_at';
 
     // Validation
-    protected $validationRules = [
-        'id'        => 'permit_empty|is_natural_no_zero',
-        'code'      => 'required|max_length[20]|is_unique[guides.code,id,{id}]',
-        'name'      => 'required|min_length[2]|max_length[100]',
-        'phone'     => 'permit_empty|max_length[25]',
-        'email'     => 'permit_empty|valid_email|max_length[100]',
-        'gender'    => 'permit_empty|in_list[L,P]',
-        'status'    => 'permit_empty|in_list[active,inactive]',
-        'notes'     => 'permit_empty',
-    ];
-
-    protected $validationMessages = [
-        'code' => [
-            'required'  => 'Kode guide wajib diisi',
-            'max_length'=> 'Kode guide maksimal 20 karakter',
-            'is_unique' => 'Kode guide ini sudah terdaftar',
-        ],
-        'name' => [
-            'required'   => 'Nama guide wajib diisi',
-            'min_length' => 'Nama guide minimal 2 karakter',
-            'max_length' => 'Nama guide maksimal 100 karakter',
-        ],
-        'email' => [
-            'valid_email' => 'Format email tidak valid',
-        ],
-    ];
+    protected $validationRules      = [];
+    protected $validationMessages   = [];
 
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;

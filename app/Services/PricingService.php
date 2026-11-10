@@ -89,7 +89,6 @@ class PricingService
         }
 
         $totalVisitors = 0;
-        $categoryFromItems = null;
 
         foreach ($ticketItems as $item) {
             $ticketType = $this->ticketTypeModel->find($item['ticket_type_id']);
@@ -101,60 +100,37 @@ class PricingService
                 ];
             }
 
-            if ($categoryFromItems === null) {
-                $categoryFromItems = $ticketType['ticket_category'];
-            } elseif ($categoryFromItems !== $ticketType['ticket_category']) {
+            if (!$ticketType['is_active']) {
                 return [
                     'valid'   => false,
-                    'message' => 'Tidak boleh mencampur jenis tiket individual dan rombongan dalam satu transaksi',
+                    'message' => "Jenis tiket {$ticketType['name']} tidak aktif",
                 ];
             }
 
             $totalVisitors += $item['qty'];
         }
 
-        if ($categoryFromItems !== $category) {
+        if ($totalVisitors < 1) {
             return [
                 'valid'   => false,
-                'message' => 'Kategori tiket tidak sesuai dengan mode penjualan',
+                'message' => 'Pilih minimal satu tiket.',
             ];
         }
 
-        if ($category === 'individual') {
-            $maxIndividual = (int) $this->settingModel->getSetting('max_individual_per_tx', 2);
-
-            if ($totalVisitors < 1) {
-                return [
-                    'valid'   => false,
-                    'message' => 'Minimal 1 tiket individual per transaksi.',
-                ];
-            }
-
-            if ($totalVisitors > $maxIndividual) {
-                return [
-                    'valid'   => false,
-                    'message' => "Maksimal {$maxIndividual} tiket individual per transaksi. Untuk {$totalVisitors} orang, gunakan tiket rombongan.",
-                ];
-            }
+        $expectedCategory = ($totalVisitors > 1) ? 'group' : 'individual';
+        if ($category !== $expectedCategory) {
+            return [
+                'valid'   => false,
+                'message' => "Kategori tiket tidak valid untuk {$totalVisitors} pengunjung (seharusnya {$expectedCategory}).",
+            ];
         }
 
-        if ($category === 'group') {
-            $minGroupSize    = (int) $this->settingModel->getSetting('min_group_size', 3);
-            $maxGroupMembers = (int) $this->settingModel->getSetting('max_group_members', 999);
-
-            if ($totalVisitors < $minGroupSize) {
-                return [
-                    'valid'   => false,
-                    'message' => "Minimal {$minGroupSize} orang untuk tiket rombongan. Untuk {$totalVisitors} orang, gunakan tiket individual.",
-                ];
-            }
-
-            if ($totalVisitors > $maxGroupMembers) {
-                return [
-                    'valid'   => false,
-                    'message' => "Maksimal {$maxGroupMembers} orang per tiket rombongan. Silakan buat transaksi terpisah.",
-                ];
-            }
+        $maxGroupMembers = (int) $this->settingModel->getSetting('max_group_members', 999);
+        if ($totalVisitors > $maxGroupMembers) {
+            return [
+                'valid'   => false,
+                'message' => "Maksimal {$maxGroupMembers} orang per tiket rombongan. Silakan buat transaksi terpisah.",
+            ];
         }
 
         return ['valid' => true, 'message' => 'Validasi berhasil'];

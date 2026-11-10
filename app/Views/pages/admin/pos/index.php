@@ -134,34 +134,26 @@
                         </span>
                     </div>
                 </div>
-                <div class="mb-5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Mode Pembelian Tiket</label>
-                    <div class="grid grid-cols-2 p-1 bg-slate-100 rounded-xl gap-1 border border-slate-200">
-                        <button class="py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2" id="btn-mode-individual" onclick="setMode('individual')" type="button">
-                            <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-                                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                <!-- Status Banner Kategori Otomatis -->
+                <div class="pos-mode-banner state-neutral" id="auto-mode-box">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg banner-icon flex items-center justify-center shrink-0 transition-all" id="auto-mode-icon">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
-                            Individual (1 - <?= $posLimits['max_individual_per_tx'] ?? 2 ?> Orang)
-                        </button>
-                        <button class="py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" id="btn-mode-rombongan" onclick="setMode('rombongan')" type="button">
-                            <svg class="w-4 h-4 text-brand-gold" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-                                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                            </svg>
-                            Rombongan (<?= $posLimits['min_group_size'] ?? 3 ?> Orang+)
-                        </button>
+                        </div>
+                        <div>
+                            <span class="font-bold block text-sm banner-title" id="auto-mode-title">Pilih Tiket Pengunjung</span>
+                            <span class="text-[11px] banner-subtitle" id="auto-mode-subtitle">1 orang = Individual | >1 orang = Rombongan / Group</span>
+                        </div>
                     </div>
-                    <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="ticket_category"></p>
-                    <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="ticket_items"></p>
+                    <div class="font-bold px-3 py-1.5 rounded-lg border text-xs shadow-xs banner-badge" id="auto-mode-badge">
+                        Total: <span class="font-extrabold text-sm banner-qty" id="total-qty-display">0</span> Orang
+                    </div>
                 </div>
-                <div class="p-3 mb-5 rounded-lg border text-xs flex items-center justify-between bg-emerald-50 border-emerald-200 text-emerald-900" id="mode-helper-box">
-                    <div class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewbox="0 0 20 20">
-                            <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
-                        </svg><span class="text-emerald-900 font-medium" id="mode-desc">Mode Individual: Maksimal 2 tiket per transaksi.</span></div>
-                    <div class="font-bold px-2.5 py-1 rounded bg-white text-emerald-800 shadow-xs border border-emerald-200" id="visitor-count-badge">Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">—</span></div>
-                </div>
-                <div class="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 hidden" id="group-warning"></div>
+                <p class="field-error hidden mt-1 text-xs text-rose-600 mb-3" data-error="ticket_items"></p>
 
-                <!-- Guide Selection Card (Tepat di atas pilihan tiket Adult) -->
+                <!-- Guide Selection Card -->
                 <div class="mb-4 p-3.5 rounded-xl border border-slate-200 bg-white transition-all" id="guide-selection-section">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
@@ -383,7 +375,7 @@
             max: posLimits?.max_group_members ?? 'unlimited'
         }
     };
-    const posStateCategory = () => posState.mode === 'rombongan' ? 'group' : 'individual';
+    const posStateCategory = () => totalQty() > 1 ? 'group' : 'individual';
     const rupiah = value => new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -397,7 +389,6 @@
     const subtotalPrice = () => {
         let sum = 0;
         for (const t of ticketTypes) {
-            if (t.ticket_category !== posStateCategory()) continue;
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
             sum += qty * parseFloat(t.price);
@@ -495,42 +486,27 @@
         clearFieldErrors();
     }
 
-    function setMode(mode) {
-        posState.mode = mode;
-        Object.keys(posState.quantities).forEach(k => posState.quantities[k] = 0);
-        const individual = mode === 'individual';
-        document.getElementById('btn-mode-individual').className = individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
-        document.getElementById('btn-mode-rombongan').className = !individual ? 'py-2.5 rounded-lg text-sm font-bold bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2' : 'py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
-        document.getElementById('mode-desc').textContent = individual ? `Mode Individual: Maksimal ${posLimits?.max_individual_per_tx ?? 2} tiket per transaksi.` : `Khusus Rombongan/Group: Minimal ${posLimits?.min_group_size ?? 3} orang.`;
-        document.getElementById('summary-mode-badge').textContent = individual ? 'INDIVIDUAL' : 'ROMBONGAN';
-        document.getElementById('summary-mode-badge').className = individual ? 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider' : 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider';
-        document.getElementById('visitor-count-badge').innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">0</span> / <span id="max-display">${mode === 'rombongan' ? 'unlimited' : limits[mode].max}</span>`;
-        document.getElementById('group-warning').classList.add('hidden');
-        clearFieldErrors();
-        renderTickets();
-        renderCart();
-    }
-
     function renderTickets() {
         const container = document.getElementById('tickets-container');
-        const cat = posStateCategory();
-        const list = ticketTypes.filter(t => t.ticket_category === cat);
-        if (!list.length) {
-            container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 border border-dashed border-slate-200 rounded-lg">Tidak ada jenis tiket untuk kategori ${cat}.</p>`;
+        if (!ticketTypes.length) {
+            container.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-6 border border-dashed border-slate-200 rounded-lg">Belum ada jenis tiket aktif.</p>';
             return;
         }
-        container.innerHTML = list.map(t => {
+        container.innerHTML = ticketTypes.map(t => {
             const qty = posState.quantities[t.id] || 0;
             const price = parseFloat(t.price);
-            return `<div class="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 hover:border-slate-300 transition bg-white">
-                        <div class="space-y-1">
+            return `<div class="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 transition bg-white shadow-xs">
+                        <div class="space-y-0.5">
                             <div class="flex items-center gap-2"><span class="font-bold text-sm text-slate-800">${t.name}</span></div>
-                            <p class="text-xs text-slate-500">${t.ticket_category === 'group' ? 'Rombongan' : 'Individual'} &middot; Harga normal</p>
                             <div class="flex items-baseline gap-2">
-                                <p class="text-sm font-extrabold text-brand-red">${rupiah(price)} <span class="text-xs font-normal text-slate-500">/ orang</span></p>
+                                <p class="text-sm font-extrabold text-brand-red">${rupiah(price)} <span class="text-[11px] font-normal text-slate-400">/ orang</span></p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2"><button class="w-8 h-8 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 active:bg-slate-200 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, -1)" type="button">-</button><span class="w-10 text-center text-base font-extrabold text-slate-800">${qty}</span><button class="w-8 h-8 rounded-lg bg-brand-charcoal text-white hover:bg-slate-800 active:bg-slate-900 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, 1)" type="button">+</button></div>
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 active:bg-slate-200 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, -1)" type="button">-</button>
+                            <span class="w-10 text-center text-base font-extrabold text-slate-800">${qty}</span>
+                            <button class="w-8 h-8 rounded-lg bg-brand-charcoal text-white hover:bg-slate-800 active:bg-slate-900 font-bold flex items-center justify-center transition shadow-xs" onclick="updateQty(${t.id}, 1)" type="button">+</button>
+                        </div>
                     </div>`;
         }).join('');
     }
@@ -538,13 +514,13 @@
     function updateQty(ticketTypeId, delta) {
         const next = (posState.quantities[ticketTypeId] || 0) + delta;
         if (next < 0) return;
-        if (delta > 0 && totalQty() + 1 > limits[posState.mode].max) {
+        const maxLimit = posLimits?.max_group_members ?? 999;
+        if (delta > 0 && totalQty() + 1 > maxLimit) {
             Swal.fire({
-                icon: "error",
-                title: "Batas Tiket Tercapai",
-                text: (`Maksimal ${limits[posState.mode].max} tiket untuk mode ${posState.mode}.`)
+                icon: "warning",
+                title: "Batas Maksimal",
+                text: (`Maksimal ${maxLimit} tiket per transaksi.`)
             });
-            setTimeout(hideAlert, 2500);
             return;
         }
         posState.quantities[ticketTypeId] = next;
@@ -555,21 +531,47 @@
 
     function renderCart() {
         const total = totalQty();
-        const cat = posStateCategory();
-        const badge = document.getElementById('total-qty-display');
-        if (badge) badge.textContent = total;
-        const maxDisplay = document.getElementById('max-display');
-        if (maxDisplay) maxDisplay.textContent = posState.mode === 'rombongan' ? 'unlimited' : limits[posState.mode].max;
-        const countBadge = document.getElementById('visitor-count-badge');
-        if (countBadge && !countBadge.querySelector('#total-qty-display')) {
-            countBadge.innerHTML = `Total: <span class="text-emerald-700" id="total-qty-display">${total}</span> / <span id="max-display">${posState.mode === 'rombongan' ? 'unlimited' : limits[posState.mode].max}</span>`;
+        const autoBox = document.getElementById('auto-mode-box');
+        const autoIcon = document.getElementById('auto-mode-icon');
+        const autoTitle = document.getElementById('auto-mode-title');
+        const autoSubtitle = document.getElementById('auto-mode-subtitle');
+        const summaryBadge = document.getElementById('summary-mode-badge');
+        const totalQtyDisplay = document.getElementById('total-qty-display');
+
+        if (totalQtyDisplay) totalQtyDisplay.textContent = total;
+
+        if (total === 0) {
+            if (autoBox) autoBox.className = 'pos-mode-banner state-neutral';
+            if (autoTitle) autoTitle.textContent = 'Pilih Tiket Pengunjung';
+            if (autoSubtitle) autoSubtitle.textContent = '1 orang = Individual | >1 orang = Rombongan / Group';
+            if (summaryBadge) {
+                summaryBadge.textContent = 'INDIVIDUAL';
+                summaryBadge.className = 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider';
+            }
+        } else if (total === 1) {
+            if (autoBox) autoBox.className = 'pos-mode-banner state-individual shadow-xs';
+            if (autoTitle) autoTitle.textContent = 'Kategori: INDIVIDUAL (1 Tiket)';
+            if (autoSubtitle) autoSubtitle.textContent = 'Tiket perorangan resmi diterbitkan';
+            if (summaryBadge) {
+                summaryBadge.textContent = 'INDIVIDUAL';
+                summaryBadge.className = 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500 text-white tracking-wider shadow-xs';
+            }
+        } else {
+            if (autoBox) autoBox.className = 'pos-mode-banner state-group shadow-xs';
+            if (autoTitle) autoTitle.textContent = `Kategori: ROMBONGAN / GROUP (${total} Orang dalam 1 Tiket)`;
+            if (autoSubtitle) autoSubtitle.textContent = `${total} orang tamu akan digabung ke dalam 1 tiket rombongan`;
+            if (summaryBadge) {
+                summaryBadge.textContent = 'ROMBONGAN';
+                summaryBadge.className = 'text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-amber-500 text-white tracking-wider shadow-xs';
+            }
         }
+
         document.getElementById('summary-visitor-origin').textContent = `${posState.origin === 'domestik' ? 'Domestik (WNI)' : 'Mancanegara (WNA)'} (${total} Orang)`;
+
         const itemsEl = document.getElementById('receipt-items-list');
         itemsEl.innerHTML = '';
         let hasItems = false;
         for (const t of ticketTypes) {
-            if (t.ticket_category !== cat) continue;
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
             hasItems = true;
@@ -578,38 +580,12 @@
         }
         if (!hasItems) itemsEl.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Belum ada tiket yang dipilih.</p>';
 
-        let subtotal = 0;
-        for (const t of ticketTypes) {
-            if (t.ticket_category !== cat) continue;
-            const qty = posState.quantities[t.id] || 0;
-            if (!qty) continue;
-            const price = parseFloat(t.price);
-            subtotal += qty * price;
-        }
-        subtotal = Math.round(subtotal);
+        const subtotal = subtotalPrice();
         const discountAmount = Math.round(subtotal * globalDiscountPercent() / 100);
         const totalAmt = subtotal - discountAmount;
         document.getElementById('summary-subtotal').textContent = rupiah(subtotal);
         document.getElementById('summary-discount').textContent = `- ${rupiah(discountAmount)}`;
         document.getElementById('summary-total').textContent = rupiah(totalAmt);
-
-        const warn = document.getElementById('group-warning');
-        if (posState.mode === 'rombongan') {
-            if (total > 0 && total < limits.rombongan.min) {
-                warn.classList.remove('hidden');
-                warn.className = 'mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2';
-                warn.innerHTML = `<svg class="w-4 h-4 text-amber-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg><span>Perlu <strong>${limits.rombongan.min - total} tiket lagi</strong> untuk minimal rombongan.</span>`;
-            } else if (total >= limits.rombongan.min) {
-                warn.classList.remove('hidden');
-                warn.className = 'mb-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2';
-                warn.innerHTML = `<svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"/></svg><span>Syarat rombongan terpenuhi (${total} orang). Diskon aktif!</span>`;
-            } else {
-                warn.classList.add('hidden');
-            }
-        } else {
-            warn.classList.add('hidden');
-        }
-
         calculateChange();
     }
 
@@ -631,6 +607,7 @@
 
     function calculateChange() {
         const box = document.getElementById('change-box');
+        if (!box) return;
         const received = Number(document.getElementById('cash-received').value) || 0;
         const diff = received - totalPrice();
         if (!totalPrice()) {
@@ -761,17 +738,13 @@
         }
 
         const qty = totalQty();
-        const lim = limits[posState.mode];
-        if (qty < lim.min) {
-            Swal.fire({
-                icon: "error",
-                title: "Batas Minimal Belum Tercapai",
-                text: (`Minimal ${lim.min} tiket untuk mode ${posState.mode}.`)
-            });
+        if (qty < 1) {
+            setFieldError('ticket_items', 'Pilih minimal satu tiket pengunjung.');
             return;
         }
-        if (qty > lim.max) {
-            setFieldError('ticket_items', `Maksimal ${lim.max} tiket untuk mode ${posState.mode}.`);
+        const maxLimit = posLimits?.max_group_members ?? 999;
+        if (qty > maxLimit) {
+            setFieldError('ticket_items', `Maksimal ${maxLimit} tiket per transaksi.`);
             return;
         }
 
@@ -784,7 +757,7 @@
 
         const phoneRaw = document.getElementById('visitor-phone').value.trim();
         const address = document.getElementById('visitor-address').value.trim();
-        const ticketCategory = posStateCategory();
+        const ticketCategory = qty > 1 ? 'group' : 'individual';
         const paymentMethod = posState.payment === 'edc' ? 'debit' : 'cash';
 
         if (paymentMethod === 'cash') {
@@ -816,7 +789,6 @@
 
         const ticketItems = [];
         for (const t of ticketTypes) {
-            if (t.ticket_category !== ticketCategory) continue;
             const q = posState.quantities[t.id] || 0;
             if (q > 0) ticketItems.push({
                 ticket_type_id: t.id,
@@ -998,7 +970,8 @@
         }
     })();
 
-    setMode('individual');
+    renderTickets();
+    renderCart();
     setOrigin('domestik');
     setPaymentMethod('cash');
     renderTickets();

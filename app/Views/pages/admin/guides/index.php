@@ -10,7 +10,7 @@
       $langBadges = '';
       if (!empty($langs) && is_array($langs)) {
         foreach ($langs as $lang) {
-          $langBadges .= '<span class="badge bg-light text-dark border me-1 mb-1">' . esc($lang) . '</span>';
+          $langBadges .= '<span class="badge badge-guide-lang me-1 mb-1">' . esc($lang) . '</span>';
         }
       } else {
         $langBadges = '<span class="text-muted">-</span>';
@@ -18,25 +18,25 @@
 
       $genderBadge = '<span class="text-muted">-</span>';
       if (($g['gender'] ?? '') === 'L') {
-        $genderBadge = '<span class="badge bg-info text-dark">Laki-laki</span>';
+        $genderBadge = '<span class="badge badge-gender-l">Laki-laki</span>';
       } elseif (($g['gender'] ?? '') === 'P') {
-        $genderBadge = '<span class="badge bg-warning text-dark">Perempuan</span>';
+        $genderBadge = '<span class="badge badge-gender-p">Perempuan</span>';
       }
 
       $statusBadge = ($g['status'] ?? 'active') === 'active'
-        ? '<span class="badge bg-success">Aktif</span>'
-        : '<span class="badge bg-danger">Nonaktif</span>';
+        ? '<span class="badge badge-status-active">Aktif</span>'
+        : '<span class="badge badge-status-inactive">Nonaktif</span>';
 
       $langsString = !empty($langs) && is_array($langs) ? implode(', ', $langs) : '';
 
       $rows[] = [
-        '<span class="badge bg-secondary font-monospace">' . esc($g['code']) . '</span>',
-        '<div><span class="fw-semibold">' . esc($g['name']) . '</span>' . (!empty($g['email']) ? '<div class="small text-muted">' . esc($g['email']) . '</div>' : '') . '</div>',
+        '<span class="badge badge-guide-code">' . esc($g['code']) . '</span>',
+        '<div><span class="fw-semibold">' . esc($g['name']) . '</span>' . (!empty($g['email']) ? '<div class="text-muted small">' . esc($g['email']) . '</div>' : '') . '</div>',
         !empty($g['phone']) ? '<span class="font-monospace">' . esc($g['phone']) . '</span>' : '<span class="text-muted">-</span>',
         $genderBadge,
         $langBadges,
         $statusBadge,
-        !empty($g['notes']) ? '<span class="small" title="' . esc($g['notes']) . '">' . esc(mb_strimwidth($g['notes'], 0, 30, '...')) . '</span>' : '<span>-</span>',
+        !empty($g['notes']) ? '<span class="small" title="' . esc($g['notes']) . '">' . esc(mb_strimwidth($g['notes'], 0, 30, '...')) . '</span>' : '<span class="">-</span>',
         '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#guideModal" '
           . 'data-id="' . $g['id'] . '" '
           . 'data-code="' . esc($g['code']) . '" '
@@ -85,44 +85,48 @@
             </div>
           <?php endif; ?>
 
+          <input type="hidden" id="code" name="code" value="">
+
           <div class="row g-3">
-            <div class="col-md-4">
-              <label for="code" class="form-label">Kode Guide</label>
-              <input type="text" class="form-control" id="code" name="code" value="<?= old('code') ?>" placeholder="Auto (GD-001)">
-              <div class="form-text">Biarkan kosong untuk generate otomatis format GD-001.</div>
-            </div>
-            <div class="col-md-8">
+
+            <div class="col-md-12">
               <label for="name" class="form-label">Nama Guide <span class="text-danger">*</span></label>
               <input type="text" class="form-control" id="name" name="name" value="<?= old('name') ?>" placeholder="Contoh: Wayan Suardana" required>
+              <div class="invalid-feedback">Kolom nama guide tidak boleh kosong.</div>
             </div>
 
             <div class="col-md-6">
-              <label for="phone" class="form-label">No. HP / WhatsApp</label>
-              <input type="text" class="form-control" id="phone" name="phone" value="<?= old('phone') ?>" placeholder="Contoh: 081234567890">
+              <label for="phone" class="form-label">No. HP / WhatsApp <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="phone" name="phone" value="<?= old('phone') ?>" placeholder="Contoh: 081234567890" required>
+              <div class="invalid-feedback">Kolom no. HP / WhatsApp tidak boleh kosong.</div>
             </div>
             <div class="col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" value="<?= old('email') ?>" placeholder="Contoh: guide@gmail.com">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" value="<?= old('email') ?>" placeholder="Contoh: guide@gmail.com" required>
+              <div class="invalid-feedback">Kolom email tidak boleh kosong.</div>
             </div>
 
             <div class="col-md-4">
-              <label for="gender" class="form-label">Jenis Kelamin</label>
-              <select class="form-select" id="gender" name="gender">
-                <option value="">- Pilih Gender -</option>
+              <label for="gender" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+              <select class="form-select" id="gender" name="gender" required>
+                <option value="" class="text-muted" selected disabled>- Pilih Gender -</option>
                 <option value="L" <?= old('gender') === 'L' ? 'selected' : '' ?>>Laki-laki</option>
                 <option value="P" <?= old('gender') === 'P' ? 'selected' : '' ?>>Perempuan</option>
               </select>
+              <div class="invalid-feedback">Kolom jenis kelamin tidak boleh kosong.</div>
             </div>
             <div class="col-md-4">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
+              <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select" id="status" name="status" required>
                 <option value="active" <?= old('status', 'active') === 'active' ? 'selected' : '' ?>>Aktif</option>
-                <option value="inactive" <?= old('status') === 'inactive' ? 'selected' : '' ?>>Nonaktif</option>
+                <option value="inactive" <?= old('status', 'inactive') === 'inactive' ? 'selected' : '' ?>>Nonaktif</option>
               </select>
+              <div class="invalid-feedback">Kolom status tidak boleh kosong.</div>
             </div>
             <div class="col-md-4">
-              <label for="languages" class="form-label">Bahasa yang Dikuasai</label>
-              <input type="text" class="form-control" id="languages" name="languages" value="<?= old('languages') ?>" placeholder="Indonesia, English">
+              <label for="languages" class="form-label">Bahasa yang Dikuasai <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="languages" name="languages" value="<?= old('languages') ?>" placeholder="Indonesia, English" required>
+              <div class="invalid-feedback">Kolom bahasa yang dikuasai tidak boleh kosong.</div>
               <div class="form-text">Pisahkan dengan koma.</div>
             </div>
 
@@ -142,10 +146,57 @@
 </div>
 
 <script>
+  const guideForm = document.getElementById('guideForm');
+
+  // Bersihkan tanda error saat user mengisi / mengubah kolom
+  guideForm.querySelectorAll('input, select, textarea').forEach(field => {
+    const clearError = function() {
+      if (field.value && field.value.trim() !== '') {
+        field.classList.remove('is-invalid');
+      }
+    };
+    field.addEventListener('input', clearError);
+    field.addEventListener('change', clearError);
+  });
+
+  // Intersepsi saat form submit: periksa jika ada kolom required yang kosong
+  guideForm.addEventListener('submit', function(event) {
+    let hasEmpty = false;
+    const requiredInputs = guideForm.querySelectorAll('[required]');
+
+    requiredInputs.forEach(input => {
+      const val = (input.value || '').trim();
+      if (!val) {
+        hasEmpty = true;
+        input.classList.add('is-invalid');
+      } else {
+        input.classList.remove('is-invalid');
+      }
+    });
+
+    if (hasEmpty || !guideForm.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      guideForm.classList.add('was-validated');
+
+      toastr.error('Kolom tidak boleh kosong', 'Validasi Gagal', {
+        timeOut: 2500,
+        extendedTimeOut: 0
+      });
+
+      const firstInvalid = guideForm.querySelector('.is-invalid, :invalid');
+      if (firstInvalid) {
+        firstInvalid.focus();
+      }
+      return false;
+    }
+  });
+
   document.querySelectorAll('.btn-edit').forEach(btn => {
     btn.addEventListener('click', function() {
-      const form = document.getElementById('guideForm');
-      form.action = '<?= base_url('admin/guides/') ?>' + this.dataset.id + '/update';
+      guideForm.classList.remove('was-validated');
+      guideForm.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      guideForm.action = '<?= base_url('admin/guides/') ?>' + this.dataset.id + '/update';
       document.getElementById('modalTitle').innerText = 'Edit Data Guide';
       document.getElementById('code').value = this.dataset.code || '';
       document.getElementById('name').value = this.dataset.name || '';
@@ -160,10 +211,13 @@
 
   const modalEl = document.getElementById('guideModal');
   modalEl.addEventListener('hidden.bs.modal', function() {
-    const form = document.getElementById('guideForm');
-    form.action = '<?= base_url('admin/guides/store') ?>';
-    form.reset();
+    guideForm.action = '<?= base_url('admin/guides/store') ?>';
+    guideForm.reset();
+    guideForm.classList.remove('was-validated');
+    guideForm.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     document.getElementById('modalTitle').innerText = 'Tambah Guide';
+    document.getElementById('code').value = '';
+    document.getElementById('gender').value = '';
     document.getElementById('status').value = 'active';
   });
 
@@ -183,7 +237,7 @@
     <?php endif; ?>
 
     <?php if (session()->get('errors')): ?>
-      toastr.error('Silakan periksa kembali isian form guide.', 'Validasi Gagal', {
+      toastr.error('Kolom tidak boleh kosong', 'Validasi Gagal', {
         timeOut: 2500,
         extendedTimeOut: 0
       });
@@ -194,8 +248,7 @@
     new bootstrap.Modal(modalEl).show();
 
     <?php if (session('modal') === 'edit' && session()->has('edit_id')): ?>
-      const editForm = document.getElementById('guideForm');
-      editForm.action = '<?= base_url('admin/guides/') ?>' + <?= (int) session('edit_id') ?> + '/update';
+      guideForm.action = '<?= base_url('admin/guides/') ?>' + <?= (int) session('edit_id') ?> + '/update';
       document.getElementById('modalTitle').innerText = 'Edit Data Guide';
     <?php endif; ?>
   <?php endif; ?>
