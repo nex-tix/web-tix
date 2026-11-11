@@ -22,6 +22,8 @@ class SettingSeeder extends Seeder
             'business_name'       => 'nextix',
             'business_address'    => 'Uluwatu, Bali',
             'receipt_footer'      => 'Tidak dapat di-refund',
+            'guide_fee_adult'     => '10000',
+            'guide_fee_child'     => '5000',
         ];
             
         foreach ($settings as $key => $value) {

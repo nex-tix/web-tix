@@ -25,23 +25,23 @@ class TicketModel extends Model
         'used_checkpoint_id',
         'guide_id',
         'guide_name_snapshot',
-        'guide_fee_percent',
         'guide_fee_amount',
+        'guide_salary_ledger_id',
     ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [
-        'id'                   => 'int',
-        'transaction_id'       => 'int',
-        'total_visitors'       => 'int',
-        'used_by_gate_user_id' => '?int',
-        'used_checkpoint_id'   => '?int',
-        'actual_visitors'      => '?int',
-        'guide_id'             => '?int',
-        'guide_fee_percent'    => '?float',
-        'guide_fee_amount'     => '?float',
+        'id'                     => 'int',
+        'transaction_id'         => 'int',
+        'total_visitors'         => 'int',
+        'used_by_gate_user_id'   => '?int',
+        'used_checkpoint_id'     => '?int',
+        'actual_visitors'        => '?int',
+        'guide_id'               => '?int',
+        'guide_fee_amount'       => '?float',
+        'guide_salary_ledger_id' => '?int',
     ];
     protected array $castHandlers = [];
 

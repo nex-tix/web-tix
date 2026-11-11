@@ -49,7 +49,6 @@
             <?php if (!empty($ticket['guide_fee_amount'])): ?>
             <div class="mb-0"><strong>Komisi Guide:</strong>
               <span class="text-success fw-bold">Rp <?= number_format($ticket['guide_fee_amount'], 0, ',', '.') ?></span>
-              <span class="small text-muted">(<?= number_format($ticket['guide_fee_percent'] ?? 15, 0) ?>%)</span>
             </div>
             <?php endif; ?>
           </div>
@@ -129,17 +128,20 @@
         <table class="table table-hover mb-0">
           <thead>
             <tr style="background: #f8f9fa;">
-              <th style="width: 30%">Tipe</th>
-              <th style="width: 20%">Kategori</th>
+              <th style="width: 25%">Tipe</th>
+              <th style="width: 15%">Kategori</th>
               <th style="width: 15%">Qty</th>
-              <th style="width: 20%">Harga Satuan</th>
+              <th style="width: 15%">Harga Satuan</th>
               <th style="width: 15%">Subtotal</th>
+              <?php if (!empty($ticket['guide_id'])): ?>
+                <th style="width: 15%">Komisi Guide</th>
+              <?php endif; ?>
             </tr>
           </thead>
           <tbody class="table-light">
             <?php if (empty($details)): ?>
               <tr>
-                <td colspan="5" class="text-center text-muted py-3">Tidak ada rincian tiket</td>
+                <td colspan="<?= !empty($ticket['guide_id']) ? 6 : 5 ?>" class="text-center text-muted py-3">Tidak ada rincian tiket</td>
               </tr>
             <?php else: ?>
               <?php foreach ($details as $det): ?>
@@ -153,6 +155,17 @@
                   <td><?= (int)($det['qty'] ?? 0) ?> orang</td>
                   <td>Rp <?= number_format((float)($det['unit_price'] ?? 0), 0, ',', '.') ?></td>
                   <td>Rp <?= number_format((float)($det['subtotal'] ?? 0), 0, ',', '.') ?></td>
+                  <?php if (!empty($ticket['guide_id'])): ?>
+                    <td>
+                      <?php if (!empty($det['guide_fee_unit'])): ?>
+                        <span class="text-success fw-semibold">Rp <?= number_format((float)$det['guide_fee_unit'], 0, ',', '.') ?></span>
+                        <span class="text-muted small">/ org</span>
+                        <div class="text-muted small">Total: Rp <?= number_format((float)($det['guide_fee_subtotal'] ?? ($det['guide_fee_unit'] * $det['qty'])), 0, ',', '.') ?></div>
+                      <?php else: ?>
+                        <span class="text-muted">-</span>
+                      <?php endif; ?>
+                    </td>
+                  <?php endif; ?>
                 </tr>
               <?php endforeach; ?>
             <?php endif; ?>

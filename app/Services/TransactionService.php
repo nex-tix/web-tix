@@ -159,48 +159,52 @@ class TransactionService
             // ---------- Resolusi Guide & Komisi ----------
             $guideId = !empty($data['guide_id']) ? (int) $data['guide_id'] : null;
             $guideNameSnapshot = null;
-            $guideFeePercent = null;
 
             if ($guideId) {
                 $guide = $this->guideModel->find($guideId);
                 if ($guide) {
                     $guideNameSnapshot = $guide['name'];
-                    $rawPercent = (float) $this->settingModel->getSetting('guide_commission_percent', 15.00);
-                    $guideFeePercent = $rawPercent > 0 ? $rawPercent : 15.00;
                 } else {
                     $guideId = null;
                 }
             }
+
+            // Helper tarif fee guide per ticket type (berdasarkan setting guide_fee_{slug})
+            $getGuideFeeRate = function (string $typeName): float {
+                $slug = strtolower(str_replace([' ', '-'], '_', trim($typeName)));
+                $val = $this->settingModel->getSetting('guide_fee_' . $slug);
+                return ($val !== null && is_numeric($val)) ? (float) $val : 0.0;
+            };
 
             // Group  : 1 tiket menampung seluruh rombongan.
             // Individual: 1 tiket per orang (total_visitors = 1, qty detail = 1).
             $ticketIds = [];
 
             if ($ticketCategory === 'group') {
-                // Hitung total komisi guide untuk rombongan (15% per orang dari harga setelah diskon)
+                // Hitung total komisi guide untuk rombongan (nominal rupiah per kepala sesuai tipe tiket)
                 $totalGroupGuideFee = null;
                 if ($guideId) {
                     $totalGroupGuideFee = 0.0;
                     foreach ($pricing['details'] as $detail) {
-                        $netUnitPrice = (float) $detail['unit_price'] - (float) $detail['unit_discount'];
-                        $feePerUnit = round($netUnitPrice * ($guideFeePercent / 100), 2);
+                        $feePerUnit = $getGuideFeeRate($detail['ticket_type_name']);
                         $totalGroupGuideFee += ($feePerUnit * (int) $detail['qty']);
                     }
                 }
 
-                $ticketId = $this->createTicket($transactionId, 'group', (int) $pricing['total_visitors'], $guideId, $guideNameSnapshot, $guideFeePercent, $totalGroupGuideFee);
+                $ticketId = $this->createTicket($transactionId, 'group', (int) $pricing['total_visitors'], $guideId, $guideNameSnapshot, $totalGroupGuideFee);
                 foreach ($pricing['details'] as $detail) {
-                    $this->insertDetail($ticketId, $detail, (int) $detail['qty']);
+                    $feePerUnit = $guideId ? $getGuideFeeRate($detail['ticket_type_name']) : 0.0;
+                    $this->insertDetail($ticketId, $detail, (int) $detail['qty'], $feePerUnit);
                 }
                 $ticketIds[] = $ticketId;
             } else {
                 foreach ($pricing['details'] as $detail) {
-                    $netUnitPrice = (float) $detail['unit_price'] - (float) $detail['unit_discount'];
-                    $indivFee = $guideId ? round($netUnitPrice * ($guideFeePercent / 100), 2) : null;
+                    $feePerUnit = $guideId ? $getGuideFeeRate($detail['ticket_type_name']) : 0.0;
+                    $indivFee = $guideId ? $feePerUnit : null;
 
                     for ($i = 0; $i < (int) $detail['qty']; $i++) {
-                        $ticketId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideNameSnapshot, $guideFeePercent, $indivFee);
-                        $this->insertDetail($ticketId, $detail, 1);
+                        $ticketId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideNameSnapshot, $indivFee);
+                        $this->insertDetail($ticketId, $detail, 1, $feePerUnit);
                         $ticketIds[] = $ticketId;
                     }
                 }
@@ -259,7 +263,6 @@ class TransactionService
         int $visitors,
         ?int $guideId = null,
         ?string $guideName = null,
-        ?float $guidePercent = null,
         ?float $guideFee = null
     ): int {
         $id = $this->ticketModel->insert([
@@ -271,7 +274,6 @@ class TransactionService
             'status'              => 'active',
             'guide_id'            => $guideId,
             'guide_name_snapshot' => $guideName,
-            'guide_fee_percent'   => $guidePercent,
             'guide_fee_amount'    => $guideFee,
         ], true);
 
@@ -282,19 +284,22 @@ class TransactionService
         return (int) $id;
     }
 
-    private function insertDetail(int $ticketId, array $detail, int $qty): void
+    private function insertDetail(int $ticketId, array $detail, int $qty, float $guideFeeUnit = 0.0): void
     {
         $unitPrice = (float) $detail['unit_price'];
         $discAmt   = (float) $detail['unit_discount'] * $qty;
+        $guideFeeSubtotal = $guideFeeUnit * $qty;
 
         $ok = $this->ticketDetailModel->insert([
-            'ticket_id'        => $ticketId,
-            'ticket_type_id'   => $detail['ticket_type_id'],
-            'qty'              => $qty,
-            'unit_price'       => $unitPrice,
-            'discount_percent' => (float) $detail['discount_percent'],
-            'discount_amount'  => $discAmt,
-            'subtotal'         => ($unitPrice * $qty) - $discAmt,
+            'ticket_id'          => $ticketId,
+            'ticket_type_id'     => $detail['ticket_type_id'],
+            'qty'                => $qty,
+            'unit_price'         => $unitPrice,
+            'discount_percent'   => (float) $detail['discount_percent'],
+            'discount_amount'    => $discAmt,
+            'subtotal'           => ($unitPrice * $qty) - $discAmt,
+            'guide_fee_unit'     => $guideFeeUnit,
+            'guide_fee_subtotal' => $guideFeeSubtotal,
         ], false);
 
         if (!$ok) {

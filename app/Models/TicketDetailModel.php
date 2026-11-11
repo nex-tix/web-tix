@@ -12,20 +12,32 @@ class TicketDetailModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['ticket_id', 'ticket_type_id', 'qty', 'unit_price', 'discount_percent', 'discount_amount', 'subtotal'];
+    protected $allowedFields    = [
+        'ticket_id',
+        'ticket_type_id',
+        'qty',
+        'unit_price',
+        'discount_percent',
+        'discount_amount',
+        'subtotal',
+        'guide_fee_unit',
+        'guide_fee_subtotal',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [
-        'id' => 'int',
-        'ticket_id' => 'int',
-        'ticket_type_id' => 'int',
-        'qty' => 'int',
-        'unit_price' => 'float',
-        'discount_percent' => 'float',
-        'discount_amount' => 'float',
-        'subtotal' => 'float',
+        'id'                 => 'int',
+        'ticket_id'          => 'int',
+        'ticket_type_id'     => 'int',
+        'qty'                => 'int',
+        'unit_price'         => 'float',
+        'discount_percent'   => 'float',
+        'discount_amount'    => 'float',
+        'subtotal'           => 'float',
+        'guide_fee_unit'     => 'float',
+        'guide_fee_subtotal' => 'float',
     ];
     protected array $castHandlers = [];
 
