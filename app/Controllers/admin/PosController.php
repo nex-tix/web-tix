@@ -262,6 +262,6 @@ class PosController extends BaseController
             'reprint_reason'  => $reason,
         ], false);
 
-        return redirect()->to(base_url("admin/pos/receipt/{$ticket['transaction_id']}?ticket_id={$ticketId}"))->with('success', 'Cetak ulang berhasil. Buka tab cetak untuk menghasilkan tiket.');
+        return redirect()->to(base_url("admin/pos/receipt/{$ticket['transaction_id']}?ticket_id={$ticketId}"))->with('success', 'Cetak ulang berhasil. Tiket siap dicetak.');
     }
 }
