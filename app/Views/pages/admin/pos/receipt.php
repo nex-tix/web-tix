@@ -60,8 +60,7 @@
             </div>
 
             <div class="space-y-0.5 text-[11px] pt-2 border-t border-dashed border-slate-300">
-                <div class="flex justify-between"><span>No. Invoice:</span> <span class="font-bold"><?= esc($transaction['invoice_code']) ?></span></div>
-                <div class="flex justify-between"><span>Waktu Trx:</span> <span><?= esc($transaction['created_at']) ?> WITA</span></div>
+                <div class="flex justify-center"><span class="font-bold"><?= esc($transaction['invoice_code']) ?></span></div>
                 <div class="flex justify-between"><span>Pengunjung:</span> <span class="font-bold"><?= esc($customer['name']) ?></span></div>
                 <div class="flex justify-between"><span>Asal:</span> <span><?= ucfirst($customer['origin_type']) ?> (<?= esc($customer['origin']) ?>)</span></div>
                 <?php if (!empty($tickets[0]['guide_name_snapshot'])): ?>
