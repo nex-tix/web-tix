@@ -187,7 +187,7 @@ class PosController extends BaseController
             'business_address' => $this->settingModel->getSetting('business_address', 'Pura Luhur Uluwatu, Bali'),
             'receipt_footer' => $this->settingModel->getSetting('receipt_footer', 'Tidak dapat di-refund'),
         ];
-
+        
         return view('pages/admin/pos/receipt', [
             'transaction' => $transaction,
             'customer' => $customer,

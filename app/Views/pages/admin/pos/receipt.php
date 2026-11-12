@@ -59,16 +59,16 @@
                 <p class="text-[10px] text-slate-500">Terminal: Loket POS</p>
             </div>
 
-            <div class="space-y-0.5 text-[11px] pt-2 border-t border-dashed border-slate-300">
+            <div class="space-y-0.5 text-[11px] pt-2 border-t-2 border-dashed border-slate-300">
                 <div class="flex justify-center"><span class="font-bold"><?= esc($transaction['invoice_code']) ?></span></div>
-                <div class="flex justify-between"><span>Pengunjung:</span> <span class="font-bold"><?= esc($customer['name']) ?></span></div>
-                <div class="flex justify-between"><span>Asal:</span> <span><?= ucfirst($customer['origin_type']) ?> (<?= esc($customer['origin']) ?>)</span></div>
+                <div class="flex justify-center"><span class="inline-block font-bold truncate max-w-[20ch]"><?= esc($customer['name']) ?></span></div>
+                <div class="flex justify-center"><span class="font-bold">(<?= esc($customer['origin']) ?>) <?= ucfirst($customer['origin_type']) ?> </span></div>
                 <?php if (!empty($tickets[0]['guide_name_snapshot'])): ?>
-                <div class="flex justify-between"><span>Pemandu / Guide:</span> <span class="font-bold"><?= esc($tickets[0]['guide_name_snapshot']) ?></span></div>
+                <div class="flex justify-center"><span class="inline-block font-bold truncate max-w-[20ch]"><?= esc($tickets[0]['guide_name_snapshot']) ?></span></div>
                 <?php endif; ?>
             </div>
 
-            <div class="border-t border-dashed border-slate-300 pt-2 space-y-1">
+            <div class="border-t-2 border-dashed border-slate-300 pt-2 space-y-1">
                 <?php foreach ($tickets as $t): ?>
                     <?php foreach ($t['details'] as $det): 
                         $typeName = $ticketTypesById[$det['ticket_type_id']]['name'] ?? 'Tiket';
@@ -77,21 +77,24 @@
                     <div class="flex justify-between text-[11px]">
                         <div>
                             <span class="font-bold"><?= esc($typeName . $catLabel) ?></span> x <?= $det['qty'] ?>
-                            <div class="text-[10px] text-slate-500">@ Rp <?= number_format($det['unit_price'], 0, ',', '.') ?></div>
+                            <div class="text-[10px] text-slate-500">x1 Rp <?= number_format($det['unit_price'], 0, ',', '.') ?></div>
                         </div>
-                        <span class="font-bold">Rp <?= number_format($det['subtotal'], 0, ',', '.') ?></span>
+                        <?php 
+                        $totalTicket = $det['unit_price'] * $det['qty']
+                        ?>
+                        <span class="font-bold">Rp <?= number_format($totalTicket, 0, ',', '.') ?></span>
                     </div>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             </div>
 
-            <div class="border-t border-dashed border-slate-300 pt-2 space-y-1 font-bold text-[11px]">
+            <div class="border-t-2 border-dashed border-slate-300 pt-2 space-y-1 font-bold text-[11px]">
                 <div class="flex justify-between"><span>SUBTOTAL:</span> <span>Rp <?= number_format($transaction['subtotal'], 0, ',', '.') ?></span></div>
                 <?php if ($transaction['discount_amount'] > 0): ?>
                 <div class="flex justify-between text-emerald-700"><span>DISKON:</span> <span>- Rp <?= number_format($transaction['discount_amount'], 0, ',', '.') ?></span></div>
                 <?php endif; ?>
-                <div class="flex justify-between text-sm pt-1 border-t border-slate-300">
-                    <span>TOTAL TAGIHAN:</span>
+                <div class="flex justify-between text-sm pt-1 border-t-2 border-slate-300">
+                    <span>TOTAL:</span>
                     <span class="text-red-600">Rp <?= number_format($transaction['total_amount'], 0, ',', '.') ?></span>
                 </div>
                 <div class="flex justify-between text-[11px] font-normal text-slate-600 pt-1">
@@ -115,37 +118,35 @@
                 <?php endif; ?>
             </div>
 
-            <div class="pt-2 text-center text-[10px] text-slate-600 space-y-0.5 border-t border-dashed border-slate-300">
-                <p class="font-bold">BERLAKU HANYA HARI INI</p>
+            <div class="pt-2 text-center text-[10px] text-slate-600 space-y-0.5 border-t-3 border-dashed border-slate-300">
+                <p class="font-bold">SELAMAT BERSENANG-SENANG</p>
                 <p><?= esc($tickets[0]['valid_date'] ?? date('Y-m-d')) ?> SAMPAI PUKUL 24.00 WITA</p>
-                <p class="italic uppercase font-semibold text-red-600"><?= esc($settings['receipt_footer']) ?></p>
             </div>
         </div>
 
         <!-- SECTION 2: TICKET CUTS (Potongan 2 - Per Tiket) -->
         <?php foreach ($tickets as $idx => $t): ?>
-        <div class="space-y-2 pt-4 pb-4 border-b-2 border-dashed border-slate-400 page-break">
+        <div class="space-y-2 border-b-4 border-dashed border-slate-400 page-break">
             <div class="text-center space-y-0.5">
-                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">
-                    <?= $t['ticket_category'] === 'group' ? 'TIKET ROMBONGAN' : 'TIKET MASUK' ?>
+                <h3 class="font-bold text-xl uppercase tracking-wider text-slate-800">
+                    NEXTIX
                 </h3>
-                <p class="text-[10px] text-slate-500">Kecak & Fire Dance Uluwatu</p>
+                <p class="text-[10px] text-slate-500"><?= $t['ticket_category'] === 'group' ? 'TIKET ROMBONGAN' : 'TIKET MASUK' ?></p>
             </div>
 
             <!-- QR Code container -->
-            <div class="flex flex-col items-center justify-center py-2 space-y-1">
+            <div class="flex flex-col items-center justify-center space-y-1">
                 <div id="qrcode-<?= $t['id'] ?>" class="bg-white p-2 border border-slate-200 rounded"></div>
                 <span class="font-mono font-bold text-xs tracking-widest"><?= esc($t['ticket_code']) ?></span>
             </div>
 
             <div class="space-y-0.5 text-[11px] bg-slate-50 p-2 rounded border border-slate-200">
-                <div class="flex justify-between"><span>Kategori:</span> <span class="uppercase font-bold"><?= esc($t['ticket_category']) ?></span></div>
-                <div class="flex justify-between"><span>Pengunjung:</span> <span class="font-bold"><?= esc($customer['name']) ?></span></div>
-                <div class="flex justify-between"><span>Jumlah Tamu:</span> <span class="font-bold"><?= $t['total_visitors'] ?> Orang</span></div>
-                <div class="flex justify-between"><span>Berlaku Tgl:</span> <span class="font-bold"><?= esc($t['valid_date']) ?></span></div>
+                <div class="flex justify-center"><span class="uppercase font-bold"><?= esc($t['ticket_category']) ?></span></div>
+                <div class="flex justify-center"><span class="inline-block font-bold truncate max-w-[20ch]"><?= esc($customer['name']) ?></span></div>
+                <div class="flex justify-center"><span class="font-bold"><?= esc($t['valid_date']) ?></span></div>
             </div>
 
-            <div class="text-center text-[10px] text-slate-600 space-y-0.5 pt-1">
+            <div class="text-center text-[10px] text-slate-600 space-y-0.5 pt-1 pb-2">
                 <p class="font-bold">BERLAKU HANYA HARI INI SAMPAI 24.00 WITA</p>
                 <p class="italic text-red-600">TIDAK DAPAT DI-REFUND</p>
             </div>
