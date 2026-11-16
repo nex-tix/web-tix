@@ -85,7 +85,7 @@
                     <td><?= esc($row['admin_name'] ?? '-') ?></td>
                     <td style="text-align:center">
                       <a href="<?= base_url('admin/data-tiket/detail/' . $row['id']) ?>" class="btn btn-sm btn-outline-dark" title="Detail">
-                        <i class="bi bi-eye"></i>
+                        <i class="bi bi-eye action-icon"></i>
                       </a>
                     </td>
                   </tr>
