@@ -1821,6 +1821,13 @@
         border-color: #7A2531 !important;
       }
 
+      [data-theme=dark] .action-icon {
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .btn-outline-dark:hover .action-icon {
+        color: #ffffff !important;
+      }
+
       /* Modal dark enhancements */
       [data-theme=dark] .modal-header .btn-close {
         filter: invert(1) grayscale(100%) brightness(200%) !important;
