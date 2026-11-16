@@ -14,10 +14,10 @@
     <div class="row g-3">
       <div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-3">
-          <div class="card-header bg-dark py-2">
+          <div class="card-header py-2">
             <h6 class="mb-0 ">Data Pembeli</h6>
           </div>
-          <div class="card-body bg-light text-dark">
+          <div class="card-body card-history">
             <div class="mb-2"><strong>Nama:</strong> <?= esc($customer['name'] ?? '-') ?></div>
             <div class="mb-2"><strong>Asal:</strong> <?= esc($customer['origin'] ?? $customer['origin_type'] ?? '-') ?></div>
             <div class="mb-2"><strong>Telepon:</strong> <?= esc($customer['phone'] ?? '-') ?></div>
@@ -27,10 +27,10 @@
 
       <div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-3">
-          <div class="card-header bg-dark py-2">
+          <div class="card-header py-2">
             <h6 class="mb-0">Ringkasan Transaksi</h6>
           </div>
-          <div class="card-body bg-light text-dark">
+          <div class="card-body card-history">
             <div class="row">
               <div class="col-6">
                 <small>Tanggal</small>
@@ -62,36 +62,70 @@
     </div>
 
     <div class="card border-0 shadow-sm mb-3">
-      <div class="card-header bg-light py-2">
-        <h6 class="mb-0 text-dark">Tiket</h6>
+      <div class="card-header py-2 d-flex justify-content-start align-items-center gap-3">
+        <h6 class="mb-0">Rincian Tiket</h6>
       </div>
       <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-          <thead>
-            <tr style="background: #f8f9fa;">
-              <th style="width: 30%">Kode Tiket</th>
-              <th style="width: 20%">Jenis</th>
-              <th style="width: 25%">Jumlah</th>
-              <th style="width: 25%">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody class="table-light">
-            <?php if (empty($tickets)): ?>
+        <div class="table-responsive">
+          <table class="table table-hover table-detail mb-0 align-middle">
+            <thead>
               <tr>
-                <td colspan="4" class="text-center text-muted py-3">Tidak ada tiket</td>
+                <th style="width: 25%">Kode Tiket</th>
+                <th style="width: 20%">Tipe Pengunjung</th>
+                <th style="width: 15%">Kategori</th>
+                <th style="width: 12%">Jumlah</th>
+                <th style="width: 14%">Harga Satuan</th>
+                <th style="width: 14%" class="text-end">Subtotal</th>
               </tr>
-            <?php else: ?>
-              <?php foreach ($tickets as $ticket): ?>
+            </thead>
+            <tbody>
+              <?php if (empty($tickets)): ?>
                 <tr>
-                  <td class="font-monospace"><?= esc($ticket['ticket_code']) ?></td>
-                  <td><?= esc(ucfirst($ticket['ticket_category'] ?? '-')) ?></td>
-                  <td><?= (int)($ticket['total_visitors'] ?? 0) ?> orang</td>
-                  <td>Rp <?= number_format((float)($ticket['computed_subtotal'] ?? 0), 0, ',', '.') ?></td>
+                  <td colspan="6" class="text-center text-muted py-3">Tidak ada tiket</td>
                 </tr>
-              <?php endforeach; ?>
-            <?php endif; ?>
-          </tbody>
-        </table>
+              <?php else: ?>
+                <?php foreach ($tickets as $ticket): ?>
+                  <?php if (!empty($ticket['details'])): ?>
+                    <?php foreach ($ticket['details'] as $det): 
+                      $typeName = $ticketTypesById[$det['ticket_type_id']]['name'] ?? 'Tiket';
+                    ?>
+                      <tr>
+                        <td>
+                          <span class="font-monospace fw-bold"><?= esc($ticket['ticket_code']) ?></span>
+                          <?php if (!empty($ticket['guide_name_snapshot'])): ?>
+                            <div class="guide-name"><i class="bi bi-person-badge"></i> Guide: <?= esc($ticket['guide_name_snapshot']) ?></div>
+                          <?php endif; ?>
+                        </td>
+                        <td class="fw-semibold"><?= esc($typeName) ?></td>
+                        <td>
+                          <span class="badge bg-<?= ($ticket['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'primary' ?>">
+                            <?= esc(ucfirst($ticket['ticket_category'] ?? '-')) ?>
+                          </span>
+                        </td>
+                        <td><?= (int)($det['qty'] ?? 0) ?> orang</td>
+                        <td>Rp <?= number_format((float)($det['unit_price'] ?? 0), 0, ',', '.') ?></td>
+                        <td class="text-end fw-semibold">Rp <?= number_format((float)($det['subtotal'] ?? 0), 0, ',', '.') ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <tr>
+                      <td class="font-monospace fw-bold"><?= esc($ticket['ticket_code']) ?></td>
+                      <td>-</td>
+                      <td>
+                        <span class="badge bg-<?= ($ticket['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'primary' ?>">
+                          <?= esc(ucfirst($ticket['ticket_category'] ?? '-')) ?>
+                        </span>
+                      </td>
+                      <td><?= (int)($ticket['total_visitors'] ?? 0) ?> orang</td>
+                      <td>-</td>
+                      <td class="text-end fw-semibold">Rp <?= number_format((float)($ticket['computed_subtotal'] ?? 0), 0, ',', '.') ?></td>
+                    </tr>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

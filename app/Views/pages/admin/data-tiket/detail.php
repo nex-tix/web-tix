@@ -14,10 +14,10 @@
     <div class="row g-3">
       <div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-3">
-          <div class="card-header bg-dark py-2">
+          <div class="card-header py-2">
             <h6 class="mb-0 ">Data Tiket</h6>
           </div>
-          <div class="card-body bg-light text-dark">
+          <div class="card-body card-history">
             <div class="mb-2"><strong>Kode Tiket:</strong> <span class="font-monospace"><?= esc($ticket['ticket_code']) ?></span></div>
             <div class="mb-2"><strong>Tipe:</strong> <?= esc(!empty($typeNames) ? implode(', ', $typeNames) : ucfirst($ticket['ticket_category'] ?? '-')) ?></div>
             <div class="mb-2"><strong>Kategori:</strong>
@@ -47,9 +47,9 @@
               <?= !empty($ticket['guide_name_snapshot']) ? '<span class="badge bg-dark">' . esc($ticket['guide_name_snapshot']) . '</span>' : '<span class="text-muted">Tidak ada</span>' ?>
             </div>
             <?php if (!empty($ticket['guide_fee_amount'])): ?>
-            <div class="mb-0"><strong>Komisi Guide:</strong>
-              <span class="text-success fw-bold">Rp <?= number_format($ticket['guide_fee_amount'], 0, ',', '.') ?></span>
-            </div>
+              <div class="mb-0"><strong>Komisi Guide:</strong>
+                <span class="text-success fw-bold">Rp <?= number_format($ticket['guide_fee_amount'], 0, ',', '.') ?></span>
+              </div>
             <?php endif; ?>
           </div>
         </div>
@@ -57,10 +57,10 @@
 
       <div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-3">
-          <div class="card-header bg-dark py-2">
+          <div class="card-header py-2">
             <h6 class="mb-0">Data Transaksi</h6>
           </div>
-          <div class="card-body bg-light text-dark">
+          <div class="card-body card-history text-dark">
             <div class="row">
               <div class="col-6">
                 <small>Invoice</small>
@@ -121,56 +121,58 @@
     </div>
 
     <div class="card border-0 shadow-sm mb-3">
-      <div class="card-header bg-light py-2">
-        <h6 class="mb-0 text-dark">Rincian Tipe Tiket</h6>
+      <div class="card-header py-2">
+        <h6 class="mb-0">Rincian Tipe Tiket</h6>
       </div>
       <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-          <thead>
-            <tr style="background: #f8f9fa;">
-              <th style="width: 25%">Tipe</th>
-              <th style="width: 15%">Kategori</th>
-              <th style="width: 15%">Qty</th>
-              <th style="width: 15%">Harga Satuan</th>
-              <th style="width: 15%">Subtotal</th>
-              <?php if (!empty($ticket['guide_id'])): ?>
-                <th style="width: 15%">Komisi Guide</th>
-              <?php endif; ?>
-            </tr>
-          </thead>
-          <tbody class="table-light">
-            <?php if (empty($details)): ?>
-              <tr>
-                <td colspan="<?= !empty($ticket['guide_id']) ? 6 : 5 ?>" class="text-center text-muted py-3">Tidak ada rincian tiket</td>
+        <div class="table-responsive">
+          <table class="table table-hover table-detail mb-0 align-middle">
+            <thead>
+              <tr">
+                <th style="width: 25%">Tipe</th>
+                <th style="width: 15%">Kategori</th>
+                <th style="width: 15%">Qty</th>
+                <th style="width: 15%">Harga Satuan</th>
+                <th style="width: 15%">Subtotal</th>
+                <?php if (!empty($ticket['guide_id'])): ?>
+                  <th style="width: 15%">Komisi Guide</th>
+                <?php endif; ?>
               </tr>
-            <?php else: ?>
-              <?php foreach ($details as $det): ?>
+            </thead>
+            <tbody>
+              <?php if (empty($details)): ?>
                 <tr>
-                  <td class="fw-semibold"><?= esc($det['type_name'] ?? '-') ?></td>
-                  <td>
-                    <span class="badge bg-<?= ($det['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'danger' ?>">
-                      <?= esc(ucfirst($det['ticket_category'] ?? '-')) ?>
-                    </span>
-                  </td>
-                  <td><?= (int)($det['qty'] ?? 0) ?> orang</td>
-                  <td>Rp <?= number_format((float)($det['unit_price'] ?? 0), 0, ',', '.') ?></td>
-                  <td>Rp <?= number_format((float)($det['subtotal'] ?? 0), 0, ',', '.') ?></td>
-                  <?php if (!empty($ticket['guide_id'])): ?>
-                    <td>
-                      <?php if (!empty($det['guide_fee_unit'])): ?>
-                        <span class="text-success fw-semibold">Rp <?= number_format((float)$det['guide_fee_unit'], 0, ',', '.') ?></span>
-                        <span class="text-muted small">/ org</span>
-                        <div class="text-muted small">Total: Rp <?= number_format((float)($det['guide_fee_subtotal'] ?? ($det['guide_fee_unit'] * $det['qty'])), 0, ',', '.') ?></div>
-                      <?php else: ?>
-                        <span class="text-muted">-</span>
-                      <?php endif; ?>
-                    </td>
-                  <?php endif; ?>
+                  <td colspan="<?= !empty($ticket['guide_id']) ? 6 : 5 ?>" class="text-center text-muted py-3">Tidak ada rincian tiket</td>
                 </tr>
-              <?php endforeach; ?>
-            <?php endif; ?>
-          </tbody>
-        </table>
+              <?php else: ?>
+                <?php foreach ($details as $det): ?>
+                  <tr>
+                    <td class="fw-semibold"><?= esc($det['type_name'] ?? '-') ?></td>
+                    <td>
+                      <span class="badge bg-<?= ($det['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'danger' ?>">
+                        <?= esc(ucfirst($det['ticket_category'] ?? '-')) ?>
+                      </span>
+                    </td>
+                    <td><?= (int)($det['qty'] ?? 0) ?> orang</td>
+                    <td>Rp <?= number_format((float)($det['unit_price'] ?? 0), 0, ',', '.') ?></td>
+                    <td>Rp <?= number_format((float)($det['subtotal'] ?? 0), 0, ',', '.') ?></td>
+                    <?php if (!empty($ticket['guide_id'])): ?>
+                      <td>
+                        <?php if (!empty($det['guide_fee_unit'])): ?>
+                          <span class="text-success fw-semibold">Rp <?= number_format((float)$det['guide_fee_unit'], 0, ',', '.') ?></span>
+                          <span class="text-muted small">/ org</span>
+                          <div class="text-muted small">Total: Rp <?= number_format((float)($det['guide_fee_subtotal'] ?? ($det['guide_fee_unit'] * $det['qty'])), 0, ',', '.') ?></div>
+                        <?php else: ?>
+                          <span class="text-muted">-</span>
+                        <?php endif; ?>
+                      </td>
+                    <?php endif; ?>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

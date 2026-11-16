@@ -9,6 +9,14 @@
         --card-border: #e9ecef;
         --text-dark: #212529;
         --text-muted: #6c757d;
+        --t-inverted: #000000;
+        --bg-header-card: #212529;
+        --t-header-card: #ffffff;
+        --card: #f8f9fa;
+        --bg-table: #1a1f23;
+        --bg-table-body: #f8f9fa;
+        --table-hover: #E2E8F0;
+        --guide-badge: #0000008c;
       }
 
       :root[data-theme=dark] {
@@ -21,6 +29,14 @@
         --card-border: #2E3339;
         --text-dark: #E8EAED;
         --text-muted: #9AA0A6;
+        --t-inverted: #ffffff;
+        --bg-header-card: rgb(255, 255, 255);
+        --t-header-card: #000000;
+        --card: #0000001c;
+        --bg-table: #f8f9fa;
+        --bg-table-body: #0000001c;
+        --table-hover: #2A2F35;
+        --guide-badge: #ffffff76;
       }
 
       body {
@@ -1124,6 +1140,47 @@
         }
       }
 
+      /* Page Detail History Transaction */
+      .card-header {
+        background-color: var(--bg-header-card);
+        color: var(--t-header-card);
+        font-weight: 500;
+      }
+
+      .card-history {
+        color: var(--t-inverted);
+        background-color: var(--card);
+      }
+      
+      .table-detail thead tr th {
+        background-color: var(--bg-table);
+        color: rgb(255, 255, 255);
+        border-bottom: none;
+      }
+
+      .table-detail tbody tr td {
+        background-color: var(--bg-table-body);
+        color: var(--t-inverted);
+        transition: background-color 0.15s ease;
+      }
+
+      .table-detail tbody tr:hover td {
+        background-color: var(--table-hover) !important;
+      }
+
+      /* Netralkan hover global dari tailpanel.css jika tabel tidak memiliki class .table-hover dan bukan .table-detail */
+      .table:not(.table-hover):not(.table-detail) tbody tr:hover td {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+
+      .guide-name {
+        font-size: small;
+        color: var(--guide-badge);
+      }
+
+      
+
       /* ============================================================
          DARK MODE OVERRIDES — main.css
          Semua hardcoded light-mode colors di-override di sini.
@@ -1131,6 +1188,21 @@
          menang atas rules !important di atas.
          ============================================================ */
 
+      /* table detail */
+      [data-theme=dark] .table-detail thead tr th {
+        background-color: #2A2F35;
+        color: #E8EAED;
+        border-bottom: 1px solid #2E3339;
+      }
+      [data-theme=dark] .table-detail tbody tr td {
+        background-color: #1A1D20 !important;
+        color: #E8EAED;
+        border-bottom-color: #2E3339;
+      }
+      [data-theme=dark] .table-detail tbody tr:hover td {
+        background-color: var(--table-hover) !important;
+        color: #E8EAED;
+      }
       /* --- Input --- */
       [data-theme=dark] input {
         color: #E8EAED;
@@ -1290,7 +1362,7 @@
 
       /* --- DataTables --- */
       [data-theme=dark] table.dataTable tbody td {
-        background-color: #22262B !important;
+        background-color:   #22262B !important;
         color: #E8EAED;
         border-bottom-color: #2E3339;
       }
@@ -1346,9 +1418,7 @@
         --bs-table-border-color: #2E3339;
         --bs-table-striped-bg: #1E2226;
         --bs-table-striped-color: #E8EAED;
-        --bs-table-hover-bg: #2A2F35;
-        --bs-table-hover-color: #E8EAED;
-        --bs-table-active-bg: #2A2F35;
+
         --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.25);
         --bs-secondary-bg: #2A2F35;
         --bs-tertiary-bg: #22262B;
@@ -1389,7 +1459,6 @@
       [data-theme=dark] .card {
         color: #E8EAED;
       }
-      [data-theme=dark] .card-header,
       [data-theme=dark] .card-footer {
         background-color: #1E2226;
         border-color: #2E3339;
