@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call('CheckpointSeeder');
         $this->call('SettingSeeder');
         $this->call('GuideSeeder');
+        $this->call('BankSeeder');
     }
 }
