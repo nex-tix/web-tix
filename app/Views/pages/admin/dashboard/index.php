@@ -69,7 +69,7 @@
       <div class="row g-3 mb-3">
         <!-- Chart -->
         <div class="col-lg-8 chart-card">
-          <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
               <h3 class="card-title sub-text mb-0" id="dashboard-chart-title">Penjualan</h3> <br>
               <p class="font-sm text-secondary mb-0">Total dibayar per hari dagang (WITA), termasuk void</p>

@@ -30,8 +30,8 @@
         --text-dark: #E8EAED;
         --text-muted: #9AA0A6;
         --t-inverted: #ffffff;
-        --bg-header-card: rgb(255, 255, 255);
-        --t-header-card: #000000;
+        --bg-header-card: #22262B;
+        --t-header-card: #2A2F35;
         --card: #0000001c;
         --bg-table: #f8f9fa;
         --bg-table-body: #0000001c;
@@ -1188,6 +1188,12 @@
          menang atas rules !important di atas.
          ============================================================ */
 
+      /* card-header */
+      [data-theme=dark] .card-header {
+        background-color: var(--bg-header-card) !important;
+        color: var(--text-dark);
+        font-weight: 500;
+      }
       /* table detail */
       [data-theme=dark] .table-detail thead tr th {
         background-color: #2A2F35;
