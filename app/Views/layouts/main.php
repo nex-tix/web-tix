@@ -15,7 +15,25 @@
   <?= $this->include('layouts/head.php') ?>
 </head>
 
-<body data-active="<?= esc($activeKey ?? '') ?>" data-crumbs="<?= esc($crumbs ?? '') ?>">
+<?php
+  $currentUserId = session()->get('user_id');
+  $currentUser   = null;
+  if ($currentUserId) {
+      $userModel   = model(\App\Models\UserModel::class);
+      $currentUser = $userModel->find($currentUserId);
+  }
+  $userName     = $currentUser['name'] ?? session()->get('user_name') ?? 'Administrator';
+  $userUsername = $currentUser['username'] ?? session()->get('username') ?? 'admin';
+  $userRole     = $currentUser['role'] ?? session()->get('role') ?? 'admin';
+?>
+
+<body 
+  data-active="<?= esc($activeKey ?? '') ?>" 
+  data-crumbs="<?= esc($crumbs ?? '') ?>"
+  data-user-name="<?= esc($userName) ?>"
+  data-user-username="<?= esc($userUsername) ?>"
+  data-user-role="<?= esc($userRole) ?>"
+>
   <div class="shell">
     <div data-shell-sidebar></div>
     <div class="main">

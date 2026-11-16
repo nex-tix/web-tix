@@ -448,7 +448,7 @@ body {
 
 .workspace-name {
   font-size: 13px;
-  color: var(--t-base);
+  color: var(--t-inverse);
   font-weight: 600;
 }
 

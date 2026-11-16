@@ -27,6 +27,27 @@ const BASE =
   ) + "/";
   const LOGOUT = BASE + "logout"
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getInitials(name) {
+  if (!name || typeof name !== "string") return "U";
+  const trimmed = name.trim();
+  if (!trimmed) return "U";
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  if (words.length === 1) {
+    return words[0].substring(0, 2).toUpperCase();
+  }
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
 export const NAV = [
   {
     label: "OPERASIONAL",
@@ -184,8 +205,11 @@ function renderSection(section, activeKey) {
     </nav>`;
 }
 
-function renderSidebar(activeKey) {
+function renderSidebar(activeKey, user = {}) {
   const sections = NAV.map((s) => renderSection(s, activeKey)).join("");
+  const name = user.name || "Administrator";
+  const role = user.role || "admin";
+  const initials = getInitials(name);
   return `
     <aside class="d-sidebar">
       <div class="brand">
@@ -198,10 +222,10 @@ function renderSidebar(activeKey) {
       ${sections}
       <div class="sidebar-footer">
         <div class="workspace">
-          <div class="workspace-avatar">JD</div>
+          <div class="workspace-avatar">${escapeHtml(initials)}</div>
           <div class="workspace-text">
-            <div class="workspace-name">John Doe</div>
-            <div class="workspace-role">admin</div>
+            <div class="workspace-name">${escapeHtml(name)}</div>
+            <div class="workspace-role">${escapeHtml(role)}</div>
           </div>
           <svg class="workspace-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="m7 9 5-5 5 5"/><path d="m7 15 5 5 5-5"/>
@@ -227,7 +251,10 @@ function renderCrumbs(crumbsAttr) {
     .join("");
 }
 
-function renderTopbar(crumbsAttr) {
+function renderTopbar(crumbsAttr, user = {}) {
+  const username = user.username || "admin";
+  const name = user.name || "Administrator";
+  const initials = getInitials(name);
   return `
     <header class="d-topbar">
       <div class="crumbs">
@@ -248,11 +275,10 @@ function renderTopbar(crumbsAttr) {
         <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"></button>
 
         <div class="dd-wrap">
-          <div class="avatar" data-dropdown tabindex="0" role="button" aria-label="Account menu">JD</div>
+          <div class="avatar" data-dropdown tabindex="0" role="button" aria-label="Account menu">${escapeHtml(initials)}</div>
           <div class="dd-menu dd-profile" role="menu">
             <div class="dd-profile-head">
-              <div class="dd-profile-name">John Doe</div>
-              <div class="dd-profile-email">john@adminator.app</div>
+              <div class="dd-profile-name">${escapeHtml(username)}</div>
             </div>
             <div class="dd-divider"></div>
             <a class="dd-menu-item danger" href=${LOGOUT}>
@@ -280,13 +306,18 @@ export function mountShell() {
   const body = document.body;
   const activeKey = body.getAttribute("data-active") || "";
   const crumbs = body.getAttribute("data-crumbs") || "";
+  const user = {
+    name: body.getAttribute("data-user-name") || "Administrator",
+    username: body.getAttribute("data-user-username") || "admin",
+    role: body.getAttribute("data-user-role") || "admin",
+  };
 
   const sidebarHost = document.querySelector("[data-shell-sidebar]");
   const topbarHost = document.querySelector("[data-shell-topbar]");
   const footerHost = document.querySelector("[data-shell-footer]");
 
-  if (sidebarHost) sidebarHost.outerHTML = renderSidebar(activeKey);
-  if (topbarHost) topbarHost.outerHTML = renderTopbar(crumbs);
+  if (sidebarHost) sidebarHost.outerHTML = renderSidebar(activeKey, user);
+  if (topbarHost) topbarHost.outerHTML = renderTopbar(crumbs, user);
   if (footerHost) footerHost.outerHTML = renderFooter();
 }
 
