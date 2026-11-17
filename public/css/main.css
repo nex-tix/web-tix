@@ -1992,3 +1992,24 @@
         color: #9AA0A6 !important;
       }
 
+      /* ============================================================
+         Laporan Responsive Micro-Adjustments (Mobile & Small Screens)
+         ============================================================ */
+      @media (max-width: 575.98px) {
+        .stat-card {
+          padding: 1rem;
+        }
+        .stat-card .stat-value {
+          font-size: 1.25rem;
+        }
+        .bank-card-item {
+          padding: 0.75rem;
+        }
+        .btn-chart-laporan,
+        .input-chart-laporan {
+          font-size: 0.75rem;
+          padding: 0.35rem 0.6rem;
+        }
+      }
+
+

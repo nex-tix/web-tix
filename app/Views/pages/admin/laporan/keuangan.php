@@ -10,73 +10,71 @@
     </div>
 
     <!-- Filter & Export Card -->
-    <div class="filter-export card border-0 shadow-sm bg-white mb-3">
-      <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/laporan/keuangan') ?>" id="form-filter">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Tanggal Awal</label>
-              <input type="date" name="start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Tanggal Akhir</label>
-              <input type="date" name="end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Metode Bayar</label>
-              <select name="payment_method" class="form-select form-select-sm bg-white">
-                <option value="">Semua Metode</option>
-                <option value="cash" <?= ($filters['payment_method'] ?? '') === 'cash' ? 'selected' : '' ?>>Tunai (Cash)</option>
-                <option value="debit" <?= ($filters['payment_method'] ?? '') === 'debit' ? 'selected' : '' ?>>Debit / EDC</option>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Pilih Bank</label>
-              <select name="bank_id" class="form-select form-select-sm bg-white">
-                <option value="">Semua Bank</option>
-                <?php foreach (($banksList ?? []) as $b): ?>
-                  <option value="<?= esc($b['id']) ?>" <?= ((string)($filters['bank_id'] ?? '') === (string)$b['id']) ? 'selected' : '' ?>>
-                    <?= esc($b['name']) ?> (<?= esc($b['code']) ?>)
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Status Transaksi</label>
-              <select name="status" class="form-select form-select-sm bg-white">
-                <option value="completed" <?= ($filters['status'] ?? '') === 'completed' ? 'selected' : '' ?>>Sukses / Completed</option>
-                <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Batal / Void</option>
-                <option value="">Semua Status</option>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-12 d-flex gap-1">
-              <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
-                <i class="bi bi-filter"></i> Filter
-              </button>
-              <a href="<?= base_url('admin/laporan/keuangan') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
-                <i class="bi bi-arrow-counterclockwise"></i>
-              </a>
-              <?php
-                $exportQuery = http_build_query(array_filter([
-                  'start'          => date('d-m-Y', strtotime($startDate)),
-                  'end'            => date('d-m-Y', strtotime($endDate)),
-                  'payment_method' => $filters['payment_method'] ?? '',
-                  'bank_id'        => $filters['bank_id'] ?? '',
-                  'status'         => $filters['status'] ?? '',
-                ]));
-              ?>
-              <a href="<?= base_url('admin/laporan/keuangan/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-                <i class="bi bi-file-earmark-pdf"></i> PDF
-              </a>
-            </div>
+    <div class="filter-export table-card mb-3 p-3">
+      <form method="get" action="<?= base_url('admin/laporan/keuangan') ?>" id="form-filter">
+        <div class="row g-2 align-items-end">
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Tanggal Awal</label>
+            <input type="date" name="start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
           </div>
-        </form>
-      </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Tanggal Akhir</label>
+            <input type="date" name="end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Metode Bayar</label>
+            <select name="payment_method" class="form-select form-select-sm bg-white">
+              <option value="">Semua Metode</option>
+              <option value="cash" <?= ($filters['payment_method'] ?? '') === 'cash' ? 'selected' : '' ?>>Tunai (Cash)</option>
+              <option value="debit" <?= ($filters['payment_method'] ?? '') === 'debit' ? 'selected' : '' ?>>Debit / EDC</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Pilih Bank</label>
+            <select name="bank_id" class="form-select form-select-sm bg-white">
+              <option value="">Semua Bank</option>
+              <?php foreach (($banksList ?? []) as $b): ?>
+                <option value="<?= esc($b['id']) ?>" <?= ((string)($filters['bank_id'] ?? '') === (string)$b['id']) ? 'selected' : '' ?>>
+                  <?= esc($b['name']) ?> (<?= esc($b['code']) ?>)
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Status Transaksi</label>
+            <select name="status" class="form-select form-select-sm bg-white">
+              <option value="completed" <?= ($filters['status'] ?? '') === 'completed' ? 'selected' : '' ?>>Sukses / Completed</option>
+              <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Batal / Void</option>
+              <option value="">Semua Status</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4 col-lg-2 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
+              <i class="bi bi-filter"></i> Filter
+            </button>
+            <a href="<?= base_url('admin/laporan/keuangan') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+            <?php
+              $exportQuery = http_build_query(array_filter([
+                'start'          => date('d-m-Y', strtotime($startDate)),
+                'end'            => date('d-m-Y', strtotime($endDate)),
+                'payment_method' => $filters['payment_method'] ?? '',
+                'bank_id'        => $filters['bank_id'] ?? '',
+                'status'         => $filters['status'] ?? '',
+              ]));
+            ?>
+            <a href="<?= base_url('admin/laporan/keuangan/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
+              <i class="bi bi-file-earmark-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- Stat Cards KPI -->
     <div class="row g-3 mb-3">
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Pendapatan Kotor</h2>
@@ -89,7 +87,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Total Diskon</h2>
@@ -102,7 +100,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Pendapatan Bersih (Net)</h2>
@@ -115,7 +113,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Penerimaan Tunai vs Bank</h2>
@@ -135,16 +133,16 @@
       <div class="card-header-custom d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <div>
           <h6 class="mb-1"><i class="bi bi-bank"></i> Rekonsiliasi Penerimaan per Bank (EDC)</h6>
-          <p class="mb-0">Menampilkan Kas Tunai dan 3 Bank dengan saldo tertinggi. Gunakan pencarian untuk bank lainnya.</p>
+          <p class="mb-0">Menampilkan Kas Tunai serta Bank. Gunakan pencarian untuk bank lainnya.</p>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2">
+        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
           <!-- Live Search Input -->
-          <div class="input-group input-group-sm" style="width: 220px;">
+          <div class="input-group input-group-sm flex-grow-1 flex-md-grow-0" style="min-width: 180px; max-width: 100%;">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" id="bank-search-input" class="form-control" placeholder="Cari nama / kode bank...">
           </div>
           <!-- Quick Filter Pills -->
-          <div class="btn-group btn-group-sm" role="group">
+          <div class="btn-group btn-group-sm flex-wrap flex-sm-nowrap w-100 w-sm-auto" role="group">
             <button type="button" class="btn btn-dark active" id="btn-filter-top3">Top 3 Bank</button>
             <button type="button" class="btn btn-outline-secondary" id="btn-filter-all">Semua Bank</button>
             <button type="button" class="btn btn-outline-secondary" id="btn-filter-active">Ada Transaksi</button>
@@ -154,7 +152,7 @@
 
       <div class="row g-2" id="bank-cards-grid">
         <!-- Card Tunai / Cash (Selalu tampil di awal) -->
-        <div class="col-lg-3 col-md-4 col-sm-6 bank-item" data-name="tunai cash" data-code="cash" data-top3="1" data-has-tx="1">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 bank-item" data-name="tunai cash" data-code="cash" data-top3="1" data-has-tx="1">
           <div class="bank-card-item d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-between align-items-center mb-1">
@@ -175,7 +173,7 @@
           $isTop3 = !empty($bData['is_top3']);
           $hasTx  = (float)($bData['total'] ?? 0) > 0;
         ?>
-          <div class="col-lg-3 col-md-4 col-sm-6 bank-item <?= $isTop3 ? '' : 'd-none' ?>" 
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 bank-item <?= $isTop3 ? '' : 'd-none' ?>" 
                data-name="<?= esc(strtolower($bData['name'])) ?>" 
                data-code="<?= esc(strtolower($bData['code'])) ?>" 
                data-top3="<?= $isTop3 ? '1' : '0' ?>" 
@@ -220,7 +218,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover datatable mb-0 align-middle">
+            <table class="table table-hover datatable mb-0 align-middle" style="min-width: 950px;">
               <thead>
                 <tr>
                   <th style="width: 4%">No</th>

@@ -10,71 +10,69 @@
     </div>
 
     <!-- Filter & Export Card -->
-    <div class="filter-export card border-0 shadow-sm bg-white mb-3">
-      <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/laporan/pengunjung') ?>" id="form-filter">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Tanggal Awal</label>
-              <input type="date" name="start" id="filter-start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Tanggal Akhir</label>
-              <input type="date" name="end" id="filter-end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Kategori Asal</label>
-              <select name="origin_type" class="form-select form-select-sm">
-                <option value="">Semua Asal</option>
-                <option value="domestic" <?= ($filters['origin_type'] ?? '') === 'domestic' ? 'selected' : '' ?>>Domestik</option>
-                <option value="international" <?= ($filters['origin_type'] ?? '') === 'international' ? 'selected' : '' ?>>Mancanegara</option>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Tipe Tiket</label>
-              <select name="category" class="form-select form-select-sm">
-                <option value="">Semua Tipe</option>
-                <option value="individual" <?= ($filters['category'] ?? '') === 'individual' ? 'selected' : '' ?>>Individual</option>
-                <option value="group" <?= ($filters['category'] ?? '') === 'group' ? 'selected' : '' ?>>Group / Rombongan</option>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <label class="form-label filter-label">Status Tiket</label>
-              <select name="status" class="form-select form-select-sm">
-                <option value="">Semua Status</option>
-                <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>>Aktif (Belum Hadir)</option>
-                <option value="used" <?= ($filters['status'] ?? '') === 'used' ? 'selected' : '' ?>>Terpakai (Hadir)</option>
-                <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
-              </select>
-            </div>
-            <div class="col-md-2 col-sm-12 d-flex gap-1">
-              <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
-                <i class="bi bi-filter"></i> Filter
-              </button>
-              <a href="<?= base_url('admin/laporan/pengunjung') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
-                <i class="bi bi-arrow-counterclockwise"></i>
-              </a>
-              <?php
-                $exportQuery = http_build_query(array_filter([
-                  'start'       => date('d-m-Y', strtotime($startDate)),
-                  'end'         => date('d-m-Y', strtotime($endDate)),
-                  'origin_type' => $filters['origin_type'] ?? '',
-                  'category'    => $filters['category'] ?? '',
-                  'status'      => $filters['status'] ?? '',
-                ]));
-              ?>
-              <a href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-                <i class="bi bi-file-earmark-pdf"></i> PDF
-              </a>
-            </div>
+    <div class="filter-export table-card mb-3 p-3">
+      <form method="get" action="<?= base_url('admin/laporan/pengunjung') ?>" id="form-filter">
+        <div class="row g-2 align-items-end">
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Tanggal Awal</label>
+            <input type="date" name="start" id="filter-start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
           </div>
-        </form>
-      </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Tanggal Akhir</label>
+            <input type="date" name="end" id="filter-end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Kategori Asal</label>
+            <select name="origin_type" class="form-select form-select-sm bg-white">
+              <option value="">Semua Asal</option>
+              <option value="domestic" <?= ($filters['origin_type'] ?? '') === 'domestic' ? 'selected' : '' ?>>Domestik</option>
+              <option value="international" <?= ($filters['origin_type'] ?? '') === 'international' ? 'selected' : '' ?>>Mancanegara</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Tipe Tiket</label>
+            <select name="category" class="form-select form-select-sm bg-white">
+              <option value="">Semua Tipe</option>
+              <option value="individual" <?= ($filters['category'] ?? '') === 'individual' ? 'selected' : '' ?>>Individual</option>
+              <option value="group" <?= ($filters['category'] ?? '') === 'group' ? 'selected' : '' ?>>Group / Rombongan</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <label class="form-label filter-label">Status Tiket</label>
+            <select name="status" class="form-select form-select-sm bg-white">
+              <option value="">Semua Status</option>
+              <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>>Aktif (Belum Hadir)</option>
+              <option value="used" <?= ($filters['status'] ?? '') === 'used' ? 'selected' : '' ?>>Terpakai (Hadir)</option>
+              <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4 col-lg-2 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
+              <i class="bi bi-filter"></i> Filter
+            </button>
+            <a href="<?= base_url('admin/laporan/pengunjung') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+            <?php
+              $exportQuery = http_build_query(array_filter([
+                'start'       => date('d-m-Y', strtotime($startDate)),
+                'end'         => date('d-m-Y', strtotime($endDate)),
+                'origin_type' => $filters['origin_type'] ?? '',
+                'category'    => $filters['category'] ?? '',
+                'status'      => $filters['status'] ?? '',
+              ]));
+            ?>
+            <a href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
+              <i class="bi bi-file-earmark-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- Stat Cards KPI -->
     <div class="row g-3 mb-3">
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Total Wisatawan</h2>
@@ -87,7 +85,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Wisatawan Domestik</h2>
@@ -100,7 +98,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Wisatawan Mancanegara</h2>
@@ -113,7 +111,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Hadir di Gate</h2>
@@ -138,7 +136,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover datatable mb-0 align-middle">
+            <table class="table table-hover datatable mb-0 align-middle" style="min-width: 900px;">
               <thead>
                 <tr>
                   <th style="width: 4%">No</th>

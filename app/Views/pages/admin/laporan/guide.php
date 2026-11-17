@@ -10,55 +10,53 @@
     </div>
 
     <!-- Filter & Export Card -->
-    <div class="filter-export card border-0 shadow-sm bg-white mb-3">
-      <div class="card-body p-3">
-        <form method="get" action="<?= base_url('admin/laporan/guide') ?>" id="form-filter">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-3 col-sm-6">
-              <label class="form-label filter-label">Tanggal Awal</label>
-              <input type="date" name="start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <label class="form-label filter-label">Tanggal Akhir</label>
-              <input type="date" name="end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <label class="form-label filter-label">Pilih Pemandu (Guide)</label>
-              <select name="guide_id" class="form-select form-select-sm">
-                <option value="">Semua Guide</option>
-                <?php foreach (($guidesList ?? []) as $g): ?>
-                  <option value="<?= esc($g['id']) ?>" <?= ((string)$selectedGuideId === (string)$g['id']) ? 'selected' : '' ?>>
-                    <?= esc($g['code'] . ' - ' . $g['name']) ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-            <div class="col-md-3 col-sm-12 d-flex gap-1">
-              <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
-                <i class="bi bi-filter"></i> Filter
-              </button>
-              <a href="<?= base_url('admin/laporan/guide') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
-                <i class="bi bi-arrow-counterclockwise"></i>
-              </a>
-              <?php
-                $exportQuery = http_build_query(array_filter([
-                  'start'    => date('d-m-Y', strtotime($startDate)),
-                  'end'      => date('d-m-Y', strtotime($endDate)),
-                  'guide_id' => $selectedGuideId,
-                ]));
-              ?>
-              <a href="<?= base_url('admin/laporan/guide/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-                <i class="bi bi-file-earmark-pdf"></i> PDF
-              </a>
-            </div>
+    <div class="filter-export table-card mb-3 p-3">
+      <form method="get" action="<?= base_url('admin/laporan/guide') ?>" id="form-filter">
+        <div class="row g-2 align-items-end">
+          <div class="col-6 col-sm-6 col-lg-3">
+            <label class="form-label filter-label">Tanggal Awal</label>
+            <input type="date" name="start" class="form-control form-control-sm" value="<?= esc($startDate) ?>">
           </div>
-        </form>
-      </div>
+          <div class="col-6 col-sm-6 col-lg-3">
+            <label class="form-label filter-label">Tanggal Akhir</label>
+            <input type="date" name="end" class="form-control form-control-sm" value="<?= esc($endDate) ?>">
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <label class="form-label filter-label">Pilih Pemandu (Guide)</label>
+            <select name="guide_id" class="form-select form-select-sm">
+              <option value="">Semua Guide</option>
+              <?php foreach (($guidesList ?? []) as $g): ?>
+                <option value="<?= esc($g['id']) ?>" <?= ((string)$selectedGuideId === (string)$g['id']) ? 'selected' : '' ?>>
+                  <?= esc($g['code'] . ' - ' . $g['name']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
+              <i class="bi bi-filter"></i> Filter
+            </button>
+            <a href="<?= base_url('admin/laporan/guide') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+            <?php
+              $exportQuery = http_build_query(array_filter([
+                'start'    => date('d-m-Y', strtotime($startDate)),
+                'end'      => date('d-m-Y', strtotime($endDate)),
+                'guide_id' => $selectedGuideId,
+              ]));
+            ?>
+            <a href="<?= base_url('admin/laporan/guide/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
+              <i class="bi bi-file-earmark-pdf"></i> PDF
+            </a>
+          </div>
+        </div>
+      </form>
     </div>
 
     <!-- Stat Cards KPI -->
     <div class="row g-3 mb-3">
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Pemandu Bertugas</h2>
@@ -71,7 +69,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Total Rombongan / Trip</h2>
@@ -84,7 +82,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Wisatawan Didampingi</h2>
@@ -97,7 +95,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Total Komisi Guide</h2>
@@ -122,7 +120,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover datatable mb-0 align-middle">
+            <table class="table table-hover datatable mb-0 align-middle" style="min-width: 850px;">
               <thead>
                 <tr>
                   <th style="width: 4%">No</th>
