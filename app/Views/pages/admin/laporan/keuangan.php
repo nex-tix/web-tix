@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-2 col-sm-6">
               <label class="form-label filter-label">Metode Bayar</label>
-              <select name="payment_method" class="form-select form-select-sm">
+              <select name="payment_method" class="form-select form-select-sm bg-white">
                 <option value="">Semua Metode</option>
                 <option value="cash" <?= ($filters['payment_method'] ?? '') === 'cash' ? 'selected' : '' ?>>Tunai (Cash)</option>
                 <option value="debit" <?= ($filters['payment_method'] ?? '') === 'debit' ? 'selected' : '' ?>>Debit / EDC</option>
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-2 col-sm-6">
               <label class="form-label filter-label">Pilih Bank</label>
-              <select name="bank_id" class="form-select form-select-sm">
+              <select name="bank_id" class="form-select form-select-sm bg-white">
                 <option value="">Semua Bank</option>
                 <?php foreach (($banksList ?? []) as $b): ?>
                   <option value="<?= esc($b['id']) ?>" <?= ((string)($filters['bank_id'] ?? '') === (string)$b['id']) ? 'selected' : '' ?>>
@@ -43,7 +43,7 @@
             </div>
             <div class="col-md-2 col-sm-6">
               <label class="form-label filter-label">Status Transaksi</label>
-              <select name="status" class="form-select form-select-sm">
+              <select name="status" class="form-select form-select-sm bg-white">
                 <option value="completed" <?= ($filters['status'] ?? '') === 'completed' ? 'selected' : '' ?>>Sukses / Completed</option>
                 <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Batal / Void</option>
                 <option value="">Semua Status</option>
@@ -130,45 +130,82 @@
       </div>
     </div>
 
-    <!-- Rekonsiliasi Settlement per Bank -->
-    <div class="card border-0 shadow-sm bg-white mb-3">
-      <div class="card-header py-2 d-flex justify-content-between align-items-center">
-        <h6 class="mb-0 fw-semibold"><i class="bi bi-bank"></i> Rekonsiliasi Penerimaan per Bank (EDC)</h6>
-        <span class="text-muted small">Periode: <?= date('d M Y', strtotime($startDate)) ?> - <?= date('d M Y', strtotime($endDate)) ?></span>
+    <!-- Rekonsiliasi Settlement per Bank (EDC) -->
+    <div class="table-card mb-3">
+      <div class="card-header-custom d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+          <h6 class="mb-1"><i class="bi bi-bank"></i> Rekonsiliasi Penerimaan per Bank (EDC)</h6>
+          <p class="mb-0">Menampilkan Kas Tunai dan 3 Bank dengan saldo tertinggi. Gunakan pencarian untuk bank lainnya.</p>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <!-- Live Search Input -->
+          <div class="input-group input-group-sm" style="width: 220px;">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="bank-search-input" class="form-control" placeholder="Cari nama / kode bank...">
+          </div>
+          <!-- Quick Filter Pills -->
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-dark active" id="btn-filter-top3">Top 3 Bank</button>
+            <button type="button" class="btn btn-outline-secondary" id="btn-filter-all">Semua Bank</button>
+            <button type="button" class="btn btn-outline-secondary" id="btn-filter-active">Ada Transaksi</button>
+          </div>
+        </div>
       </div>
-      <div class="card-body p-3">
-        <div class="row g-2">
-          <!-- Card Tunai -->
-          <div class="col-md-3 col-sm-6">
-            <div class="p-2 border rounded-2 bg-white">
+
+      <div class="row g-2" id="bank-cards-grid">
+        <!-- Card Tunai / Cash (Selalu tampil di awal) -->
+        <div class="col-lg-3 col-md-4 col-sm-6 bank-item" data-name="tunai cash" data-code="cash" data-top3="1" data-has-tx="1">
+          <div class="bank-card-item d-flex flex-column justify-content-between">
+            <div>
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="badge bg-secondary">TUNAI / CASH</span>
-                <span class="text-muted small"><?= count(array_filter($transactions, fn($t) => $t['payment_method'] === 'cash')) ?> tx</span>
+                <span class="bank-meta"><?= count(array_filter($transactions, fn($t) => $t['payment_method'] === 'cash')) ?> tx</span>
               </div>
-              <div class="fw-bold fs-6">Rp <?= number_format($kpi['total_cash'], 0, ',', '.') ?></div>
+              <div class="bank-name">Penerimaan Kasir</div>
+              <div class="bank-total mt-1">Rp <?= number_format($kpi['total_cash'], 0, ',', '.') ?></div>
+            </div>
+            <div class="mt-2 pt-2 border-top border-secondary-subtle">
+              <span class="bank-meta"><i class="bi bi-cash-stack"></i> Saldo Kasir Fisik</span>
             </div>
           </div>
-          <!-- Card per Bank -->
-          <?php foreach (($bankBreakdown ?? []) as $bId => $bData): ?>
-            <div class="col-md-3 col-sm-6">
-              <div class="p-2 border rounded-2 bg-light d-flex flex-column justify-content-between" style="height: 100%;">
-                <div>
-                  <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="badge bg-primary"><?= esc($bData['code']) ?></span>
-                    <span class="text-muted small"><?= (int)$bData['count'] ?> tx</span>
-                  </div>
-                  <div class="small fw-semibold text-truncate"><?= esc($bData['name']) ?></div>
-                  <div class="fw-bold fs-6 text-dark mt-1">Rp <?= number_format((float)$bData['total'], 0, ',', '.') ?></div>
+        </div>
+
+        <!-- Loop Cards per Bank -->
+        <?php foreach (($bankBreakdown ?? []) as $bId => $bData): 
+          $isTop3 = !empty($bData['is_top3']);
+          $hasTx  = (float)($bData['total'] ?? 0) > 0;
+        ?>
+          <div class="col-lg-3 col-md-4 col-sm-6 bank-item <?= $isTop3 ? '' : 'd-none' ?>" 
+               data-name="<?= esc(strtolower($bData['name'])) ?>" 
+               data-code="<?= esc(strtolower($bData['code'])) ?>" 
+               data-top3="<?= $isTop3 ? '1' : '0' ?>" 
+               data-has-tx="<?= $hasTx ? '1' : '0' ?>">
+            <div class="bank-card-item d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="badge bg-primary"><?= esc($bData['code']) ?></span>
+                  <?php if ($isTop3): ?>
+                    <span class="badge bg-warning text-dark py-0" style="font-size: 0.65rem;">Top <?= $bData['rank'] ?></span>
+                  <?php endif; ?>
+                  <span class="bank-meta"><?= (int)$bData['count'] ?> tx</span>
                 </div>
-                <div class="mt-2 pt-1 border-top">
-                  <a href="<?= base_url('admin/laporan/keuangan/export-pdf?start=' . date('d-m-Y', strtotime($startDate)) . '&end=' . date('d-m-Y', strtotime($endDate)) . '&bank_id=' . $bId) ?>" 
-                     class="btn btn-outline-primary btn-sm py-0 px-2 w-100" style="font-size: 0.75rem;" title="Cetak Rekonsiliasi Bank Ini">
-                    <i class="bi bi-printer"></i> Cetak PDF Bank
-                  </a>
-                </div>
+                <div class="bank-name text-truncate" title="<?= esc($bData['name']) ?>"><?= esc($bData['name']) ?></div>
+                <div class="bank-total mt-1">Rp <?= number_format((float)$bData['total'], 0, ',', '.') ?></div>
+              </div>
+              <div class="mt-2 pt-2 border-top border-secondary-subtle">
+                <a href="<?= base_url('admin/laporan/keuangan/export-pdf?start=' . date('d-m-Y', strtotime($startDate)) . '&end=' . date('d-m-Y', strtotime($endDate)) . '&bank_id=' . $bId) ?>" 
+                   class="btn btn-outline-secondary btn-sm py-0 px-2 w-100" style="font-size: 0.75rem;" title="Cetak Rekonsiliasi Bank Ini">
+                  <i class="bi bi-printer"></i> Cetak PDF Bank
+                </a>
               </div>
             </div>
-          <?php endforeach; ?>
+          </div>
+        <?php endforeach; ?>
+
+        <!-- Message if search yields no results -->
+        <div class="col-12 d-none text-center py-3 text-muted" id="bank-no-results">
+          <i class="bi bi-search fs-4 d-block mb-1 opacity-50"></i>
+          Tidak ada bank yang sesuai dengan pencarian.
         </div>
       </div>
     </div>
@@ -226,7 +263,7 @@
                       </td>
                       <td>
                         <?php if (!empty($tx['bank_name'])): ?>
-                          <span class="badge bg-info text-dark"><?= esc($tx['bank_name']) ?></span>
+                          <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= esc($tx['bank_name']) ?></span>
                         <?php else: ?>
                           <span class="text-muted">-</span>
                         <?php endif; ?>
@@ -249,4 +286,101 @@
 
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('bank-search-input');
+    const btnTop3     = document.getElementById('btn-filter-top3');
+    const btnAll      = document.getElementById('btn-filter-all');
+    const btnActive   = document.getElementById('btn-filter-active');
+    const bankItems   = document.querySelectorAll('.bank-item');
+    const noResults   = document.getElementById('bank-no-results');
+
+    let currentFilter = 'top3'; // 'top3' | 'all' | 'active'
+
+    function applyBankFilter() {
+      const q = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      bankItems.forEach(item => {
+        const name  = item.getAttribute('data-name') || '';
+        const code  = item.getAttribute('data-code') || '';
+        const top3  = item.getAttribute('data-top3') === '1';
+        const hasTx = item.getAttribute('data-has-tx') === '1';
+
+        const matchSearch = (q === '') || name.includes(q) || code.includes(q);
+
+        let matchPill = true;
+        if (q === '') {
+          if (currentFilter === 'top3') {
+            matchPill = top3;
+          } else if (currentFilter === 'active') {
+            matchPill = hasTx;
+          } else if (currentFilter === 'all') {
+            matchPill = true;
+          }
+        }
+
+        if (matchSearch && matchPill) {
+          item.classList.remove('d-none');
+          visibleCount++;
+        } else {
+          item.classList.add('d-none');
+        }
+      });
+
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove('d-none');
+        } else {
+          noResults.classList.add('d-none');
+        }
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', applyBankFilter);
+    }
+
+    function setActiveBtn(activeBtn) {
+      [btnTop3, btnAll, btnActive].forEach(btn => {
+        if (!btn) return;
+        if (btn === activeBtn) {
+          btn.classList.add('btn-dark', 'active');
+          btn.classList.remove('btn-outline-secondary');
+        } else {
+          btn.classList.remove('btn-dark', 'active');
+          btn.classList.add('btn-outline-secondary');
+        }
+      });
+    }
+
+    if (btnTop3) {
+      btnTop3.addEventListener('click', function() {
+        currentFilter = 'top3';
+        setActiveBtn(btnTop3);
+        searchInput.value = '';
+        applyBankFilter();
+      });
+    }
+
+    if (btnAll) {
+      btnAll.addEventListener('click', function() {
+        currentFilter = 'all';
+        setActiveBtn(btnAll);
+        searchInput.value = '';
+        applyBankFilter();
+      });
+    }
+
+    if (btnActive) {
+      btnActive.addEventListener('click', function() {
+        currentFilter = 'active';
+        setActiveBtn(btnActive);
+        searchInput.value = '';
+        applyBankFilter();
+      });
+    }
+  });
+</script>
 <?= $this->endSection() ?>

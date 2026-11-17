@@ -1943,3 +1943,52 @@
       [data-theme=dark] .modal .form-select option:disabled {
         color: #6B7280;
       }
+
+      /* ============================================================
+         Laporan Keuangan: Bank Settlement Cards (Light & Dark Mode)
+         ============================================================ */
+      .bank-card-item {
+        background-color: #f8f9fa;
+        border: 1px solid var(--card-border, #e9ecef);
+        border-radius: 8px;
+        padding: 0.85rem;
+        transition: all 0.2s ease;
+        height: 100%;
+      }
+      .bank-card-item:hover {
+        border-color: #0d6efd;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .bank-card-item .bank-name {
+        color: #2c3136;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .bank-card-item .bank-total {
+        color: #1a1d20;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      .bank-card-item .bank-meta {
+        color: var(--text-muted, #6c757d);
+        font-size: 0.75rem;
+      }
+
+      [data-theme=dark] .bank-card-item {
+        background-color: #1A1D20 !important;
+        border-color: #2E3339 !important;
+      }
+      [data-theme=dark] .bank-card-item:hover {
+        border-color: #f1c40f !important;
+        background-color: #1E2226 !important;
+      }
+      [data-theme=dark] .bank-card-item .bank-name {
+        color: #E8EAED !important;
+      }
+      [data-theme=dark] .bank-card-item .bank-total {
+        color: #ffffff !important;
+      }
+      [data-theme=dark] .bank-card-item .bank-meta {
+        color: #9AA0A6 !important;
+      }
+

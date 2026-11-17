@@ -958,6 +958,20 @@ class ReportController extends BaseController
             }
         }
 
+        // Urutkan bankBreakdown berdasarkan saldo penerimaan tertinggi
+        uasort($bankBreakdown, function ($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
+
+        // Tandai Top 3 Bank dengan saldo tertinggi
+        $rank = 0;
+        foreach ($bankBreakdown as $bId => &$bData) {
+            $rank++;
+            $bData['is_top3'] = ($rank <= 3);
+            $bData['rank']    = $rank;
+        }
+        unset($bData);
+
         $data = [
             'transactions'     => $transactions,
             'banksList'        => $banksList,
