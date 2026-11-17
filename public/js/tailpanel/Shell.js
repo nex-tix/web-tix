@@ -196,7 +196,10 @@ function renderNavLink(item, activeKey) {
 }
 
 function renderNavGroup(item, activeKey) {
-  const open = item.children.some((c) => c.key === activeKey) ? " is-open" : "";
+  // Grup induk ikut aktif (highlight kuning) bila ada anaknya yang aktif
+  const hasActiveChild = item.children.some((c) => c.key === activeKey);
+  const open = hasActiveChild ? " is-open" : "";
+  const active = hasActiveChild ? " is-active" : "";
   const submenu = item.children
     .map((c) => {
       const active = c.key === activeKey ? ' class="is-active"' : "";
@@ -205,7 +208,7 @@ function renderNavGroup(item, activeKey) {
     .join("");
   return `
     <div class="nav-item-group${open}" data-nav-group>
-      <a class="nav-link" href="javascript:void(0)" data-nav-toggle>
+      <a class="nav-link${active}" href="javascript:void(0)" data-nav-toggle>
         <svg viewBox="0 0 24 24">${item.icon}</svg>
         <span>${item.text}</span>
         ${CHEV}

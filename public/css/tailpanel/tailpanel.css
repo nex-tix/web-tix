@@ -316,6 +316,10 @@ body {
   background: var(--bg-hover);
   color: var(--t-sidebar);
 }
+/* Fokus (mis. klik grup Laporan) jangan diambil alih rule :focus AdminLTE — tetap warna sidebar */
+.nav-link:focus {
+  color: var(--t-sidebar);
+}
 
 .nav-link.is-active {
   color: var(--bg-sidebar);
