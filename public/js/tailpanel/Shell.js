@@ -79,8 +79,29 @@ export const NAV = [
       {
         key: "laporan",
         text: "Laporan",
-        href: BASE + "admin/laporan",
         icon: 'xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-50v-3H2v3z"/>',
+        children: [
+          {
+            key: "laporan-global",
+            text: "Laporan Global",
+            href: BASE + "admin/laporan",
+          },
+          {
+            key: "laporan-pengunjung",
+            text: "Laporan Data Pengunjung",
+            href: BASE + "admin/laporan/pengunjung",
+          },
+          {
+            key: "laporan-guide",
+            text: "Laporan Pembayaran Guide",
+            href: BASE + "admin/laporan/guide",
+          },
+          {
+            key: "laporan-keuangan",
+            text: "Laporan Keuangan",
+            href: BASE + "admin/laporan/keuangan",
+          },
+        ],
       },
       {
         key: "data-tiket",
@@ -177,7 +198,10 @@ function renderNavLink(item, activeKey) {
 function renderNavGroup(item, activeKey) {
   const open = item.children.some((c) => c.key === activeKey) ? " is-open" : "";
   const submenu = item.children
-    .map((c) => `<a href="${c.href}">${c.text}</a>`)
+    .map((c) => {
+      const active = c.key === activeKey ? ' class="is-active"' : "";
+      return `<a${active} href="${c.href}">${c.text}</a>`;
+    })
     .join("");
   return `
     <div class="nav-item-group${open}" data-nav-group>

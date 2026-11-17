@@ -14,14 +14,14 @@
         <div class="d-flex align-items-end gap-3" style="flex-wrap:nowrap;">
           <div>
             <label class="form-label filter-label">Tanggal Awal</label>
-            <input type="date" id="filter-tanggal-awal" class="form-control" style="min-width: 170px;">
+            <input type="date" id="filter-tanggal-awal" class="form-control" value="<?= date('Y-m-01') ?>" style="min-width: 170px;">
           </div>
           <div>
             <label class="form-label filter-label">Tanggal Akhir</label>
-            <input type="date" id="filter-tanggal-akhir" class="form-control" style="min-width: 170px;">
+            <input type="date" id="filter-tanggal-akhir" class="form-control" value="<?= date('Y-m-d') ?>" style="min-width: 170px;">
           </div>
           <div>
-            <a id="btn-export-pdf" class="btn btn-transaksi" href="#">
+            <a id="btn-export-pdf" class="btn btn-transaksi" href="<?= base_url('admin/laporan/export-pdf?start=' . date('d-m-Y', strtotime('first day of this month')) . '&end=' . date('d-m-Y')) ?>">
               <i class="bi bi-file-earmark-pdf"></i> Export PDF
             </a>
           </div>
@@ -205,7 +205,7 @@
         <div class="table-card">
           <div class="app-content-header">
             <div class="page-title">
-              <h4 style="color: #2c3136;" class="sub-text">Audit Scan Tiket</h4>
+              <h4 class="sub-text">Audit Scan Tiket</h4>
             </div>
           </div>
           <div class="table-responsive">
@@ -220,7 +220,7 @@
                   <th>Status Scan</th>
                 </tr>
               </thead>
-              <tbody class="table-light">
+              <tbody>
                 <?php foreach ($checkin_histories as $ch) : ?>
                   <tr>
                     <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
@@ -231,14 +231,16 @@
                     <td>
                       <?php if ($ch['result'] == 'VALID') : ?>
                         Diterima
-                      <?Php elseif ($ch['result'] == 'ALREADY_USED') : ?>
+                      <?php elseif ($ch['result'] == 'ALREADY_USED') : ?>
                         Tiket telah terpakai
-                      <?Php elseif ($ch['result'] == 'EXPIRED') : ?>
-                        Tiket telah kadaluarwa
-                      <?Php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
+                      <?php elseif ($ch['result'] == 'EXPIRED') : ?>
+                        Tiket telah kadaluarsa
+                      <?php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
                         Tiket belum bisa digunakan
-                      <?Php elseif ($ch['result'] == 'CANCELLED') : ?>
+                      <?php elseif ($ch['result'] == 'CANCELLED') : ?>
                         Tiket telah dibatalkan
+                      <?php else : ?>
+                        <?= esc($ch['result']) ?>
                       <?php endif; ?>
                     </td>
                   </tr>
@@ -248,6 +250,7 @@
             </table>
           </div>
         </div>
+      </div>
     </section>
 
     <script>
@@ -270,7 +273,7 @@
           }
         }
 
-        function showAlert(message) {
+        function showAlert(message) { 
           hideAlert();
           alertEl = document.createElement('div');
           alertEl.className = 'alert alert-warning alert-dismissible fade show mt-3';
@@ -284,25 +287,17 @@
         function updateExportUrl() {
           hideAlert();
 
-          if (!startInput.value || !endInput.value) {
-            exportBtn.href = '#';
-            return;
-          }
+          const startVal = startInput.value ? formatDateRegional(startInput.value) : '<?= date('d-m-Y', strtotime('first day of this month')) ?>';
+          const endVal = endInput.value ? formatDateRegional(endInput.value) : '<?= date('d-m-Y') ?>';
 
-          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' +
-            formatDateRegional(startInput.value) + '&end=' + formatDateRegional(endInput.value);
+          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' + startVal + '&end=' + endVal;
         }
 
         startInput.addEventListener('change', updateExportUrl);
         endInput.addEventListener('change', updateExportUrl);
 
         exportBtn.addEventListener('click', function(e) {
-          if (!startInput.value || !endInput.value) {
-            e.preventDefault();
-            showAlert('Silahkan tentukan tanggal dahulu');
-            return;
-          }
-          if (endInput.value < startInput.value) {
+          if (startInput.value && endInput.value && endInput.value < startInput.value) {
             e.preventDefault();
             showAlert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
           }
@@ -312,6 +307,5 @@
       });
     </script>
   </div>
-</div>
 </div>
 <?= $this->endSection() ?>
