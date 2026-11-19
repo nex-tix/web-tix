@@ -306,6 +306,16 @@ body {
   stroke-linejoin: round;
   padding: 4px;
 }
+/* Ikon Bootstrap Icons — ukuran & kotak disamakan dengan .nav-link > svg */
+.nav-link > i {
+  width: 30px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
 
 .nav-link > span:not(.nav-badge) {
   min-width: 0;
@@ -358,6 +368,7 @@ body {
 .nav-item-group .nav-link .chev {
   width: 11px;
   height: 11px;
+  font-size: 11px; /* chev kini <i class="bi"> — ukuran glyph ikut font */
   margin-left: auto;
   transition: transform 200ms ease;
 }
@@ -462,6 +473,7 @@ body {
 }
 
 .workspace-chev {
+  font-size: 14px; /* kini <i class="bi"> — ukuran glyph ikut font */
   margin-left: auto;
   color: var(--t-light);
 }
@@ -6330,6 +6342,10 @@ body.has-palette-open .palette-backdrop {
 .palette-result-icon svg {
   width: 14px;
   height: 14px;
+}
+/* Ikon sidebar kini <i class="bi"> — samakan ukuran glyph dengan svg di atas */
+.palette-result-icon .bi {
+  font-size: 14px;
 }
 
 .palette-result-label {

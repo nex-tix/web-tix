@@ -104,6 +104,16 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+/* Ikon Bootstrap Icons — ukuran & kotak disamakan dengan .nav-link > svg */
+.nav-link > i {
+  width: 30px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
 .nav-link > span:not(.nav-badge) {
   min-width: 0;
   flex: 1;
@@ -150,6 +160,7 @@
 .nav-item-group .nav-link .chev {
   width: 11px;
   height: 11px;
+  font-size: 11px; /* chev kini <i class="bi"> — ukuran glyph ikut font */
   margin-left: auto;
   transition: transform 200ms ease;
 }
@@ -243,6 +254,7 @@
   color: var(--t-light);
 }
 .workspace-chev {
+  font-size: 14px; /* kini <i class="bi"> — ukuran glyph ikut font */
   margin-left: auto;
   color: var(--t-light);
 }

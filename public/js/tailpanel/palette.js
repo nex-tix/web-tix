@@ -57,7 +57,13 @@ function buildItems() {
     section.querySelectorAll(':scope > .nav-link, :scope > .nav-item-group').forEach((el) => {
       const isGroup = el.classList.contains('nav-item-group');
       const trigger = isGroup ? el.querySelector('[data-nav-toggle]') : el;
-      const icon = trigger?.querySelector('svg')?.innerHTML || '';
+      // Ikon sidebar kini <i class="bi">; string path lama (action statis) tetap didukung
+      const iconEl = trigger?.querySelector('svg, i');
+      const icon = !iconEl
+        ? ''
+        : iconEl.tagName.toLowerCase() === 'i'
+          ? iconEl.outerHTML
+          : iconEl.innerHTML;
       const text = (trigger?.querySelector('span:not(.nav-badge)')?.textContent || '').trim();
 
       if (isGroup) {
@@ -132,12 +138,21 @@ function score(item, query) {
   return 0;
 }
 
+function iconMarkup(item) {
+  // Item sidebar membawa <i class="bi"> (langsung pakai); action statis membawa
+  // string path mentah yang harus dibungkus <svg>.
+  const ico = (item.icon || '').trim();
+  return ico.startsWith('<i')
+    ? ico
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">${ico}</svg>`;
+}
+
 function renderResults() {
   resultsEl.innerHTML = filtered.length === 0
     ? '<div class="palette-empty">No results</div>'
     : filtered.map((item, i) => `
       <div class="palette-result${i === cursor ? ' is-selected' : ''}" role="option" data-index="${i}" aria-selected="${i === cursor}">
-        <span class="palette-result-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">${item.icon || ''}</svg></span>
+        <span class="palette-result-icon">${iconMarkup(item)}</span>
         <span class="palette-result-label">${item.label}</span>
         <span class="palette-result-section">${item.section}</span>
       </div>

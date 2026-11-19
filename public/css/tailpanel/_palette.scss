@@ -117,6 +117,8 @@ body.has-palette-open .palette-backdrop {
   color: var(--primary);
 }
 .palette-result-icon svg { width: 14px; height: 14px; }
+/* Ikon sidebar kini <i class="bi"> — samakan ukuran glyph dengan svg di atas */
+.palette-result-icon .bi { font-size: 14px; }
 
 .palette-result-label {
   font-size: 13.5px;
