@@ -168,10 +168,7 @@ export const NAV = [
 ];
 
 const BRAND_LOGO = `
-    <img
-        src="/web_tiket/img/logo_nextix.png"
-        alt="Nextix"
-    >
+    <img src="${BASE}img/logo_nextix.png" alt="Nextix">
 `;
 const CHEV =
   '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>';
