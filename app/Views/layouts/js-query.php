@@ -37,6 +37,11 @@
 <script src="<?= base_url('js/report-chart.js') ?>"></script>
 <script src="<?= base_url('js/donut-report-chart.js') ?>"></script>
 <script src="<?= base_url('js/laporan-audit-table.js') ?>"></script>
+<script>
+    window.APP_CONFIG = {
+        baseUrl: "<?= base_url() ?>"
+    };
+</script>
 
 <!-- TailPanel -->
  <script type="module" src="<?= base_url('js/tailpanel/index.js') ?>"></script>
