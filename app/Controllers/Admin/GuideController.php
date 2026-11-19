@@ -87,6 +87,32 @@ class GuideController extends BaseController
             'languages' => $this->parseLanguages((string) $this->request->getPost('languages')),
         ];
 
+        // Cabang AJAX: modal "Tambah Guide" di halaman POS butuh respons JSON, bukan redirect
+        if ($this->request->isAJAX()) {
+            if (!$this->validateData($inputData, $rules, $messages)) {
+                return $this->response->setJSON([
+                    'success'   => false,
+                    'errors'    => $this->validator->getErrors(),
+                    'csrf_hash' => csrf_hash(),
+                ])->setStatusCode(422);
+            }
+
+            $guideId = $this->guideModel->insert($inputData);
+            if ($guideId) {
+                return $this->response->setJSON([
+                    'success'   => true,
+                    'message'   => 'Guide berhasil ditambahkan.',
+                    'data'      => $this->guideModel->find($guideId),
+                    'csrf_hash' => csrf_hash(),
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal menambahkan guide.',
+            ])->setStatusCode(500);
+        }
+
         if (!$this->validateData($inputData, $rules, $messages)) {
             return redirect()->to('/admin/guides')
                 ->withInput()
