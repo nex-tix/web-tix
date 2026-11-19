@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-sm-6 col-lg-3">
             <label class="form-label filter-label">Pilih Pemandu (Guide)</label>
-            <select name="guide_id" class="form-select form-select-sm">
+            <select name="guide_id" class="form-select form-select-sm bg-white">
               <option value="">Semua Guide</option>
               <?php foreach (($guidesList ?? []) as $g): ?>
                 <option value="<?= esc($g['id']) ?>" <?= ((string)$selectedGuideId === (string)$g['id']) ? 'selected' : '' ?>>

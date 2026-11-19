@@ -42,41 +42,41 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+            padding-bottom: 6px;
         }
 
         .header-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #1f1f1f;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
         }
 
         .header-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #333;
-            margin: 0 0 6px 0;
+            margin: 0 0 5px 0;
         }
 
         .header-period {
-            font-size: 11px;
+            font-size: 10px;
             color: #555;
             margin: 0;
         }
 
         .header-date {
-            font-size: 9px;
+            font-size: 8.5px;
             color: #888;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         table.report-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             table-layout: fixed;
         }
 
@@ -87,18 +87,18 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
         table.report-table th {
             color: #000;
             background: #f0f0f0;
-            padding: 7px 5px;
+            padding: 4px 4px;
             text-align: center;
             font-weight: bold;
-            font-size: 9px;
+            font-size: 8.5px;
             border: 1px solid #1a1f26;
             word-wrap: break-word;
         }
 
         table.report-table td {
-            padding: 6px 5px;
+            padding: 3.5px 4px;
             border: 1px solid #333;
-            font-size: 9px;
+            font-size: 8.5px;
             color: #333;
         }
 
@@ -106,41 +106,12 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
             font-weight: bold;
             background: #f8f9fa;
             border-top: 2px solid #333;
-            padding: 8px 5px;
-        }
-
-        .summary-box {
-            margin-top: 15px;
-            border-top: 1px solid #333;
-            padding-top: 10px;
-            display: table;
-            width: 100%;
-        }
-
-        .summary-col {
-            display: table-cell;
-            width: 25%;
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 8px;
-            background: #fafafa;
-        }
-
-        .summary-val {
-            font-size: 12px;
-            font-weight: bold;
-            color: #111;
-            margin-top: 2px;
-        }
-
-        .summary-lbl {
+            padding: 4.5px 4px;
             font-size: 8.5px;
-            color: #666;
-            text-transform: uppercase;
         }
 
         .signature-section {
-            margin-top: 30px;
+            margin-top: 15px;
             display: table;
             width: 100%;
         }
@@ -149,7 +120,7 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
             display: table-cell;
             width: 50%;
             text-align: center;
-            font-size: 9.5px;
+            font-size: 9px;
         }
     </style>
 </head>
@@ -209,25 +180,6 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
             <?php endif; ?>
         </tbody>
     </table>
-
-    <div class="summary-box">
-        <div class="summary-col">
-            <div class="summary-lbl">Total Transaksi</div>
-            <div class="summary-val"><?= count($transactions) ?> transaksi</div>
-        </div>
-        <div class="summary-col">
-            <div class="summary-lbl">Total Tunai (Cash)</div>
-            <div class="summary-val">Rp <?= number_format($totalCash, 0, ',', '.') ?></div>
-        </div>
-        <div class="summary-col">
-            <div class="summary-lbl">Total Debit / EDC (Bank)</div>
-            <div class="summary-val">Rp <?= number_format($totalDebit, 0, ',', '.') ?></div>
-        </div>
-        <div class="summary-col">
-            <div class="summary-lbl">Total Penerimaan Bersih</div>
-            <div class="summary-val" style="color: #198754;">Rp <?= number_format($netRevenue, 0, ',', '.') ?></div>
-        </div>
-    </div>
 
     <div class="signature-section">
         <div class="signature-box">
