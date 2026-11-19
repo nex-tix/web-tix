@@ -47,41 +47,41 @@ $totals = $dailyData['totals'] ?? [];
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+            padding-bottom: 6px;
         }
 
         .header-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #1f1f1f;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
         }
 
         .header-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: #333;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
         }
 
         .header-period {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
             margin: 0;
         }
 
         .header-date {
-            font-size: 9px;
+            font-size: 8.5px;
             color: #999;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         table.daily-report {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             table-layout: fixed;
         }
 
@@ -91,10 +91,10 @@ $totals = $dailyData['totals'] ?? [];
 
         table.daily-report th {
             color: #000000;
-            padding: 8px 5px;
+            padding: 4px 4px;
             text-align: center;
             font-weight: bold;
-            font-size: 9px;
+            font-size: 8.5px;
             border: 1px solid #1a1f26;
             word-wrap: break-word;
         }
@@ -108,10 +108,10 @@ $totals = $dailyData['totals'] ?? [];
         }
 
         table.daily-report td {
-            padding: 7px 5px;
+            padding: 3.5px 4px;
             text-align: center;
             border: 1px solid #000000;
-            font-size: 9px;
+            font-size: 8.5px;
             color: #333;
         }
 
@@ -132,43 +132,13 @@ $totals = $dailyData['totals'] ?? [];
 
         table.daily-report tr.total-row td {
             border: 1px solid #333;
-            padding: 9px 5px;
-        }
-
-        .summary-section {
-            margin-top: 20px;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-        }
-
-        .summary-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #1f1f1f;
-            margin-bottom: 10px;
-        }
-
-        .summary-item {
-            display: inline-block;
-            margin-right: 30px;
-            margin-bottom: 8px;
-        }
-
-        .summary-label {
-            font-size: 9px;
-            color: #666;
-            margin-bottom: 2px;
-        }
-
-        .summary-value {
-            font-size: 12px;
-            font-weight: bold;
-            color: #1f1f1f;
+            padding: 4.5px 4px;
+            font-size: 8.5px;
         }
 
         .footer {
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 15px;
+            padding-top: 8px;
             border-top: 1px solid #ddd;
             text-align: center;
             font-size: 8px;
@@ -221,22 +191,6 @@ $totals = $dailyData['totals'] ?? [];
             </tr>
         </tbody>
     </table>
-
-    <div class="summary-section">
-        <div class="summary-title">Ringkasan Periode</div>
-        <div class="summary-item">
-            <div class="summary-label">Total Tiket Diterbitkan</div>
-            <div class="summary-value"><?= number_format((int)$totals['tiket_terbit'], 0, ',', '.') ?> Tiket</div>
-        </div>
-        <div class="summary-item">
-            <div class="summary-label">Total Pengunjung Tercatat</div>
-            <div class="summary-value"><?= number_format((int)$totals['pengunjung'], 0, ',', '.') ?> Orang</div>
-        </div>
-        <div class="summary-item">
-            <div class="summary-label">Total Pendapatan Periode</div>
-            <div class="summary-value">Rp <?= number_format((float)$totals['pendapatan'], 0, ',', '.') ?></div>
-        </div>
-    </div>
 
     <div class="footer">
         Dokumen ini dibuat otomatis oleh sistem pada <?= date('d/m/Y H:i:s') ?> WITA

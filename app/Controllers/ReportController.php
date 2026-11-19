@@ -708,6 +708,7 @@ class ReportController extends BaseController
 
         $data = [
             'tickets'          => $tickets,
+            'originType'       => $originType,
             'startDate'        => $startDate,
             'endDate'          => $endDate,
             'totalPengunjung'  => $totalPengunjung,
@@ -729,7 +730,12 @@ class ReportController extends BaseController
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
-        $filename = "laporan-pengunjung-{$startDate}-sd-{$endDate}.pdf";
+        $suffix = match ($originType) {
+            'domestic'      => '-domestik',
+            'international' => '-mancanegara',
+            default         => '',
+        };
+        $filename = "laporan-pengunjung{$suffix}-{$startDate}-sd-{$endDate}.pdf";
         $dompdf->stream($filename, ['Attachment' => true]);
     }
 
