@@ -4,13 +4,13 @@
   <div class="container-fluid px-0">
     <!-- Header Halaman Responsif -->
     <div class="app-content-header mb-3">
-      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
-        <div>
+      <div class="row align-items-center g-2">
+        <div class="col-12 col-sm">
           <h4 class="text-slate-900 mb-1">Pengeluaran Kas &amp; Operasional</h4>
           <p class="text-slate-500 mb-0">Pencatatan dan rekapitulasi beban operasional, gaji guide, dan kas keluar.</p>
         </div>
-        <div class="w-100 w-sm-auto text-sm-end">
-          <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center justify-content-center gap-1 shadow-sm px-3 py-2 w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#expenseModal">
+        <div class="col-12 col-sm-auto text-sm-end">
+          <button type="button" class="btn btn-sm btn-catat d-flex d-sm-inline-flex align-items-center justify-content-center gap-2 shadow-sm px-3 py-2 text-nowrap" data-bs-toggle="modal" data-bs-target="#expenseModal">
             <i class="bi bi-plus-circle"></i>
             <span>Catat Pengeluaran</span>
           </button>
@@ -179,14 +179,7 @@
             </tr>
           </thead>
           <tbody id="expense-tbody">
-            <?php if (empty($expenses)): ?>
-              <tr id="empty-initial-row">
-                <td colspan="8" class="text-center py-4 opacity-25">
-                  <i class="bi bi-inbox fs-2 d-block mb-1"></i>
-                  Belum ada catatan pengeluaran pada rentang filter ini.
-                </td>
-              </tr>
-            <?php else: ?>
+            <?php if (!empty($expenses)): ?>
               <?php foreach ($expenses as $idx => $exp): ?>
                 <tr class="expense-row">
                   <td class="text-center"><?= $idx + 1 ?></td>
@@ -360,50 +353,58 @@
     </div>
   </div>
 </div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Live Instant Search pada Tabel Pengeluaran
-    const searchInput = document.getElementById('search-expense');
-    const expenseTbody = document.getElementById('expense-tbody');
-    const countBadge = document.getElementById('table-record-count');
-
-    if (searchInput && expenseTbody) {
-      searchInput.addEventListener('input', function() {
-        const keyword = this.value.toLowerCase().trim();
-        const rows = expenseTbody.querySelectorAll('tr.expense-row');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-          const text = row.textContent.toLowerCase();
-          if (text.includes(keyword)) {
-            row.style.display = '';
-            visibleCount++;
-          } else {
-            row.style.display = 'none';
-          }
+  $(document).ready(function() {
+    // Inisialisasi DataTable untuk tabel Pengeluaran (7 baris per halaman)
+    const expenseTable = $('#table-expenses').DataTable({
+      pageLength: 7,
+      lengthChange: false,
+      searching: true, // Diaktifkan agar pencarian real-time via input berfungsi
+      ordering: false, // Pertahankan urutan dari server (DESC)
+      info: true,
+      paging: true,
+      dom: 'rt<"row align-items-center mt-3 g-2"<"col-12 col-sm-6 text-center text-sm-start"i><"col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end"p>>',
+      language: {
+        emptyTable: '<div class="py-4 text-center text-muted"><i class="bi bi-inbox fs-2 d-block mb-1"></i>Belum ada catatan pengeluaran pada rentang filter ini.</div>',
+        zeroRecords: '<div class="py-4 text-center text-muted"><i class="bi bi-search fs-3 d-block mb-1"></i>Tidak ada data pengeluaran yang cocok dengan pencarian.</div>',
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ catatan",
+        infoEmpty: "Menampilkan 0 catatan",
+        infoFiltered: "(disaring dari _MAX_ total catatan)",
+        paginate: {
+          previous: "<i class='bi bi-chevron-left'></i>",
+          next: "<i class='bi bi-chevron-right'></i>"
+        }
+      },
+      columnDefs: [
+        { targets: [0, 7], orderable: false, searchable: false }
+      ],
+      drawCallback: function(settings) {
+        const api = this.api();
+        const pageInfo = api.page.info();
+        // Beri nomor urut dinamis berlanjut sesuai halaman aktif
+        api.column(0, { page: 'current' }).nodes().each(function(cell, i) {
+          cell.innerHTML = pageInfo.start + i + 1;
         });
 
-        let noMatchRow = document.getElementById('no-match-row');
-        if (rows.length > 0) {
-          if (visibleCount === 0) {
-            if (!noMatchRow) {
-              noMatchRow = document.createElement('tr');
-              noMatchRow.id = 'no-match-row';
-              noMatchRow.innerHTML = `<td colspan="8" class="text-center py-4 text-muted"><i class="bi bi-search fs-3 d-block mb-1"></i>Tidak ada data pengeluaran yang cocok dengan pencarian "<strong>${keyword}</strong>".</td>`;
-              expenseTbody.appendChild(noMatchRow);
-            } else {
-              noMatchRow.style.display = '';
-              noMatchRow.querySelector('strong').textContent = keyword;
-            }
-          } else if (noMatchRow) {
-            noMatchRow.style.display = 'none';
-          }
-        }
-
+        // Sinkronisasi badge counter catatan di header card
+        const countBadge = document.getElementById('table-record-count');
         if (countBadge) {
-          countBadge.textContent = `Menampilkan ${visibleCount} catatan`;
+          countBadge.textContent = `Menampilkan ${pageInfo.recordsDisplay} catatan`;
         }
+      }
+    });
+
+    // Hubungkan input Cari Pengeluaran dengan pencarian instan DataTables
+    const searchInput = document.getElementById('search-expense');
+    if (searchInput) {
+      if (searchInput.value.trim() !== '') {
+        expenseTable.search(searchInput.value.trim()).draw();
+      }
+      searchInput.addEventListener('input', function() {
+        expenseTable.search(this.value.trim()).draw();
       });
     }
 
