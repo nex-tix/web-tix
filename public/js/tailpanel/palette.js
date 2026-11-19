@@ -1,8 +1,9 @@
 /**
  * Command palette (⌘K / Ctrl+K).
  *
- * Builds a searchable modal of every NAV item plus a few global actions
- * (toggle theme, view docs/repo). Opens via:
+ * Builds a searchable modal of every sidebar page plus a few global actions
+ * (toggle theme, view docs/repo). Menu dibaca dari DOM .d-sidebar (lihat
+ * app/Views/partials/sidebar.php). Opens via:
  *   - Click on any [data-palette-open] element (the topbar .cmd button)
  *   - Cmd/Ctrl + K keyboard shortcut, anywhere on the page
  *   - "/" keypress when no input is focused
@@ -17,8 +18,6 @@
  * The palette renders into <body> the first time it's opened, then re-uses
  * that DOM node. All state is local to this module.
  */
-
-import { NAV } from './Shell.js';
 
 const PANEL_HTML = `
   <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Command palette">
@@ -48,32 +47,41 @@ let filtered = [];
 let cursor = 0;
 
 function buildItems() {
-  // Flatten the NAV manifest into a single list of selectable rows.
+  // Baca menu langsung dari sidebar yang sudah dirender PHP — sumber tunggal
+  // ada di app/Views/partials/sidebar.php (tanpa manifest JS terpisah).
   const items = [];
 
-  for (const section of NAV) {
-    for (const item of section.items) {
-      if (item.children) {
-        for (const child of item.children) {
+  document.querySelectorAll('.d-sidebar .nav-section').forEach((section) => {
+    const sectionLabel = (section.querySelector('.nav-label')?.textContent || '').trim();
+
+    section.querySelectorAll(':scope > .nav-link, :scope > .nav-item-group').forEach((el) => {
+      const isGroup = el.classList.contains('nav-item-group');
+      const trigger = isGroup ? el.querySelector('[data-nav-toggle]') : el;
+      const icon = trigger?.querySelector('svg')?.innerHTML || '';
+      const text = (trigger?.querySelector('span:not(.nav-badge)')?.textContent || '').trim();
+
+      if (isGroup) {
+        // Grup (mis. Laporan): tampilkan anak submenu saja
+        el.querySelectorAll('.nav-submenu a').forEach((child) => {
           items.push({
             kind: 'page',
-            label: child.text,
-            section: `${section.label} › ${item.text}`,
-            href: child.href,
-            icon: item.icon,
+            label: (child.textContent || '').trim(),
+            section: `${sectionLabel} › ${text}`,
+            href: child.getAttribute('href'),
+            icon,
           });
-        }
-      } else if (item.href && item.href !== '#') {
+        });
+      } else if (el.tagName === 'A' && el.getAttribute('href')) {
         items.push({
           kind: 'page',
-          label: item.text,
-          section: section.label,
-          href: item.href,
-          icon: item.icon,
+          label: text,
+          section: sectionLabel,
+          href: el.getAttribute('href'),
+          icon,
         });
       }
-    }
-  }
+    });
+  });
 
   // Static actions
   items.push({

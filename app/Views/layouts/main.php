@@ -35,13 +35,14 @@
   data-user-role="<?= esc($userRole) ?>"
 >
   <div class="shell">
-    <div data-shell-sidebar></div>
+    <!-- Shell dirender PHP (partial) — atribut data-shell-* dihapus supaya Shell.js lama (cache CDN) tidak menimpa -->
+    <?= view('partials/sidebar.php', ['activeKey' => $activeKey ?? '', 'userName' => $userName, 'userRole' => $userRole]) ?>
     <div class="main">
-      <div data-shell-topbar></div>
+      <?= view('partials/topbar.php', ['crumbs' => $crumbs ?? '', 'username' => $userUsername, 'userName' => $userName]) ?>
       <main class="content">
         <?= $this->renderSection('content') ?>
       </main>
-      <div data-shell-footer></div>
+      <?= view('partials/footer.php') ?>
     </div>
   </div>
   <!-- ========================================================= JAVASCRIPT ========================================================== -->
