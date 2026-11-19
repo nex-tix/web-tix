@@ -36,7 +36,7 @@
             </div>
             <div class="mb-2"><strong>Status:</strong>
               <?php if (($ticket['status'] ?? '') === 'active'): ?>
-                <span class="badge bg-success">Aktif</span>
+                <span class="badge bg-success">Belum Terpakai</span>
               <?php elseif (($ticket['status'] ?? '') === 'used'): ?>
                 <span class="badge bg-primary">Terpakai</span>
               <?php else: ?>

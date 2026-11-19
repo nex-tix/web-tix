@@ -102,7 +102,8 @@ $initials   = tp_initials($userName);
         <i class="bi bi-safe2" aria-hidden="true"></i>
         <span>Pengeluaran</span>
       </a>
-      <a class="nav-link<?= $activeKey === 'guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/guides')) ?>">
+      <!-- Gaji Guide menunjuk ke page ledger sendiri: activeKey terpisah, highlight kembar dgn menu Guides teratasi -->
+      <a class="nav-link<?= $activeKey === 'gaji-guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/gaji-guide')) ?>">
         <i class="bi bi-wallet" aria-hidden="true"></i>
         <span>Gaji Guide</span>
       </a>

@@ -400,7 +400,7 @@ class ReportService
             if ($hasUsed && !$hasActive) {
                 $badge = '<span class="badge-status-used">Terpakai</span>';
             } elseif ($hasActive) {
-                $badge = '<span class="badge-status-unused">Aktif</span>';
+                $badge = '<span class="badge-status-unused">Belum Terpakai</span>';
             } else {
                 $badge = '<span class="badge bg-secondary" style="font-size:.65rem;font-weight:600;border-radius:20px;padding:.3rem .6rem">' . esc($statusList[0] ?? '-') . '</span>';
             }

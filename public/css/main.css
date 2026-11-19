@@ -1070,6 +1070,25 @@
         text-transform: uppercase;
         margin-bottom: .35rem;
       }
+      /* --- Gaji Guide: form-text filter & chip tarif dibuat lebih terbaca di light mode (keputusan 2A/3A) --- */
+      .filter-export .form-text {
+        color: #495057;
+      }
+      .badge.badge-tarif {
+        background: #e74c3c;
+        color: #fff;
+        padding: 0.4rem 0.6rem;
+        border: 1px solid #E2E8F0;
+        font-size: 11.5px;
+      }
+      [data-theme=dark] .filter-export .form-text {
+        color: #9AA0A6;
+      }
+      [data-theme=dark] .badge.badge-tarif {
+        background: #2A2F35;
+        color: #9AA0A6;
+        border-color: #3A3F45;
+      }
       .btn-filter {
         border: 1px solid #ced4da;
         background: #fff;
@@ -1563,6 +1582,16 @@
         color: #9AA0A6 !important;
       }
       [data-theme=dark] .btn-outline-secondary:hover {
+        background-color: #2A2F35 !important;
+        border-color: #495057 !important;
+        color: #E8EAED !important;
+      }
+      /* btn-outline-dark statis #212529 (tombol Reset Gaji Guide) → nyatu dgn bg gelap; samakan palet dgn outline-secondary */
+      [data-theme=dark] .btn-outline-dark {
+        border-color: #3A3F45 !important;
+        color: #9AA0A6 !important;
+      }
+      [data-theme=dark] .btn-outline-dark:hover {
         background-color: #2A2F35 !important;
         border-color: #495057 !important;
         color: #E8EAED !important;

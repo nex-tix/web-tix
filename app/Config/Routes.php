@@ -60,6 +60,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('settings/(:segment)/update', 'Admin\SettingController::update/$1');
     $routes->post('settings/(:segment)/delete', 'Admin\SettingController::delete/$1');
 
+    // Gaji Guide (ledger pembayaran guide)
+    $routes->get('gaji-guide', 'Admin\GuideSalaryController::index');
+    $routes->post('gaji-guide/generate', 'Admin\GuideSalaryController::generate');
+    $routes->post('gaji-guide/(:num)/pay', 'Admin\GuideSalaryController::pay/$1');
+    $routes->post('gaji-guide/(:num)/cancel', 'Admin\GuideSalaryController::cancel/$1');
+
     //Pos Management
     $routes->get('pos', 'Admin\PosController::index');
     $routes->post('pos/store', 'Admin\PosController::store');
