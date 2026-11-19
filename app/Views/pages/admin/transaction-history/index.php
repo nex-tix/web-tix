@@ -281,7 +281,7 @@
       const box = document.createElement('div');
       box.className = 'col-6';
       const inner = document.createElement('div');
-      inner.className = 'rounded border p-2 bg-light';
+      inner.className = 'rounded border p-2 bg-white';
       const l = document.createElement('p');
       l.className = 'mb-0 text-uppercase text-gray';
       l.style.cssText = 'font-size:10px;letter-spacing:.06em';
@@ -333,7 +333,7 @@
       body.className = 'p-3';
 
       const grid = document.createElement('div');
-      grid.className = 'row g-2 mb-3';
+      grid.className = 'row g-2 mb-3 text-gray';
       grid.append(
         buildInfoBox('Jumlah Tamu', t.total_visitors + ' orang'),
         buildInfoBox('Tanggal Berlaku', formatTanggalID(t.valid_date))
