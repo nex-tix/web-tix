@@ -94,7 +94,6 @@ if (!empty($startDate) && !empty($endDate)) {
 
         table.report-table th {
             color: #000;
-            background: #f0f0f0;
             padding: 4px 4px;
             text-align: center;
             font-weight: bold;
@@ -112,7 +111,6 @@ if (!empty($startDate) && !empty($endDate)) {
 
         table.report-table tr.total-row td {
             font-weight: bold;
-            background: #f8f9fa;
             border-top: 2px solid #333;
             padding: 4.5px 4px;
             font-size: 8.5px;
