@@ -85,4 +85,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     // Data Tiket
     $routes->get('data-tiket', 'Admin\TicketController::index');
     $routes->get('data-tiket/detail/(:num)', 'Admin\TicketController::detail/$1');
+
+    // Pengeluaran Kas & Operasional (Expenses)
+    $routes->get('expenses', 'Admin\ExpenseController::index');
+    $routes->post('expenses/store', 'Admin\ExpenseController::store');
+    $routes->post('expenses/category/store', 'Admin\ExpenseController::storeCategory');
+    $routes->post('expenses/(:num)/delete', 'Admin\ExpenseController::delete/$1');
+    $routes->get('expenses/export-pdf', 'Admin\ExpenseController::exportPdf');
+
 });

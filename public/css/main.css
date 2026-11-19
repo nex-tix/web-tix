@@ -599,6 +599,16 @@
         margin: 0;
       }
 
+      .btn-catat {
+        background-color: #e74c3c;
+        color: #fff;
+      }
+
+      .btn-catat:hover {
+        background-color: #c0392b;
+        color: #fff;
+      }
+
       .btn-transaksi {
         background-color: #e74c3c;
         color: #fff;
