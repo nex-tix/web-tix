@@ -264,7 +264,7 @@
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="category_id" class="form-label mb-0">Kategori Biaya <span class="text-danger">*</span></label>
                 <button type="button" id="btnToggleNewCategory" class="btn btn-sm btn-link text-decoration-none py-0 px-1 text-primary">
-                  <i class="bi bi-plus-circle"></i> + Kategori Baru
+                  <i class="bi bi-plus-circle"></i> Kategori Baru
                 </button>
               </div>
 
