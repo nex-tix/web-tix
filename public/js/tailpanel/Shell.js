@@ -169,7 +169,7 @@ export const NAV = [
 
 const BRAND_LOGO = `
     <img
-        src="${window.APP_CONFIG.baseUrl.replace(/\/?$/, '/') }img/logo_nextix.png"
+        src="/web_tiket/img/logo_nextix.png"
         alt="Nextix"
     >
 `;
