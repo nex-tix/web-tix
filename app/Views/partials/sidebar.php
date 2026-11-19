@@ -90,7 +90,7 @@ $initials   = tp_initials($userName);
         <i class="bi bi-cash-coin" aria-hidden="true"></i>
         <span>Penjualan</span>
       </a>
-      <a class="nav-link<?= $activeKey === 'gate' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/gate-users')) ?>">
+      <a class="nav-link<?= $activeKey === 'expense' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/expenses')) ?>">
         <i class="bi bi-safe2" aria-hidden="true"></i>
         <span>Pengeluaran</span>
       </a>
