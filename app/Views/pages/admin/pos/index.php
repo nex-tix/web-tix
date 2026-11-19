@@ -180,16 +180,24 @@
 
                     <!-- Dropdown guide (hanya tampil jika Ya) -->
                     <div id="guide-dropdown-container" class="mt-3 pt-3 border-t border-slate-200 hidden">
-                        <label for="select-guide" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                            Pilih Pemandu Wisata (Guide) <span class="text-brand-red">*</span>
-                        </label>
+                        <!-- Baris label + tombol tambah guide tanpa pindah halaman -->
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="select-guide" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                Pilih Pemandu Wisata (Guide) <span class="text-brand-red">*</span>
+                            </label>
+                            <button type="button" onclick="openPosGuideModal()" class="inline-flex items-center gap-1 text-[11px] font-bold text-brand-red hover:text-slate-900 transition">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                Tambah Guide
+                            </button>
+                        </div>
                         <?php $guides = $guides ?? []; ?>
                         <?php if (empty($guides)): ?>
-                            <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                            <!-- State kosong: warning ini dihapus otomatis setelah guide pertama tersimpan -->
+                            <div id="guide-empty-state" class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
                                 <svg class="w-4 h-4 text-amber-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
-                                <span>Belum ada data guide aktif di sistem. Silakan tambahkan di menu <a href="<?= base_url('admin/guides') ?>" class="font-bold underline">Guides</a>.</span>
+                                <span>Belum ada data guide aktif di sistem. Tambahkan lewat tombol di atas, atau kelola di menu <a href="<?= base_url('admin/guides') ?>" class="font-bold underline">Guides</a>.</span>
                             </div>
                         <?php else: ?>
                             <select id="select-guide" onchange="onGuideSelected(this.value)" class="input-design form-select w-full text-sm font-semibold rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red">
@@ -346,6 +354,70 @@
         </div>
     </div>
 </main>
+
+<!-- Modal Tambah Guide: simpan ke tabel guides lalu langsung pilih di dropdown POS -->
+<div class="modal fade" id="posGuideModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form id="posGuideForm" method="POST" action="<?= base_url('admin/guides/store') ?>" class="needs-validation" novalidate>
+        <?= csrf_field() ?>
+        <div class="modal-header">
+          <h5 class="modal-title" id="posGuideModalTitle">Tambah Guide</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-gray small mb-3">Guide baru otomatis tersimpan ke menu Guides dan langsung terpilih pada transaksi ini.</p>
+
+          <input type="hidden" id="ng-code" name="code" value="">
+
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="ng-name" class="form-label">Nama Guide <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="ng-name" name="name" placeholder="Contoh: Wayan Suardana" required>
+              <div class="invalid-feedback">Kolom nama guide tidak boleh kosong.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="ng-phone" class="form-label">No. HP / WhatsApp <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="ng-phone" name="phone" placeholder="Contoh: 081234567890" required>
+              <div class="invalid-feedback">Kolom no. HP / WhatsApp tidak boleh kosong.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="ng-email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="ng-email" name="email" placeholder="Contoh: guide@gmail.com" required>
+              <div class="invalid-feedback">Kolom email tidak boleh kosong.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="ng-gender" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+              <select class="form-select" id="ng-gender" name="gender" required>
+                <option value="" selected disabled>- Pilih Gender -</option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+              <div class="invalid-feedback">Kolom jenis kelamin tidak boleh kosong.</div>
+            </div>
+            <div class="col-md-8">
+              <label for="ng-languages" class="form-label">Bahasa yang Dikuasai <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="ng-languages" name="languages" placeholder="Indonesia, English" required>
+              <div class="invalid-feedback">Kolom bahasa yang dikuasai tidak boleh kosong.</div>
+              <div class="form-text">Pisahkan dengan koma.</div>
+            </div>
+
+            <div class="col-12">
+              <label for="ng-notes" class="form-label">Catatan Tambahan</label>
+              <textarea class="form-control" id="ng-notes" name="notes" rows="2" placeholder="Catatan opsional mengenai guide ini..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary" id="posGuideSubmitBtn">Simpan &amp; Pilih Guide</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <script>
     const ticketTypes = <?= json_encode($ticketTypes) ?>;
@@ -692,6 +764,154 @@
             summaryGuideRow.classList.remove('hidden');
         }
         clearFieldErrors();
+    }
+
+    // ---- Modal Tambah Guide dari POS: simpan via AJAX lalu langsung pilih ----
+    let posGuideModal = null;
+    const posGuideModalEl = document.getElementById('posGuideModal');
+    const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function openPosGuideModal() {
+        const form = document.getElementById('posGuideForm');
+        form.reset();
+        form.classList.remove('was-validated');
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        document.getElementById('ng-gender').value = '';
+        document.getElementById('posGuideSubmitBtn').disabled = false;
+        if (!posGuideModal) posGuideModal = bootstrap.Modal.getOrCreateInstance(posGuideModalEl);
+        posGuideModal.show();
+    }
+
+    // Bersihkan tanda error saat user mengisi kolom modal
+    document.getElementById('posGuideForm').querySelectorAll('input, select, textarea').forEach(field => {
+        const clearError = function() {
+            if (field.value && field.value.trim() !== '') field.classList.remove('is-invalid');
+        };
+        field.addEventListener('input', clearError);
+        field.addEventListener('change', clearError);
+    });
+
+    // Submit modal via AJAX: guide baru masuk tabel guides tanpa reload halaman POS
+    document.getElementById('posGuideForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = this;
+        const submitBtn = document.getElementById('posGuideSubmitBtn');
+        let hasEmpty = false;
+        form.querySelectorAll('[required]').forEach(input => {
+            const val = (input.value || '').trim();
+            if (!val) {
+                hasEmpty = true;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+        if (hasEmpty || !form.checkValidity()) {
+            form.classList.add('was-validated');
+            toastr.error('Kolom tidak boleh kosong', 'Validasi Gagal', { timeOut: 2500, extendedTimeOut: 0 });
+            const firstInvalid = form.querySelector('.is-invalid, :invalid');
+            if (firstInvalid) firstInvalid.focus();
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Menyimpan...';
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': getCsrfToken()
+            },
+            body: new FormData(form)
+        })
+            .then(async res => {
+                const data = await res.json().catch(() => null);
+                if (data && data.csrf_hash) document.querySelector('meta[name="csrf-token"]').content = data.csrf_hash;
+
+                if (res.ok && data && data.success) {
+                    posGuideModal.hide();
+                    addGuideToDropdown(data.data);
+                    toastr.success('Guide berhasil ditambahkan dan langsung dipilih.', 'Berhasil', { timeOut: 1500, extendedTimeOut: 0 });
+                    return;
+                }
+
+                if (res.status === 422 && data && data.errors) {
+                    const map = { name: 'ng-name', phone: 'ng-phone', email: 'ng-email', gender: 'ng-gender', languages: 'ng-languages' };
+                    let firstInvalid = null;
+                    Object.entries(data.errors).forEach(([field, msg]) => {
+                        const input = document.getElementById(map[field] || '');
+                        if (input) {
+                            input.classList.add('is-invalid');
+                            const fb = input.parentElement.querySelector('.invalid-feedback');
+                            if (fb) fb.textContent = msg;
+                            if (!firstInvalid) firstInvalid = input;
+                        } else {
+                            showAlert(msg);
+                        }
+                    });
+                    if (firstInvalid) firstInvalid.focus();
+                    toastr.error('Periksa kembali kolom yang ditandai merah.', 'Validasi Gagal', { timeOut: 2500, extendedTimeOut: 0 });
+                    return;
+                }
+
+                showAlert((data && data.message) || `Gagal menyimpan guide (HTTP ${res.status}).`);
+            })
+            .catch(() => showAlert('Gagal terhubung ke server. Cek koneksi dan coba lagi.'))
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Simpan & Pilih Guide';
+            });
+    });
+
+    // Tutup modal: reset form siap untuk isian berikutnya
+    posGuideModalEl.addEventListener('hidden.bs.modal', function() {
+        const form = document.getElementById('posGuideForm');
+        form.reset();
+        form.classList.remove('was-validated');
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        document.getElementById('ng-gender').value = '';
+    });
+
+    // Sisipkan guide baru ke dropdown POS lalu langsung pilih (native select tetap source of truth)
+    function addGuideToDropdown(guide) {
+        if (!guide || !guide.id) return;
+
+        const langs = Array.isArray(guide.languages) ? guide.languages : (typeof guide.languages === 'string' && guide.languages ? JSON.parse(guide.languages) : []);
+        const langText = Array.isArray(langs) && langs.length ? ' (' + langs.join(', ') + ')' : '';
+        const label = '[' + guide.code + '] ' + guide.name + langText;
+        const optionHtml = '<option value="' + escapeHtml(guide.id) + '" data-name="' + escapeHtml(guide.name) + '" data-code="' + escapeHtml(guide.code) + '">' + escapeHtml(label) + '</option>';
+
+        let selectGuide = document.getElementById('select-guide');
+        let freshSelect = false;
+        if (!selectGuide) {
+            // State kosong: bentuk markup select + info lengkap, lalu hapus warning
+            const emptyState = document.getElementById('guide-empty-state');
+            if (emptyState) emptyState.remove();
+            document.getElementById('guide-dropdown-container').insertAdjacentHTML('beforeend',
+                '<select id="select-guide" onchange="onGuideSelected(this.value)" class="input-design form-select w-full text-sm font-semibold rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red">' +
+                '<option value="">-- Pilih Guide --</option>' + optionHtml + '</select>' +
+                '<p class="field-error hidden mt-1 text-xs text-rose-600" data-error="guide_id"></p>' +
+                '<div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2 flex items-center justify-between hidden">' +
+                '<span class="font-medium">Guide terpilih: <strong id="guide-selected-name">-</strong></span>' +
+                '<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Tercatat di Struk</span>' +
+                '</div>');
+            selectGuide = document.getElementById('select-guide');
+            freshSelect = true;
+            initGuideSearch();
+        } else {
+            selectGuide.insertAdjacentHTML('beforeend', optionHtml);
+        }
+
+        const value = String(guide.id);
+        if (guideChoices) {
+            // Choices tidak mengamati perubahan native select: daftar widget perlu ditambah manual (append)
+            if (!freshSelect) guideChoices.setChoices([{ value: value, label: label, selected: true }], 'value', 'label', false);
+            guideChoices.setChoiceByValue(value);
+        } else {
+            selectGuide.value = value;
+        }
+        onGuideSelected(value);
     }
 
     function resetTransaction() {
