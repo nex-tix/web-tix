@@ -87,6 +87,16 @@
                           data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>">
                           <i class="bi bi-x-circle"></i>
                         </button>
+                        <!-- Tombol cetak ulang: buka modal, daftar tiket diambil via AJAX -->
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-primary"
+                          title="Cetak Ulang"
+                          data-bs-toggle="modal"
+                          data-bs-target="#reprintTransactionModal"
+                          data-reprint-url="<?= esc(base_url('admin/transaction-history/reprint-data/' . $row['id']), 'attr') ?>">
+                          <i class="bi bi-printer"></i>
+                        </button>
                       <?php endif; ?>
                     </td>
                   </tr>
@@ -126,6 +136,28 @@
           <button type="submit" class="btn btn-danger btn-sm">Void</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cetak ulang: daftar tiket aktif & berlaku hari ini diambil via AJAX saat modal dibuka -->
+<div
+  class="modal fade"
+  id="reprintTransactionModal"
+  tabindex="-1"
+  aria-hidden="true"
+  data-csrf-name="<?= esc(csrf_token(), 'attr') ?>"
+  data-csrf-hash="<?= esc(csrf_hash(), 'attr') ?>">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Cetak Ulang Tiket</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="reprintModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+      </div>
     </div>
   </div>
 </div>
@@ -172,6 +204,215 @@
         }
       });
     });
+
+    // --- Modal cetak ulang: kartu tiket dibangun via DOM API (data dari JSON, hindari innerHTML mentah) ---
+    const reprintModal = document.getElementById('reprintTransactionModal');
+    const reprintBody = document.getElementById('reprintModalBody');
+    const reprintCsrfName = reprintModal.getAttribute('data-csrf-name');
+    const reprintCsrfHash = reprintModal.getAttribute('data-csrf-hash');
+
+    reprintModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      const dataUrl = button ? button.getAttribute('data-reprint-url') : '';
+      // Simpan hanya prefix URL POST ".../reprint/" — id tiket ditambahkan per kartu.
+      // Ganti /reprint-data/<id_transaksi> menjadi /reprint/; id transaksi TIDAK
+      // boleh dipakai sebagai target POST (endpoint menunggu id tiket, bukan id transaksi).
+      reprintModal.setAttribute('data-post-url', String(dataUrl).replace(/reprint-data\/\d+$/, 'reprint/'));
+      reprintBody.innerHTML = '';
+      reprintBody.appendChild(buildLoading());
+      fetchReprintData(dataUrl);
+    });
+
+    function buildLoading() {
+      const wrap = document.createElement('div');
+      wrap.className = 'text-center py-4 text-gray';
+      const spin = document.createElement('div');
+      spin.className = 'spinner-border text-gray mb-2';
+      spin.setAttribute('role', 'status');
+      const p = document.createElement('p');
+      p.className = 'mb-0 small';
+      p.textContent = 'Memuat data tiket...';
+      wrap.append(spin, p);
+      return wrap;
+    }
+
+    function buildMessage(text, variant) {
+      const div = document.createElement('div');
+      div.className = 'alert alert-' + variant + ' py-2 mb-0';
+      div.textContent = text;
+      return div;
+    }
+
+    function fetchReprintData(url) {
+      if (!url) {
+        reprintBody.innerHTML = '';
+        reprintBody.appendChild(buildMessage('Transaksi tidak ditemukan.', 'danger'));
+        return;
+      }
+      fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(data) { renderReprintTickets(data); })
+        .catch(function() {
+          reprintBody.innerHTML = '';
+          reprintBody.appendChild(buildMessage('Gagal memuat data tiket. Silakan tutup dan coba lagi.', 'danger'));
+        });
+    }
+
+    function renderReprintTickets(data) {
+      reprintBody.innerHTML = '';
+      const tickets = (data && Array.isArray(data.tickets)) ? data.tickets : [];
+
+      const info = document.createElement('p');
+      info.className = 'text-gray small mb-3';
+      info.textContent = 'Invoice ' + ((data && data.invoice_code) || '-') + ' · ' + tickets.length + ' tiket tersedia untuk cetak ulang';
+      reprintBody.appendChild(info);
+
+      if (tickets.length === 0) {
+        reprintBody.appendChild(buildMessage('Tidak ada tiket aktif yang berlaku hari ini untuk invoice ini.', 'warning'));
+        return;
+      }
+      tickets.forEach(function(t) { reprintBody.appendChild(buildReprintCard(t)); });
+    }
+
+    function buildInfoBox(label, value) {
+      const box = document.createElement('div');
+      box.className = 'col-6';
+      const inner = document.createElement('div');
+      inner.className = 'rounded border p-2 bg-light';
+      const l = document.createElement('p');
+      l.className = 'mb-0 text-uppercase text-gray';
+      l.style.cssText = 'font-size:10px;letter-spacing:.06em';
+      l.textContent = label;
+      const v = document.createElement('p');
+      v.className = 'fw-bold mb-0';
+      v.style.fontSize = '.9rem';
+      v.textContent = value;
+      inner.append(l, v);
+      box.appendChild(inner);
+      return box;
+    }
+
+    function formatTanggalID(s) {
+      const bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const p = String(s || '').split('-');
+      if (p.length !== 3) return s || '-';
+      const m = parseInt(p[1], 10);
+      return p[2] + ' ' + (bulan[m - 1] || p[1]) + ' ' + p[0];
+    }
+
+    function buildReprintCard(t) {
+      const isGroup = t.ticket_category === 'group';
+
+      const card = document.createElement('div');
+      card.className = 'border rounded overflow-hidden mb-3';
+
+      // Header: kode tiket + badge kategori (tiruan kartu di halaman reprint lama)
+      const head = document.createElement('div');
+      head.className = 'd-flex align-items-center justify-content-between gap-2 px-3 py-2';
+      head.style.background = '#1a1d20';
+      head.style.color = '#D3D3D3 ';
+      const headL = document.createElement('div');
+      const cap = document.createElement('p');
+      cap.className = 'mb-0 text-uppercase';
+      cap.style.cssText = 'font-size:10px;letter-spacing:.08em;color:#94a3b8';
+      cap.textContent = 'Kode Tiket';
+      const code = document.createElement('p');
+      code.className = 'mb-0 font-monospace fw-bold';
+      code.style.fontSize = '.85rem';
+      code.textContent = t.ticket_code;
+      headL.append(cap, code);
+      const badge = document.createElement('span');
+      badge.className = 'badge ' + (isGroup ? 'bg-success' : 'bg-warning text-dark');
+      badge.textContent = isGroup ? 'Rombongan' : 'Individual';
+      head.append(headL, badge);
+
+      const body = document.createElement('div');
+      body.className = 'p-3';
+
+      const grid = document.createElement('div');
+      grid.className = 'row g-2 mb-3';
+      grid.append(
+        buildInfoBox('Jumlah Tamu', t.total_visitors + ' orang'),
+        buildInfoBox('Tanggal Berlaku', formatTanggalID(t.valid_date))
+      );
+
+      const status = document.createElement('div');
+      status.className = 'alert alert-success py-2 mb-3 d-flex align-items-center gap-2';
+      status.style.fontSize = '.8rem';
+      const sIcon = document.createElement('i');
+      sIcon.className = 'bi bi-check-circle-fill';
+      const sText = document.createElement('span');
+      sText.textContent = 'Tiket aktif · ' + (isGroup ? '1 QR untuk seluruh rombongan' : '1 QR untuk 1 orang');
+      status.append(sIcon, sText);
+
+      // Form POST per tiket: prefix reprint/ + id tiket dari JSON (bukan id transaksi)
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = (reprintModal.getAttribute('data-post-url') || '') + t.id;
+      const csrf = document.createElement('input');
+      csrf.type = 'hidden';
+      csrf.name = reprintCsrfName;
+      csrf.value = reprintCsrfHash;
+
+      const label = document.createElement('label');
+      label.className = 'form-label fw-semibold';
+      label.style.cssText = 'font-size:.75rem;text-transform:uppercase;letter-spacing:.06em';
+      const star = document.createElement('span');
+      star.className = 'text-danger';
+      star.textContent = '*';
+      label.append('Alasan Cetak Ulang ', star);
+
+      const ta = document.createElement('textarea');
+      ta.className = 'form-control';
+      ta.rows = 2;
+      ta.maxLength = 255;
+      ta.required = true;
+      ta.name = 'reprint_reason';
+      ta.placeholder = 'Contoh: tiket rusak atau hasil cetak tidak terbaca';
+
+      const fb = document.createElement('div');
+      fb.className = 'invalid-feedback';
+      fb.textContent = 'Alasan cetak ulang wajib diisi.';
+
+      const submit = document.createElement('button');
+      submit.type = 'submit';
+      submit.className = 'btn btn-danger w-100 fw-bold mt-3';
+      const bIcon = document.createElement('i');
+      bIcon.className = 'bi bi-printer me-1';
+      submit.append(bIcon, ' CETAK ULANG TIKET');
+
+      form.append(csrf, label, ta, fb, submit);
+
+      form.addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        if (ta.value.trim() === '') {
+          ta.classList.add('is-invalid');
+          return;
+        }
+        ta.classList.remove('is-invalid');
+        Swal.fire({
+          title: 'Cetak ulang tiket ini?',
+          text: 'Tiket ' + t.ticket_code + ' akan dicetak ulang.',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Ya, Cetak Ulang',
+          cancelButtonText: 'Batal',
+        }).then(function(result) {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+
+      body.append(grid, status, form);
+      card.append(head, body);
+      return card;
+    }
   });
 </script>
 <?= $this->endSection() ?>

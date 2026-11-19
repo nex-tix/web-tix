@@ -10,6 +10,7 @@ use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
 use App\Models\TicketTypeModel;
 use App\Models\SettingModel;
+use App\Models\PrintLogModel;
 
 class TransactionHistoryController extends BaseController
 {
@@ -205,5 +206,82 @@ class TransactionHistoryController extends BaseController
             $db->transRollback();
             return redirect()->to('/admin/transaction-history')->with('error', 'Gagal membatalkan transaksi: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Data tiket yang layak cetak ulang untuk 1 transaksi (endpoint AJAX modal di halaman riwayat).
+     * Filter sama dengan PosController::reprint lama: tiket aktif + berlaku hari ini.
+     */
+    public function reprintData($transactionId)
+    {
+        $transactionModel = new TransactionModel();
+        $ticketModel = new TicketModel();
+
+        $transaction = $transactionModel->find($transactionId);
+        if (!$transaction) {
+            return response()->setJSON(['error' => 'Transaksi tidak ditemukan.'], 404);
+        }
+
+        $tickets = $ticketModel
+            ->where('transaction_id', $transactionId)
+            ->where('status', 'active')
+            ->where('valid_date', date('Y-m-d'))
+            ->orderBy('id', 'ASC')
+            ->findAll();
+
+        $items = [];
+        foreach ($tickets as $t) {
+            $items[] = [
+                'id'              => (int) $t['id'],
+                'ticket_code'     => (string) $t['ticket_code'],
+                'ticket_category' => (string) $t['ticket_category'],
+                'total_visitors'  => (int) $t['total_visitors'],
+                'valid_date'      => (string) $t['valid_date'],
+            ];
+        }
+
+        return response()->setJSON([
+            'invoice_code' => (string) $transaction['invoice_code'],
+            'tickets'      => $items,
+        ]);
+    }
+
+    /**
+     * Eksekusi cetak ulang 1 tiket dari modal riwayat. Validasi sama dengan PosController::doReprint lama;
+     * semua error redirect balik ke halaman riwayat, sukses buka halaman receipt supaya tiket tercetak.
+     */
+    public function reprint($ticketId)
+    {
+        $ticketModel = new TicketModel();
+        $ticket = $ticketModel->find($ticketId);
+
+        if (!$ticket) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Tiket tidak ditemukan.');
+        }
+
+        if ($ticket['status'] !== 'active') {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Tiket tidak aktif. Tidak dapat dicetak ulang.');
+        }
+
+        if ($ticket['valid_date'] !== date('Y-m-d')) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Tiket tidak berlaku hari ini. Tidak dapat dicetak ulang.');
+        }
+
+        $reason = trim((string) ($this->request->getPost('reprint_reason') ?? ''));
+        if ($reason === '') {
+            return redirect()->back()->with('error', 'Alasan cetak ulang wajib diisi.')->withInput();
+        }
+
+        $printLogModel = new PrintLogModel();
+        $printLogModel->insert([
+            'ticket_id'      => $ticketId,
+            'printed_by'     => (int) session()->get('user_id'),
+            'print_type'     => 'reprint',
+            'printed_at'     => date('Y-m-d H:i:s'),
+            'reprint_reason' => $reason,
+        ], false);
+
+        return redirect()->to(base_url("admin/pos/receipt/{$ticket['transaction_id']}?ticket_id={$ticketId}"))
+            ->with('success', 'Cetak ulang berhasil. Tiket siap dicetak.');
     }
 }

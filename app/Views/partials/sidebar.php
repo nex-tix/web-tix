@@ -53,14 +53,6 @@ $initials   = tp_initials($userName);
         <i class="bi bi-pc-display" aria-hidden="true"></i>
         <span>Pos Loket</span>
       </a>
-      <a class="nav-link<?= $activeKey === 'reprint' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/pos/reprint')) ?>">
-        <i class="bi bi-printer" aria-hidden="true"></i>
-        <span>Cetak Ulang Tiket</span>
-      </a>
-      <a class="nav-link<?= $activeKey === 'riwayat' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/transaction-history')) ?>">
-        <i class="bi bi-clock-history" aria-hidden="true"></i>
-        <span>Riwayat Penjualan</span>
-      </a>
       <?php $grupAktif = in_array($activeKey, ['laporan-global', 'laporan-pengunjung', 'laporan-guide', 'laporan-keuangan'], true); // grup: is-open + trigger aktif bila salah satu anak aktif ?>
       <div class="nav-item-group<?= $grupAktif ? ' is-open' : '' ?>" data-nav-group>
         <a class="nav-link<?= $grupAktif ? ' is-active' : '' ?>" href="javascript:void(0)" data-nav-toggle>
@@ -94,7 +86,7 @@ $initials   = tp_initials($userName);
   </nav>
   <nav class="nav-section">
     <div class="nav-label">AKUTANSI</div>
-      <a class="nav-link<?= $activeKey === 'admin' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/users')) ?>">
+      <a class="nav-link<?= $activeKey === 'riwayat' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/transaction-history')) ?>">
         <i class="bi bi-cash-coin" aria-hidden="true"></i>
         <span>Penjualan</span>
       </a>

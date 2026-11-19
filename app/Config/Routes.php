@@ -70,8 +70,6 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('pos', 'Admin\PosController::index');
     $routes->post('pos/store', 'Admin\PosController::store');
     $routes->get('pos/receipt/(:num)', 'Admin\PosController::receipt/$1');
-    $routes->get('pos/reprint', 'Admin\PosController::reprint');
-    $routes->post('pos/reprint/(:num)', 'Admin\PosController::doReprint/$1');
 
     // Laporan
     $routes->get('laporan', 'ReportController::index');
@@ -87,6 +85,9 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('transaction-history', 'Admin\TransactionHistoryController::index');
     $routes->get('transaction-history/detail/(:num)', 'Admin\TransactionHistoryController::detail/$1');
     $routes->post('transaction-history/void/(:num)', 'Admin\TransactionHistoryController::void/$1');
+    // Cetak ulang tiket dari riwayat: GET data tiket aktif (AJAX modal), POST eksekusi reprint
+    $routes->get('transaction-history/reprint-data/(:num)', 'Admin\TransactionHistoryController::reprintData/$1');
+    $routes->post('transaction-history/reprint/(:num)', 'Admin\TransactionHistoryController::reprint/$1');
 
     // Data Tiket
     $routes->get('data-tiket', 'Admin\TicketController::index');

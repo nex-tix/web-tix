@@ -2041,4 +2041,27 @@
         }
       }
 
+      /* ============================================================
+         FLASH ALERT BOOTSTRAP — override grid alert TailPanel
+         tailpanel.css meng-set .alert = grid 24px/1fr/auto (design system
+         mengharap anak .ico/.body/.close). Markup flash Bootstrap hanya
+         berisi teks polos + .btn-close → teks jatuh di track 24px dan
+         wrap per kata (1 kata/baris). Scope .alert.alert-* hanya menyasar
+         alert Bootstrap; komponen alert tema (.alert.success/.danger/.warning)
+         tidak kena. Warna dikembalikan pakai variabel --bs-alert-* (BS 5.3.2).
+         ============================================================ */
+      .alert.alert-success,
+      .alert.alert-danger,
+      .alert.alert-warning,
+      .alert.alert-info,
+      .alert.alert-primary,
+      .alert.alert-secondary,
+      .alert.alert-light,
+      .alert.alert-dark {
+        display: block;
+        color: var(--bs-alert-color);
+        background-color: var(--bs-alert-bg);
+        border-color: var(--bs-alert-border-color);
+      }
+
 

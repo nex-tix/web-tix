@@ -12,7 +12,6 @@ use App\Models\CustomerModel;
 use App\Models\TicketModel;
 use App\Models\TicketDetailModel;
 use App\Models\SettingModel;
-use App\Models\PrintLogModel;
 use App\Models\BankModel;
 use App\Models\GuideModel;
 
@@ -27,7 +26,6 @@ class PosController extends BaseController
     protected TicketModel $ticketModel;
     protected TicketDetailModel $ticketDetailModel;
     protected SettingModel $settingModel;
-    protected PrintLogModel $printLogModel;
     protected BankModel $bankModel;
     protected GuideModel $guideModel;
 
@@ -42,7 +40,6 @@ class PosController extends BaseController
         $this->ticketModel = new TicketModel();
         $this->ticketDetailModel = new TicketDetailModel();
         $this->settingModel = new SettingModel();
-        $this->printLogModel = new PrintLogModel();
         $this->bankModel = new BankModel();
         $this->guideModel = new GuideModel();
     }
@@ -195,73 +192,5 @@ class PosController extends BaseController
             'ticketTypesById' => $ticketTypesById,
             'settings' => $settings,
         ]);
-    }
-
-    public function reprint()
-    {
-        $invoice = trim((string) ($this->request->getGet('invoice_code') ?? ''));
-        $transaction = null;
-        $tickets = [];
-        $error = null;
-
-        if ($invoice !== '') {
-            $transaction = $this->transactionModel->where('invoice_code', $invoice)->first();
-
-            if (!$transaction) {
-                $error = 'Invoice tidak ditemukan.';
-            } else {
-                $tickets = $this->ticketModel
-                    ->where('transaction_id', $transaction['id'])
-                    ->where('status', 'active')
-                    ->where('valid_date', date('Y-m-d'))
-                    ->orderBy('id', 'ASC')
-                    ->findAll();
-
-                if (empty($tickets)) {
-                    $error = 'Tidak ada tiket aktif yang berlaku hari ini untuk invoice ini.';
-                }
-            }
-        }
-
-        return view('pages/admin/pos/reprint', [
-            'transaction' => $transaction,
-            'tickets'     => $tickets,
-            'error'       => $error,
-            'search'      => $invoice,
-            'activeKey' => 'reprint',
-            'crumbs'    => 'Operasional | Cetak Ulang Tiket',
-        ]);
-    }
-
-    public function doReprint($ticketId)
-    {
-        $ticket = $this->ticketModel->find($ticketId);
-
-        if (!$ticket) {
-            return redirect()->to('/admin/pos/reprint')->with('error', 'Tiket tidak ditemukan.');
-        }
-
-        if ($ticket['status'] !== 'active') {
-            return redirect()->to('/admin/pos/reprint')->with('error', 'Tiket tidak aktif. Tidak dapat dicetak ulang.');
-        }
-
-        if ($ticket['valid_date'] !== date('Y-m-d')) {
-            return redirect()->to('/admin/pos/reprint')->with('error', 'Tiket tidak berlaku hari ini. Tidak dapat dicetak ulang.');
-        }
-
-        $reason = trim((string) ($this->request->getPost('reprint_reason') ?? ''));
-        if ($reason === '') {
-            return redirect()->back()->with('error', 'Alasan cetak ulang wajib diisi.')->withInput();
-        }
-
-        $this->printLogModel->insert([
-            'ticket_id'       => $ticketId,
-            'printed_by'      => (int) session()->get('user_id'),
-            'print_type'      => 'reprint',
-            'printed_at'      => date('Y-m-d H:i:s'),
-            'reprint_reason'  => $reason,
-        ], false);
-
-        return redirect()->to(base_url("admin/pos/receipt/{$ticket['transaction_id']}?ticket_id={$ticketId}"))->with('success', 'Cetak ulang berhasil. Tiket siap dicetak.');
     }
 }
