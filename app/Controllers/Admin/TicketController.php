@@ -106,6 +106,8 @@ class TicketController extends BaseController
             'ticket'       => $ticket,
             'details'      => $details,
             'typeNames'    => $typeNames,
+            'activeKey'    => 'data-tiket',              // aktifkan navlink Data Tiket di halaman detail
+            'crumbs'       => 'Operasional | Data Tiket | Detail',
             'currentRoute' => 'data-tiket',
         ]);
     }

@@ -125,6 +125,8 @@ class TransactionHistoryController extends BaseController
             'adminUser'       => $adminUser,
             'tickets'         => $tickets,
             'ticketTypesById' => $ticketTypesById,
+            'activeKey'       => 'riwayat',               // aktifkan navlink Riwayat Penjualan di halaman detail
+            'crumbs'          => 'Operasional | Riwayat Transaksi | Detail',
             'currentRoute'    => 'transaction-history',
         ]);
     }

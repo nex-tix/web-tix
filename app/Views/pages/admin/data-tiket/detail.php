@@ -128,7 +128,7 @@
         <div class="table-responsive">
           <table class="table table-hover table-detail mb-0 align-middle">
             <thead>
-              <tr">
+              <tr>
                 <th style="width: 25%">Tipe</th>
                 <th style="width: 15%">Kategori</th>
                 <th style="width: 15%">Qty</th>

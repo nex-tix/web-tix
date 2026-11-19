@@ -9,22 +9,20 @@
       </div>
     </div>
 
-    <div class="filter-export card border-0 shadow-sm bg-white mb-3">
-      <div class="card-body p-3">
-        <div class="d-flex align-items-end gap-3" style="flex-wrap:nowrap;">
-          <div>
-            <label class="form-label filter-label">Tanggal Awal</label>
-            <input type="date" id="filter-tanggal-awal" class="form-control" style="min-width: 170px;">
-          </div>
-          <div>
-            <label class="form-label filter-label">Tanggal Akhir</label>
-            <input type="date" id="filter-tanggal-akhir" class="form-control" style="min-width: 170px;">
-          </div>
-          <div>
-            <a id="btn-export-pdf" class="btn btn-transaksi" href="#">
-              <i class="bi bi-file-earmark-pdf"></i> Export PDF
-            </a>
-          </div>
+    <div class="filter-export table-card mb-3 p-3">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <label class="form-label filter-label">Tanggal Awal</label>
+          <input type="date" id="filter-tanggal-awal" class="form-control form-control-sm" value="<?= date('Y-m-01') ?>">
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <label class="form-label filter-label">Tanggal Akhir</label>
+          <input type="date" id="filter-tanggal-akhir" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
+        </div>
+        <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
+          <a id="btn-export-pdf" class="btn btn-sm btn-transaksi w-100 justify-content-center" href="<?= base_url('admin/laporan/export-pdf?start=' . date('d-m-Y', strtotime('first day of this month')) . '&end=' . date('d-m-Y')) ?>">
+            <i class="bi bi-file-earmark-pdf"></i> Export PDF
+          </a>
         </div>
       </div>
     </div>
@@ -32,7 +30,7 @@
 
 
     <div class="row g-3">
-      <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Penjualan hari ini</h2>
@@ -48,7 +46,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Rekap diskon hari ini</h2>
@@ -61,7 +59,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Pengunjung masuk</h2>
@@ -74,7 +72,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="col-12 col-sm-6 col-lg-3">
         <div class="stat-card">
           <div class="stat-label">
             <h2>Tiket belum terpakai</h2>
@@ -97,10 +95,10 @@
       </script>
 
       <div class="chart-card container-fluid">
-        <div class="card-header d-flex">
-          <h3 class="sub-text">Rekap penjualan</h3>
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2 bg-white">
+          <h3 class="sub-text mb-0">Rekap penjualan</h3>
 
-          <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
+          <div class="btn-chart d-flex flex-wrap gap-2">
             <button class="btn-chart-laporan" data-range="7days">7 hari</button>
             <select id="select-bulan" class="input-chart-laporan">
               <option value="">Pilih bulan</option>
@@ -134,10 +132,10 @@
         const serverDonutChartData = <?= json_encode($donut_chart_data) ?>;
       </script>
       <div class="chart-card-header container-fluid">
-        <div class="card-header d-flex">
-          <h3 class="sub-text">Analisa Penjualan Bulanan</h3>
+        <div class="card-header d-flex flex-wrap align-items-center gap-3 bg-white">
+          <h3 class="sub-text mb-0">Analisa Penjualan Bulanan</h3>
 
-          <div style="margin-left: auto;" class="btn-chart d-flex gap-2">
+          <div class="btn-chart d-flex flex-wrap gap-2">
             <select id="select-donut-bulan" class="input-chart-laporan select-donut-bulan">
               <option value="1">Januari</option>
               <option value="2">Februari</option>
@@ -157,9 +155,9 @@
         <!-- /.card-header -->
 
         <div class="row g-3 mt-1">
-          <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="col-12 col-md-6 col-lg-4">
             <div class="chart-card shadow-sm">
-              <div class="card-header d-flex flex-wrap align-items-center">
+              <div class="card-header d-flex flex-wrap align-items-center bg-white">
                 <h3 class="sub-text">Metode Bayar</h3>
               </div>
               <!-- /.card-header -->
@@ -170,9 +168,9 @@
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="col-12 col-md-6 col-lg-4">
             <div class="chart-card shadow-sm">
-              <div class="card-header d-flex flex-wrap align-items-center">
+              <div class="card-header d-flex flex-wrap align-items-center bg-white">
                 <h3 class="sub-text">Asal pengunjung</h3>
               </div>
               <!-- /.card-header -->
@@ -183,9 +181,9 @@
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="col-12 col-md-12 col-lg-4">
             <div class="chart-card shadow-sm">
-              <div class="card-header d-flex flex-wrap align-items-center">
+              <div class="card-header d-flex flex-wrap align-items-center bg-white">
                 <h3 class="sub-text">Jenis Tiket</h3>
               </div>
               <!-- /.card-header -->
@@ -205,11 +203,11 @@
         <div class="table-card">
           <div class="app-content-header">
             <div class="page-title">
-              <h4 style="color: #2c3136;" class="sub-text">Audit Scan Tiket</h4>
+              <h4 class="sub-text">Audit Scan Tiket</h4>
             </div>
           </div>
           <div class="table-responsive">
-            <table id="datatable" class="table table-hover datatable mb-0">
+            <table id="datatable" class="table table-hover datatable mb-0" style="min-width: 750px;">
               <thead>
                 <tr>
                   <th>Waktu Scan</th>
@@ -220,7 +218,7 @@
                   <th>Status Scan</th>
                 </tr>
               </thead>
-              <tbody class="table-light">
+              <tbody>
                 <?php foreach ($checkin_histories as $ch) : ?>
                   <tr>
                     <td><?= esc(date('d-m-Y', strtotime($ch['scanned_at']))) ?> <br> <?= esc(date('H:i', strtotime($ch['scanned_at']))) ?> WITA</td>
@@ -231,14 +229,16 @@
                     <td>
                       <?php if ($ch['result'] == 'VALID') : ?>
                         Diterima
-                      <?Php elseif ($ch['result'] == 'ALREADY_USED') : ?>
+                      <?php elseif ($ch['result'] == 'ALREADY_USED') : ?>
                         Tiket telah terpakai
-                      <?Php elseif ($ch['result'] == 'EXPIRED') : ?>
-                        Tiket telah kadaluarwa
-                      <?Php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
+                      <?php elseif ($ch['result'] == 'EXPIRED') : ?>
+                        Tiket telah kadaluarsa
+                      <?php elseif ($ch['result'] == 'NOT_YET_VALID') : ?>
                         Tiket belum bisa digunakan
-                      <?Php elseif ($ch['result'] == 'CANCELLED') : ?>
+                      <?php elseif ($ch['result'] == 'CANCELLED') : ?>
                         Tiket telah dibatalkan
+                      <?php else : ?>
+                        <?= esc($ch['result']) ?>
                       <?php endif; ?>
                     </td>
                   </tr>
@@ -248,6 +248,7 @@
             </table>
           </div>
         </div>
+      </div>
     </section>
 
     <script>
@@ -270,7 +271,7 @@
           }
         }
 
-        function showAlert(message) {
+        function showAlert(message) { 
           hideAlert();
           alertEl = document.createElement('div');
           alertEl.className = 'alert alert-warning alert-dismissible fade show mt-3';
@@ -284,25 +285,17 @@
         function updateExportUrl() {
           hideAlert();
 
-          if (!startInput.value || !endInput.value) {
-            exportBtn.href = '#';
-            return;
-          }
+          const startVal = startInput.value ? formatDateRegional(startInput.value) : '<?= date('d-m-Y', strtotime('first day of this month')) ?>';
+          const endVal = endInput.value ? formatDateRegional(endInput.value) : '<?= date('d-m-Y') ?>';
 
-          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' +
-            formatDateRegional(startInput.value) + '&end=' + formatDateRegional(endInput.value);
+          exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' + startVal + '&end=' + endVal;
         }
 
         startInput.addEventListener('change', updateExportUrl);
         endInput.addEventListener('change', updateExportUrl);
 
         exportBtn.addEventListener('click', function(e) {
-          if (!startInput.value || !endInput.value) {
-            e.preventDefault();
-            showAlert('Silahkan tentukan tanggal dahulu');
-            return;
-          }
-          if (endInput.value < startInput.value) {
+          if (startInput.value && endInput.value && endInput.value < startInput.value) {
             e.preventDefault();
             showAlert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
           }
@@ -312,6 +305,5 @@
       });
     </script>
   </div>
-</div>
 </div>
 <?= $this->endSection() ?>

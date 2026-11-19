@@ -10,6 +10,8 @@ use App\Models\GateUserModel;
 use App\Models\TicketModel;
 use App\Models\TransactionModel;
 use App\Models\CustomerModel;
+use App\Models\GuideModel;
+use App\Models\BankModel;
 
 class ReportController extends BaseController
 {
@@ -19,6 +21,8 @@ class ReportController extends BaseController
     protected $gateUserModel;
     protected $transactionModel;
     protected $customerModel;
+    protected $guideModel;
+    protected $bankModel;
 
     public function __construct()
     {
@@ -28,6 +32,8 @@ class ReportController extends BaseController
         $this->gateUserModel = new GateUserModel();
         $this->transactionModel = new TransactionModel();
         $this->customerModel = new CustomerModel();
+        $this->guideModel = new GuideModel();
+        $this->bankModel = new BankModel();
     }
 
     public function index(): string|object
@@ -103,7 +109,8 @@ class ReportController extends BaseController
                 ->join('checkpoints c', 'c.id = ch.checkpoint_id', 'left')
                 ->join('tickets t', 't.id = ch.ticket_id', 'left')
                 ->join('gate_users gu', 'gu.id = ch.gate_user_id', 'left')
-                ->orderBy('ch.scanned_at', 'ASC')
+                ->orderBy('ch.scanned_at', 'DESC')
+                ->limit(500)
                 ->get()
                 ->getResultArray(),
 
@@ -124,8 +131,8 @@ class ReportController extends BaseController
             'chart_data' => (new LaporanService())->getChartData(),
             'donut_chart_data' => (new LaporanService())->getDonutChartData(),
 
-            'activeKey' => 'laporan',
-            'crumbs'    => 'Operasional | Laporan',
+            'activeKey' => 'laporan-global',
+            'crumbs'    => 'Operasional | Laporan Global',
         ];
 
 
@@ -161,25 +168,31 @@ class ReportController extends BaseController
         $endInput = $this->request->getGet('end');
 
         if (empty($startInput) || empty($endInput)) {
-            return redirect()->back()->with('error', 'Tanggal awal dan akhir harus diisi');
+            $startDate = date('Y-m-01');
+            $endDate = date('Y-m-t');
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
+        } else {
+            $startDt = \DateTime::createFromFormat('d-m-Y', $startInput) ?: \DateTime::createFromFormat('Y-m-d', $startInput);
+            $endDt = \DateTime::createFromFormat('d-m-Y', $endInput) ?: \DateTime::createFromFormat('Y-m-d', $endInput);
+
+            if ($startDt === false || $endDt === false) {
+                $startDate = date('Y-m-01');
+                $endDate = date('Y-m-t');
+                $startDt = new \DateTime($startDate);
+                $endDt = new \DateTime($endDate);
+            } else {
+                $startDate = $startDt->format('Y-m-d');
+                $endDate = $endDt->format('Y-m-d');
+            }
         }
-
-        $startDt = \DateTime::createFromFormat('d-m-Y', $startInput);
-        $endDt = \DateTime::createFromFormat('d-m-Y', $endInput);
-
-        if (
-            $startDt === false || $endDt === false
-            || $startDt->format('d-m-Y') !== $startInput
-            || $endDt->format('d-m-Y') !== $endInput
-        ) {
-            return redirect()->back()->with('error', 'Format tanggal tidak valid');
-        }
-
-        $startDate = $startDt->format('Y-m-d');
-        $endDate = $endDt->format('Y-m-d');
 
         if ($startDate > $endDate) {
-            return redirect()->back()->with('error', 'Tanggal awal harus sebelum tanggal akhir');
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
         }
 
         $tahun = (int) $startDt->format('Y');
@@ -508,5 +521,573 @@ class ReportController extends BaseController
             'CANCELLED' => 'Tiket sudah dibatalkan sistem.',
             default => '-',
         };
+    }
+
+    private function resolveDateRange(?string $startInput, ?string $endInput): array
+    {
+        if (empty($startInput) || empty($endInput)) {
+            $startDate = date('Y-m-01');
+            $endDate   = date('Y-m-d');
+        } else {
+            $startDt = \DateTime::createFromFormat('d-m-Y', $startInput) ?: \DateTime::createFromFormat('Y-m-d', $startInput);
+            $endDt   = \DateTime::createFromFormat('d-m-Y', $endInput) ?: \DateTime::createFromFormat('Y-m-d', $endInput);
+
+            if ($startDt === false || $endDt === false) {
+                $startDate = date('Y-m-01');
+                $endDate   = date('Y-m-d');
+            } else {
+                $startDate = $startDt->format('Y-m-d');
+                $endDate   = $endDt->format('Y-m-d');
+            }
+        }
+
+        if ($startDate > $endDate) {
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+        }
+
+        return ['startDate' => $startDate, 'endDate' => $endDate];
+    }
+
+    // =========================================================================
+    // 2. LAPORAN DATA PENGUNJUNG
+    // =========================================================================
+    public function pengunjung(): string|object
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $originType = $this->request->getGet('origin_type');
+        $category   = $this->request->getGet('category');
+        $status     = $this->request->getGet('status');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                c.name AS customer_name,
+                c.origin,
+                c.origin_type,
+                c.phone AS customer_phone,
+                cp.name AS checkpoint_name
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('checkpoints cp', 'cp.id = t.used_checkpoint_id', 'left')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($originType)) {
+            $builder->where('c.origin_type', $originType);
+        }
+        if (!empty($category)) {
+            $builder->where('t.ticket_category', $category);
+        }
+        if (!empty($status)) {
+            $builder->where('t.status', $status);
+        }
+
+        $tickets = $builder->orderBy('t.valid_date', 'DESC')->orderBy('t.id', 'DESC')->get()->getResultArray();
+
+        $totalPengunjung = 0;
+        $totalDomestik   = 0;
+        $totalMancanegara = 0;
+        $totalHadir      = 0;
+
+        foreach ($tickets as $t) {
+            $visitors = (int) ($t['total_visitors'] ?? 0);
+            $totalPengunjung += $visitors;
+            if (($t['origin_type'] ?? '') === 'domestic') {
+                $totalDomestik += $visitors;
+            } elseif (($t['origin_type'] ?? '') === 'international') {
+                $totalMancanegara += $visitors;
+            }
+            if (($t['status'] ?? '') === 'used') {
+                $totalHadir += $visitors;
+            }
+        }
+
+        $domestikPct    = $totalPengunjung > 0 ? round(($totalDomestik / $totalPengunjung) * 100, 1) : 0;
+        $mancanegaraPct = $totalPengunjung > 0 ? round(($totalMancanegara / $totalPengunjung) * 100, 1) : 0;
+        $hadirPct       = $totalPengunjung > 0 ? round(($totalHadir / $totalPengunjung) * 100, 1) : 0;
+
+        $data = [
+            'tickets'          => $tickets,
+            'startDate'        => $startDate,
+            'endDate'          => $endDate,
+            'startDateDisplay' => date('d-m-Y', strtotime($startDate)),
+            'endDateDisplay'   => date('d-m-Y', strtotime($endDate)),
+            'filters'          => [
+                'origin_type' => $originType,
+                'category'    => $category,
+                'status'      => $status,
+            ],
+            'kpi' => [
+                'total_pengunjung'  => $totalPengunjung,
+                'total_domestik'    => $totalDomestik,
+                'domestik_pct'      => $domestikPct,
+                'total_mancanegara' => $totalMancanegara,
+                'mancanegara_pct'   => $mancanegaraPct,
+                'total_hadir'       => $totalHadir,
+                'hadir_pct'         => $hadirPct,
+            ],
+            'activeKey' => 'laporan-pengunjung',
+            'crumbs'    => 'Operasional | Laporan Data Pengunjung',
+        ];
+
+        return view('pages/admin/laporan/pengunjung', $data);
+    }
+
+    public function exportPengunjungPdf()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $originType = $this->request->getGet('origin_type');
+        $category   = $this->request->getGet('category');
+        $status     = $this->request->getGet('status');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                c.name AS customer_name,
+                c.origin,
+                c.origin_type,
+                c.phone AS customer_phone,
+                cp.name AS checkpoint_name
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('checkpoints cp', 'cp.id = t.used_checkpoint_id', 'left')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($originType)) {
+            $builder->where('c.origin_type', $originType);
+        }
+        if (!empty($category)) {
+            $builder->where('t.ticket_category', $category);
+        }
+        if (!empty($status)) {
+            $builder->where('t.status', $status);
+        }
+
+        $tickets = $builder->orderBy('t.valid_date', 'ASC')->orderBy('t.id', 'ASC')->get()->getResultArray();
+
+        $totalPengunjung  = 0;
+        $totalDomestik    = 0;
+        $totalMancanegara = 0;
+        $totalHadir       = 0;
+
+        foreach ($tickets as $t) {
+            $visitors = (int) ($t['total_visitors'] ?? 0);
+            $totalPengunjung += $visitors;
+            if (($t['origin_type'] ?? '') === 'domestic') {
+                $totalDomestik += $visitors;
+            } elseif (($t['origin_type'] ?? '') === 'international') {
+                $totalMancanegara += $visitors;
+            }
+            if (($t['status'] ?? '') === 'used') {
+                $totalHadir += $visitors;
+            }
+        }
+
+        $domestikPct    = $totalPengunjung > 0 ? round(($totalDomestik / $totalPengunjung) * 100, 1) : 0;
+        $mancanegaraPct = $totalPengunjung > 0 ? round(($totalMancanegara / $totalPengunjung) * 100, 1) : 0;
+        $hadirPct       = $totalPengunjung > 0 ? round(($totalHadir / $totalPengunjung) * 100, 1) : 0;
+
+        $data = [
+            'tickets'          => $tickets,
+            'startDate'        => $startDate,
+            'endDate'          => $endDate,
+            'totalPengunjung'  => $totalPengunjung,
+            'totalDomestik'    => $totalDomestik,
+            'domestikPct'      => $domestikPct,
+            'totalMancanegara' => $totalMancanegara,
+            'mancanegaraPct'   => $mancanegaraPct,
+            'totalHadir'       => $totalHadir,
+            'hadirPct'         => $hadirPct,
+        ];
+
+        $html = view('pages/admin/laporan/pdf-pengunjung', $data);
+
+        $dompdf = new \Dompdf\Dompdf([
+            'chroot'  => FCPATH,
+            'tempDir' => WRITEPATH . 'temp',
+        ]);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $filename = "laporan-pengunjung-{$startDate}-sd-{$endDate}.pdf";
+        $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    // =========================================================================
+    // 3. LAPORAN PEMBAYARAN GUIDE
+    // =========================================================================
+    public function guide(): string|object
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $guideId    = $this->request->getGet('guide_id');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $guidesList = $this->guideModel->orderBy('name', 'ASC')->findAll();
+
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                tx.status AS tx_status,
+                c.name AS customer_name,
+                c.origin AS customer_origin,
+                g.name AS guide_name,
+                g.code AS guide_code,
+                g.phone AS guide_phone
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('guides g', 'g.id = t.guide_id', 'left')
+            ->where('t.guide_id IS NOT NULL')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($guideId)) {
+            $builder->where('t.guide_id', $guideId);
+        }
+
+        $records = $builder->orderBy('t.valid_date', 'DESC')->orderBy('t.id', 'DESC')->get()->getResultArray();
+
+        $uniqueGuides   = [];
+        $totalTrips     = count($records);
+        $totalWisatawan = 0;
+        $totalKomisi    = 0;
+
+        foreach ($records as $r) {
+            if (!empty($r['guide_id'])) {
+                $uniqueGuides[$r['guide_id']] = true;
+            }
+            $totalWisatawan += (int) ($r['total_visitors'] ?? 0);
+            $totalKomisi    += (float) ($r['guide_fee_amount'] ?? 0);
+        }
+
+        $data = [
+            'records'          => $records,
+            'guidesList'       => $guidesList,
+            'startDate'        => $startDate,
+            'endDate'          => $endDate,
+            'startDateDisplay' => date('d-m-Y', strtotime($startDate)),
+            'endDateDisplay'   => date('d-m-Y', strtotime($endDate)),
+            'selectedGuideId'  => $guideId,
+            'kpi' => [
+                'total_guides_active' => count($uniqueGuides),
+                'total_trips'         => $totalTrips,
+                'total_wisatawan'     => $totalWisatawan,
+                'total_komisi'        => $totalKomisi,
+            ],
+            'activeKey' => 'laporan-guide',
+            'crumbs'    => 'Operasional | Laporan Pembayaran Guide',
+        ];
+
+        return view('pages/admin/laporan/guide', $data);
+    }
+
+    public function exportGuidePdf()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $guideId    = $this->request->getGet('guide_id');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $selectedGuide = null;
+        if (!empty($guideId)) {
+            $selectedGuide = $this->guideModel->find($guideId);
+        }
+
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                tx.status AS tx_status,
+                c.name AS customer_name,
+                c.origin AS customer_origin,
+                g.name AS guide_name,
+                g.code AS guide_code,
+                g.phone AS guide_phone
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('guides g', 'g.id = t.guide_id', 'left')
+            ->where('t.guide_id IS NOT NULL')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($guideId)) {
+            $builder->where('t.guide_id', $guideId);
+        }
+
+        $records = $builder->orderBy('t.valid_date', 'ASC')->orderBy('t.id', 'ASC')->get()->getResultArray();
+
+        $totalWisatawan = 0;
+        $totalKomisi    = 0;
+        foreach ($records as $r) {
+            $totalWisatawan += (int) ($r['total_visitors'] ?? 0);
+            $totalKomisi    += (float) ($r['guide_fee_amount'] ?? 0);
+        }
+
+        $data = [
+            'records'        => $records,
+            'selectedGuide'  => $selectedGuide,
+            'startDate'      => $startDate,
+            'endDate'        => $endDate,
+            'totalTrips'     => count($records),
+            'totalWisatawan' => $totalWisatawan,
+            'totalKomisi'    => $totalKomisi,
+        ];
+
+        $html = view('pages/admin/laporan/pdf-guide', $data);
+
+        $dompdf = new \Dompdf\Dompdf([
+            'chroot'  => FCPATH,
+            'tempDir' => WRITEPATH . 'temp',
+        ]);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $filename = "laporan-komisi-guide-{$startDate}-sd-{$endDate}.pdf";
+        $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    // =========================================================================
+    // 4. LAPORAN KEUANGAN (PER BANK & CASH)
+    // =========================================================================
+    public function keuangan(): string|object
+    {
+        $startInput    = $this->request->getGet('start');
+        $endInput      = $this->request->getGet('end');
+        $paymentMethod = $this->request->getGet('payment_method');
+        $bankId        = $this->request->getGet('bank_id');
+        $status        = $this->request->getGet('status') ?: 'completed';
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $banksList = $this->bankModel->orderBy('name', 'ASC')->findAll();
+
+        $builder = $this->transactionModel->builder('transactions tx')
+            ->select('
+                tx.*,
+                b.name AS bank_name,
+                b.code AS bank_code,
+                u.username AS cashier_username,
+                c.name AS customer_name
+            ')
+            ->join('banks b', 'b.id = tx.bank_id', 'left')
+            ->join('users u', 'u.id = tx.created_by', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->where('DATE(tx.created_at) >=', $startDate)
+            ->where('DATE(tx.created_at) <=', $endDate);
+
+        if (!empty($status)) {
+            $builder->where('tx.status', $status);
+        }
+        if (!empty($paymentMethod)) {
+            $builder->where('tx.payment_method', $paymentMethod);
+        }
+        if (!empty($bankId)) {
+            $builder->where('tx.bank_id', $bankId);
+        }
+
+        $transactions = $builder->orderBy('tx.created_at', 'DESC')->get()->getResultArray();
+
+        $grossSales  = 0;
+        $totalDiskon = 0;
+        $netRevenue  = 0;
+        $totalCash   = 0;
+        $totalDebit  = 0;
+
+        $bankBreakdown = [];
+        foreach ($banksList as $b) {
+            $bankBreakdown[$b['id']] = [
+                'name'  => $b['name'],
+                'code'  => $b['code'],
+                'count' => 0,
+                'total' => 0,
+            ];
+        }
+
+        foreach ($transactions as $tx) {
+            $sub   = (float) ($tx['subtotal'] ?? 0);
+            $disc  = (float) ($tx['discount_amount'] ?? 0);
+            $tot   = (float) ($tx['total_amount'] ?? 0);
+
+            $grossSales  += $sub;
+            $totalDiskon += $disc;
+            $netRevenue  += $tot;
+
+            if ($tx['payment_method'] === 'cash') {
+                $totalCash += $tot;
+            } elseif ($tx['payment_method'] === 'debit') {
+                $totalDebit += $tot;
+                $bId = $tx['bank_id'];
+                if (!empty($bId) && isset($bankBreakdown[$bId])) {
+                    $bankBreakdown[$bId]['count']++;
+                    $bankBreakdown[$bId]['total'] += $tot;
+                }
+            }
+        }
+
+        // Urutkan bankBreakdown berdasarkan saldo penerimaan tertinggi
+        uasort($bankBreakdown, function ($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
+
+        // Tandai Top 3 Bank dengan saldo tertinggi
+        $rank = 0;
+        foreach ($bankBreakdown as $bId => &$bData) {
+            $rank++;
+            $bData['is_top3'] = ($rank <= 3);
+            $bData['rank']    = $rank;
+        }
+        unset($bData);
+
+        $data = [
+            'transactions'     => $transactions,
+            'banksList'        => $banksList,
+            'startDate'        => $startDate,
+            'endDate'          => $endDate,
+            'startDateDisplay' => date('d-m-Y', strtotime($startDate)),
+            'endDateDisplay'   => date('d-m-Y', strtotime($endDate)),
+            'filters'          => [
+                'payment_method' => $paymentMethod,
+                'bank_id'        => $bankId,
+                'status'         => $status,
+            ],
+            'kpi' => [
+                'gross_sales'  => $grossSales,
+                'total_diskon' => $totalDiskon,
+                'net_revenue'  => $netRevenue,
+                'total_cash'   => $totalCash,
+                'total_debit'  => $totalDebit,
+            ],
+            'bankBreakdown' => $bankBreakdown,
+            'activeKey'     => 'laporan-keuangan',
+            'crumbs'        => 'Operasional | Laporan Keuangan',
+        ];
+
+        return view('pages/admin/laporan/keuangan', $data);
+    }
+
+    public function exportKeuanganPdf()
+    {
+        $startInput    = $this->request->getGet('start');
+        $endInput      = $this->request->getGet('end');
+        $paymentMethod = $this->request->getGet('payment_method');
+        $bankId        = $this->request->getGet('bank_id');
+        $status        = $this->request->getGet('status') ?: 'completed';
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        $selectedBank = null;
+        if (!empty($bankId)) {
+            $selectedBank = $this->bankModel->find($bankId);
+        }
+
+        $builder = $this->transactionModel->builder('transactions tx')
+            ->select('
+                tx.*,
+                b.name AS bank_name,
+                b.code AS bank_code,
+                u.username AS cashier_username,
+                c.name AS customer_name
+            ')
+            ->join('banks b', 'b.id = tx.bank_id', 'left')
+            ->join('users u', 'u.id = tx.created_by', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->where('DATE(tx.created_at) >=', $startDate)
+            ->where('DATE(tx.created_at) <=', $endDate);
+
+        if (!empty($status)) {
+            $builder->where('tx.status', $status);
+        }
+        if (!empty($paymentMethod)) {
+            $builder->where('tx.payment_method', $paymentMethod);
+        }
+        if (!empty($bankId)) {
+            $builder->where('tx.bank_id', $bankId);
+        }
+
+        $transactions = $builder->orderBy('tx.created_at', 'ASC')->get()->getResultArray();
+
+        $grossSales  = 0;
+        $totalDiskon = 0;
+        $netRevenue  = 0;
+        $totalCash   = 0;
+        $totalDebit  = 0;
+
+        foreach ($transactions as $tx) {
+            $grossSales  += (float) ($tx['subtotal'] ?? 0);
+            $totalDiskon += (float) ($tx['discount_amount'] ?? 0);
+            $tot          = (float) ($tx['total_amount'] ?? 0);
+            $netRevenue  += $tot;
+
+            if ($tx['payment_method'] === 'cash') {
+                $totalCash += $tot;
+            } elseif ($tx['payment_method'] === 'debit') {
+                $totalDebit += $tot;
+            }
+        }
+
+        $data = [
+            'transactions'  => $transactions,
+            'selectedBank'  => $selectedBank,
+            'startDate'     => $startDate,
+            'endDate'       => $endDate,
+            'paymentMethod' => $paymentMethod,
+            'grossSales'    => $grossSales,
+            'totalDiskon'   => $totalDiskon,
+            'netRevenue'    => $netRevenue,
+            'totalCash'     => $totalCash,
+            'totalDebit'    => $totalDebit,
+        ];
+
+        $html = view('pages/admin/laporan/pdf-keuangan', $data);
+
+        $dompdf = new \Dompdf\Dompdf([
+            'chroot'  => FCPATH,
+            'tempDir' => WRITEPATH . 'temp',
+        ]);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $filename = !empty($selectedBank)
+            ? "laporan-keuangan-{$selectedBank['code']}-{$startDate}-sd-{$endDate}.pdf"
+            : "laporan-keuangan-{$startDate}-sd-{$endDate}.pdf";
+
+        $dompdf->stream($filename, ['Attachment' => true]);
     }
 }

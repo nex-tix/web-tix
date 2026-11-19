@@ -67,9 +67,15 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('pos/reprint', 'Admin\PosController::reprint');
     $routes->post('pos/reprint/(:num)', 'Admin\PosController::doReprint/$1');
 
-    //laporan
+    // Laporan
     $routes->get('laporan', 'ReportController::index');
     $routes->get('laporan/export-pdf', 'ReportController::exportPdf');
+    $routes->get('laporan/pengunjung', 'ReportController::pengunjung');
+    $routes->get('laporan/pengunjung/export-pdf', 'ReportController::exportPengunjungPdf');
+    $routes->get('laporan/guide', 'ReportController::guide');
+    $routes->get('laporan/guide/export-pdf', 'ReportController::exportGuidePdf');
+    $routes->get('laporan/keuangan', 'ReportController::keuangan');
+    $routes->get('laporan/keuangan/export-pdf', 'ReportController::exportKeuanganPdf');
 
     // Riwayat Penjualan
     $routes->get('transaction-history', 'Admin\TransactionHistoryController::index');
