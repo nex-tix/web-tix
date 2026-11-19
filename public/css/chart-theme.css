@@ -1,0 +1,196 @@
+/* ==========================================================================
+   ApexCharts Theme Integration (Dark & Light Mode)
+   File: public/css/chart-theme.css
+   Catatan: File ini terpisah dari main.css untuk mencegah efek samping.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DARK MODE INTEGRATION ([data-theme="dark"])
+   -------------------------------------------------------------------------- */
+
+/* Container Utama Tooltip Hover */
+[data-theme="dark"] .apexcharts-tooltip,
+[data-theme="dark"] .apexcharts-tooltip.apexcharts-theme-light,
+[data-theme="dark"] .apexcharts-tooltip.apexcharts-theme-dark {
+  background: #1E2226 !important;
+  color: #E8EAED !important;
+  border: 1px solid #2E3339 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  border-radius: 6px !important;
+}
+
+/* Header / Judul Tooltip (Hari / Tanggal) */
+[data-theme="dark"] .apexcharts-tooltip .apexcharts-tooltip-title {
+  background: #16191D !important;
+  border-bottom: 1px solid #2E3339 !important;
+  color: #E8EAED !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Seri Data Tooltip (Tunai / Debit) */
+[data-theme="dark"] .apexcharts-tooltip-series-group {
+  background: transparent !important;
+  color: #E8EAED !important;
+  padding: 3px 10px !important;
+}
+
+[data-theme="dark"] .apexcharts-tooltip-text {
+  color: #E8EAED !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+}
+
+[data-theme="dark"] .apexcharts-tooltip-text-y-label,
+[data-theme="dark"] .apexcharts-tooltip-text-label {
+  color: #9AA0A6 !important; /* Muted slate untuk label agar kontras dengan value */
+}
+
+[data-theme="dark"] .apexcharts-tooltip-text-y-value,
+[data-theme="dark"] .apexcharts-tooltip-text-value {
+  color: #E8EAED !important;
+  font-weight: 600 !important;
+}
+
+/* Balon Tooltip Sumbu X (di bawah kolom saat kursor diarahkan) */
+[data-theme="dark"] .apexcharts-xaxistooltip,
+[data-theme="dark"] .apexcharts-xaxistooltip.apexcharts-theme-light,
+[data-theme="dark"] .apexcharts-xaxistooltip.apexcharts-theme-dark {
+  background: #1E2226 !important;
+  color: #E8EAED !important;
+  border: 1px solid #2E3339 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .apexcharts-xaxistooltip-text {
+  color: #E8EAED !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+/* Panah Penunjuk Balon Sumbu X */
+[data-theme="dark"] .apexcharts-xaxistooltip-bottom:after {
+  border-bottom-color: #1E2226 !important;
+}
+
+[data-theme="dark"] .apexcharts-xaxistooltip-bottom:before {
+  border-bottom-color: #2E3339 !important;
+}
+
+[data-theme="dark"] .apexcharts-xaxistooltip-top:after {
+  border-top-color: #1E2226 !important;
+}
+
+[data-theme="dark"] .apexcharts-xaxistooltip-top:before {
+  border-top-color: #2E3339 !important;
+}
+
+/* Tooltip Sumbu Y jika muncul */
+[data-theme="dark"] .apexcharts-yaxistooltip {
+  background: #1E2226 !important;
+  color: #E8EAED !important;
+  border: 1px solid #2E3339 !important;
+}
+
+[data-theme="dark"] .apexcharts-yaxistooltip-text {
+  color: #E8EAED !important;
+}
+
+/* Label Sumbu X & Sumbu Y pada Grafik SVG */
+[data-theme="dark"] .apexcharts-canvas text.apexcharts-text,
+[data-theme="dark"] .apexcharts-canvas text.apexcharts-xaxis-label,
+[data-theme="dark"] .apexcharts-canvas text.apexcharts-yaxis-label {
+  fill: #9AA0A6 !important;
+}
+
+/* Garis Kisi (Gridlines) pada Grafik */
+[data-theme="dark"] .apexcharts-canvas .apexcharts-grid line,
+[data-theme="dark"] .apexcharts-canvas .apexcharts-grid-borders line {
+  stroke: #2E3339 !important;
+}
+
+/* Legend Teks Grafik */
+[data-theme="dark"] .apexcharts-canvas .apexcharts-legend-text {
+  color: #E8EAED !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. LIGHT MODE PRESERVATION ([data-theme="light"])
+   -------------------------------------------------------------------------- */
+
+[data-theme="light"] .apexcharts-tooltip,
+[data-theme="light"] .apexcharts-tooltip.apexcharts-theme-light {
+  background: #FFFFFF !important;
+  color: #1F2937 !important;
+  border: 1px solid #E5E7EB !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 6px !important;
+}
+
+[data-theme="light"] .apexcharts-tooltip .apexcharts-tooltip-title {
+  background: #F8FAFC !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  color: #0F172A !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  margin-bottom: 4px !important;
+}
+
+[data-theme="light"] .apexcharts-tooltip-series-group {
+  background: transparent !important;
+  color: #1F2937 !important;
+  padding: 3px 10px !important;
+}
+
+[data-theme="light"] .apexcharts-tooltip-text {
+  color: #1F2937 !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+}
+
+[data-theme="light"] .apexcharts-tooltip-text-y-label,
+[data-theme="light"] .apexcharts-tooltip-text-label {
+  color: #64748B !important;
+}
+
+[data-theme="light"] .apexcharts-tooltip-text-y-value,
+[data-theme="light"] .apexcharts-tooltip-text-value {
+  color: #0F172A !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .apexcharts-xaxistooltip,
+[data-theme="light"] .apexcharts-xaxistooltip.apexcharts-theme-light {
+  background: #FFFFFF !important;
+  color: #1F2937 !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 4px !important;
+}
+
+[data-theme="light"] .apexcharts-xaxistooltip-text {
+  color: #1F2937 !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+}
+
+[data-theme="light"] .apexcharts-canvas text.apexcharts-text,
+[data-theme="light"] .apexcharts-canvas text.apexcharts-xaxis-label,
+[data-theme="light"] .apexcharts-canvas text.apexcharts-yaxis-label {
+  fill: #64748B !important;
+}
+
+[data-theme="light"] .apexcharts-canvas .apexcharts-grid line,
+[data-theme="light"] .apexcharts-canvas .apexcharts-grid-borders line {
+  stroke: #F1F5F9 !important;
+}
+
+[data-theme="light"] .apexcharts-canvas .apexcharts-legend-text {
+  color: #1F2937 !important;
+}
