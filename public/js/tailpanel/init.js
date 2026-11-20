@@ -96,6 +96,42 @@ function initNavGroups() {
   window.addEventListener('resize', reposition);
 }
 
+function initNavSections() {
+  // Section (nav-label) bisa dilipat. State disimpan di localStorage supaya
+  // pilihan user bertahan antar halaman; section yang mengandung halaman
+  // aktif di-set is-open oleh server dan tidak ditimpa simpanan.
+  const STORE = 'dash26-nav-sections';
+  const sections = [...document.querySelectorAll('.nav-section[data-nav-section]')];
+  if (!sections.length) return;
+
+  const labelOf = (s) => (s.querySelector('.nav-label')?.textContent || '').trim();
+
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { saved = null; }
+
+  const persist = () => {
+    const state = {};
+    sections.forEach((s) => { state[labelOf(s)] = s.classList.contains('is-open'); });
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch { /* localStorage may be unavailable */ }
+  };
+
+  sections.forEach((s) => {
+    const trigger = s.querySelector('[data-section-toggle]');
+    if (!trigger) return;
+    // Terapkan simpanan hanya pada section yang sedang tertutup (aktif menang)
+    if (saved && labelOf(s) in saved && !s.classList.contains('is-open')) {
+      s.classList.toggle('is-open', !!saved[labelOf(s)]);
+    }
+    trigger.setAttribute('aria-expanded', s.classList.contains('is-open') ? 'true' : 'false');
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = s.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      persist();
+    });
+  });
+}
+
 function initDropdowns() {
   const closeAll = (except) => {
     document.querySelectorAll('.dd-wrap.is-open').forEach((w) => {
@@ -199,6 +235,7 @@ export function initShellBehaviors() {
   initThemeToggle();
   initHeroDate();
   initNavGroups();
+  initNavSections();
   initDropdowns();
   initTodos();
   initAccordions();

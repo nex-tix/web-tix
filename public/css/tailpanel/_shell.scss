@@ -77,6 +77,43 @@
   color: var(--t-light);
   padding: 0 10px 6px;
 }
+/* nav-label kini <a> — bisa diklik untuk melipat/membuka section */
+.nav-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+.nav-label:hover {
+  color: var(--t-base);
+}
+.nav-label .chev {
+  font-size: 11px;
+  transition: transform 200ms ease;
+}
+.nav-section.is-open > .nav-label .chev {
+  transform: rotate(90deg);
+}
+/* Body section: flex column (gap sama seperti nav-section lama) */
+.nav-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+/* Lipat-buka section beranimasi — hanya saat label terlihat; di rail mode
+   (721–1100px) label disembunyikan, jadi rule ini dikecualikan agar menu
+   tetap tampil selalu di rentang itu */
+@media (min-width: 1101px), (max-width: 720px) {
+  .nav-section-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nav-section.is-open > .nav-section-body {
+    max-height: 400px;
+  }
+}
 
 .nav-link {
   display: flex;

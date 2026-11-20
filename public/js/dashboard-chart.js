@@ -6,6 +6,15 @@
   const report = window.dashboardReport;
 
   if (!chartEl || !report) return;
+   // Warna per tema
+  const chartColors = {
+    light: ["#CF4647", "#2A363B"],
+    dark: ["#CF4647", "#f1c40f"], // Debit: kuning agar kontras di dark mode
+  };
+  const getTheme = () =>
+    document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light";
 
   const chartRangeData = report.chartRangeData || {
     "7days": {
@@ -47,7 +56,7 @@
         show: false,
       },
     },
-    colors: ["#CF4647", "#2A363B"],
+    colors: chartColors[getTheme()], // <-- warna awal sesuai tema
     plotOptions: {
       bar: {
         columnWidth: "55%",
@@ -118,6 +127,18 @@
       });
     });
   });
+
+  
+  // Update warna chart saat tema berubah
+  new MutationObserver(() => {
+    column_chart.updateOptions({
+      colors: chartColors[getTheme()],
+    });
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+
 })();
 
 //--------------------

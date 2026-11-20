@@ -52,9 +52,12 @@ function buildItems() {
   const items = [];
 
   document.querySelectorAll('.d-sidebar .nav-section').forEach((section) => {
-    const sectionLabel = (section.querySelector('.nav-label')?.textContent || '').trim();
+    // 'Beranda' untuk nav-section lepas (Dashboard) yang tanpa nav-label
+    const sectionLabel = (section.querySelector('.nav-label')?.textContent || 'Beranda').trim();
 
-    section.querySelectorAll(':scope > .nav-link, :scope > .nav-item-group').forEach((el) => {
+    // Item ada di .nav-section-body (section dilipat) atau anak langsung nav
+    // (Dashboard — item lepas tanpa body). Trigger grup dikecualikan.
+    section.querySelectorAll(':scope > .nav-link, .nav-section-body > .nav-link, .nav-section-body > .nav-item-group').forEach((el) => {
       const isGroup = el.classList.contains('nav-item-group');
       const trigger = isGroup ? el.querySelector('[data-nav-toggle]') : el;
       // Ikon sidebar kini <i class="bi">; string path lama (action statis) tetap didukung

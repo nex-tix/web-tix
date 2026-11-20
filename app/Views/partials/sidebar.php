@@ -1,9 +1,13 @@
 <?php
 /**
- * Sidebar utama — HTML statis (tanpa foreach/array). Struktur identik dengan
- * render lama Shell.js; hanya state aktif yang dihitung server. Ikon memakai
- * Bootstrap Icons (<i class="bi bi-…">) — daftar item = sumber menu, dibaca
- * juga oleh palette (⌘K) dari DOM .d-sidebar.
+ * Sidebar utama — HTML statis (tanpa foreach/array). Ikon Bootstrap Icons
+ * (<i class="bi bi-…">) — daftar item = sumber menu, dibaca juga oleh
+ * palette (⌘K) dari DOM .d-sidebar.
+ *
+ * Section (nav-label) bisa dilipat: default tertutup, section yang mengandung
+ * halaman aktif di-set is-open di server; state lanjutan disimpan di
+ * localStorage oleh initNavSections() (init.js). Dashboard adalah item lepas
+ * di luar section — selalu terlihat.
  *
  * Data: $activeKey (dari controller), $userName, $userRole (dihitung layouts/main.php).
  */
@@ -43,12 +47,16 @@ $initials   = tp_initials($userName);
       <div class="brand-tag">Loket & Gate</div>
     </div>
   </div>
+  <!-- Dashboard: item lepas di luar section — selalu terlihat, tak ikut collapse -->
   <nav class="nav-section">
     <a class="nav-link<?= $activeKey === 'dashboard' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/dashboard')) ?>">
       <i class="bi bi-grid-1x2" aria-hidden="true"></i>
       <span>Dashboard</span>
     </a>
-    <div class="nav-label">OPERASIONAL</div>
+  </nav>
+  <nav class="nav-section<?= in_array($activeKey, ['guide', 'laporan-global', 'laporan-pengunjung', 'laporan-guide', 'laporan-keuangan'], true) ? ' is-open' : '' ?>" data-nav-section>
+    <a class="nav-label" href="javascript:void(0)" data-section-toggle>OPERASIONAL<i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>
+    <div class="nav-section-body">
       <a class="nav-link<?= $activeKey === 'guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/guides')) ?>">
         <i class="bi bi-person-video2" aria-hidden="true"></i>
         <span>Guides</span>
@@ -67,9 +75,11 @@ $initials   = tp_initials($userName);
           <a<?= $activeKey === 'laporan-keuangan' ? ' class="is-active"' : '' ?> href="<?= esc(base_url('admin/laporan/keuangan')) ?>">Laporan Keuangan</a>
         </div>
       </div>
+    </div>
   </nav>
-  <nav class="nav-section">
-    <div class="nav-label">AKUNTANSI</div>
+  <nav class="nav-section<?= in_array($activeKey, ['pos', 'riwayat', 'expense', 'gaji-guide'], true) ? ' is-open' : '' ?>" data-nav-section>
+    <a class="nav-label" href="javascript:void(0)" data-section-toggle>AKUNTANSI<i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>
+    <div class="nav-section-body">
       <a class="nav-link<?= $activeKey === 'pos' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/pos')) ?>">
         <i class="bi bi-pc-display" aria-hidden="true"></i>
         <span>Pos Loket</span>
@@ -87,10 +97,12 @@ $initials   = tp_initials($userName);
         <i class="bi bi-wallet" aria-hidden="true"></i>
         <span>Gaji Guide</span>
       </a>
+    </div>
   </nav>
-  <nav class="nav-section">
-    <div class="nav-label">MASTER DATA</div>
-<a class="nav-link<?= $activeKey === 'data-tiket' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/data-tiket')) ?>">
+  <nav class="nav-section<?= in_array($activeKey, ['data-tiket', 'jenis-tiket', 'bank', 'checkpoint'], true) ? ' is-open' : '' ?>" data-nav-section>
+    <a class="nav-label" href="javascript:void(0)" data-section-toggle>MASTER DATA<i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>
+    <div class="nav-section-body">
+      <a class="nav-link<?= $activeKey === 'data-tiket' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/data-tiket')) ?>">
         <i class="bi bi-ticket-perforated" aria-hidden="true"></i>
         <span>Data Tiket</span>
       </a>
@@ -106,9 +118,11 @@ $initials   = tp_initials($userName);
         <i class="bi bi-check2-square" aria-hidden="true"></i>
         <span>Checkpoint</span>
       </a>
+    </div>
   </nav>
-  <nav class="nav-section">
-    <div class="nav-label">USERS</div>
+  <nav class="nav-section<?= in_array($activeKey, ['admin', 'gate'], true) ? ' is-open' : '' ?>" data-nav-section>
+    <a class="nav-label" href="javascript:void(0)" data-section-toggle>USERS<i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>
+    <div class="nav-section-body">
       <a class="nav-link<?= $activeKey === 'admin' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/users')) ?>">
         <i class="bi bi-people" aria-hidden="true"></i>
         <span>Admin</span>
@@ -117,13 +131,16 @@ $initials   = tp_initials($userName);
         <i class="bi bi-person-check" aria-hidden="true"></i>
         <span>Penjaga Gate</span>
       </a>
+    </div>
   </nav>
-  <nav class="nav-section">
-    <div class="nav-label">SISTEM</div>
+  <nav class="nav-section<?= $activeKey === 'setting' ? ' is-open' : '' ?>" data-nav-section>
+    <a class="nav-label" href="javascript:void(0)" data-section-toggle>SISTEM<i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>
+    <div class="nav-section-body">
       <a class="nav-link<?= $activeKey === 'setting' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/settings')) ?>">
         <i class="bi bi-gear" aria-hidden="true"></i>
         <span>Settings</span>
       </a>
+    </div>
   </nav>
   <div class="sidebar-footer">
     <div class="workspace">
