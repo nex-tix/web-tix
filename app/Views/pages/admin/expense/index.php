@@ -21,16 +21,17 @@
     <!-- Filter & Export Card Responsif dengan Pencarian -->
     <div class="filter-export table-card mb-3 p-3">
       <form method="get" action="<?= base_url('admin/expenses') ?>" id="form-filter-expense">
-        <div class="row g-2 align-items-end">
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+        <!-- Baris 1: Filter Parameter Kriteria (Tanggal & Kategori) -->
+        <div class="row g-2 align-items-end mb-2">
+          <div class="col-6 col-md-3">
             <label class="form-label filter-label">Tanggal Awal</label>
             <input type="date" name="start" class="form-control form-control-sm" value="<?= esc($startDate ?? '') ?>">
           </div>
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="col-6 col-md-3">
             <label class="form-label filter-label">Tanggal Akhir</label>
             <input type="date" name="end" class="form-control form-control-sm" value="<?= esc($endDate ?? '') ?>">
           </div>
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="col-6 col-md-3">
             <label class="form-label filter-label">Kategori</label>
             <select name="category_id" class="form-select form-select-sm bg-white">
               <option value="">Semua Kategori</option>
@@ -41,7 +42,7 @@
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="col-6 col-md-3">
             <label class="form-label filter-label">Metode Bayar</label>
             <select name="payment_method" class="form-select form-select-sm bg-white">
               <option value="">Semua Metode</option>
@@ -49,19 +50,23 @@
               <option value="transfer" <?= ($filters['payment_method'] ?? '') === 'transfer' ? 'selected' : '' ?>>Transfer Bank</option>
             </select>
           </div>
-          <div class="col-12 col-sm-8 col-md-8 col-lg-2">
+        </div>
+
+        <!-- Baris 2: Pencarian & Tombol Aksi (Flexbox Adaptif Anti-Overlap) -->
+        <div class="d-flex flex-wrap align-items-end gap-2 mt-2">
+          <div class="flex-grow-1" style="min-width: 240px;">
             <label class="form-label filter-label">Cari Pengeluaran</label>
             <div class="input-group input-group-sm">
               <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-              <input type="search" name="q" id="search-expense" class="form-control" value="<?= esc($filters['q'] ?? '') ?>" placeholder="Kode / uraian...">
+              <input type="search" name="q" id="search-expense" class="form-control" value="<?= esc($filters['q'] ?? '') ?>" placeholder="Cari kode transaksi, uraian biaya, keterangan, bank...">
             </div>
           </div>
-          <div class="col-12 col-sm-4 col-md-4 col-lg-2 d-flex gap-1 justify-content-end">
-            <button type="submit" class="btn btn-sm btn-dark flex-grow-1 flex-lg-grow-0 px-3" title="Terapkan Filter">
+          <div class="d-flex flex-wrap gap-2 ms-sm-auto flex-grow-1 flex-sm-grow-0 justify-content-end">
+            <button type="submit" class="btn btn-sm btn-dark px-3 text-nowrap flex-grow-1 flex-sm-grow-0" title="Terapkan Filter">
               <i class="bi bi-filter"></i> Filter
             </button>
-            <a href="<?= base_url('admin/expenses') ?>" class="btn btn-sm btn-outline-secondary" title="Reset filter">
-              <i class="bi bi-arrow-counterclockwise"></i>
+            <a href="<?= base_url('admin/expenses') ?>" class="btn btn-sm btn-outline-secondary px-3 text-nowrap flex-grow-1 flex-sm-grow-0" title="Reset filter">
+              <i class="bi bi-arrow-counterclockwise"></i> Reset
             </a>
             <?php
             $exportQuery = http_build_query(array_filter([
@@ -72,8 +77,8 @@
               'q'              => $filters['q'] ?? '',
             ]));
             ?>
-            <a href="<?= base_url('admin/expenses/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-              <i class="bi bi-file-earmark-pdf"></i> PDF
+            <a href="<?= base_url('admin/expenses/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi px-3 text-nowrap flex-grow-1 flex-sm-grow-0" title="Cetak PDF">
+              <i class="bi bi-file-earmark-pdf"></i> Ekspor PDF
             </a>
           </div>
         </div>
