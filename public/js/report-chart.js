@@ -45,6 +45,15 @@ const chartData = {
   },
 };
 
+  const chartColors = {
+    light: ["#CF4647", "#2A363B"],
+    dark: ["#CF4647", "#f1c40f"], // Debit: kuning agar kontras di dark mode
+  };
+  const getTheme = () =>
+    document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light";
+
 
 chartData["7days"] = serverChartData["7days"]; // data asli menimpa dummy
 chartData["year"] = serverChartData["perYear"]; // data asli menimpa dummy
@@ -61,7 +70,7 @@ const column_chart_report = {
       show: false,
     },
   },
-  colors: ["#CF4647", "#2A363B"],
+    colors: chartColors[getTheme()], // <-- warna awal sesuai tema
   plotOptions: {
     bar: {
       columnWidth: "55%",
@@ -131,3 +140,13 @@ selectBulan.addEventListener("change", () => {
 
   updateChart(chartData.month[month]);
 });
+
+  // Update warna chart saat tema berubah
+  new MutationObserver(() => {
+    column_chart.updateOptions({
+      colors: chartColors[getTheme()],
+    });
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
