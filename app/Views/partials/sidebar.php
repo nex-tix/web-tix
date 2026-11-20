@@ -44,14 +44,14 @@ $initials   = tp_initials($userName);
     </div>
   </div>
   <nav class="nav-section">
+    <a class="nav-link<?= $activeKey === 'dashboard' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/dashboard')) ?>">
+      <i class="bi bi-grid-1x2" aria-hidden="true"></i>
+      <span>Dashboard</span>
+    </a>
     <div class="nav-label">OPERASIONAL</div>
-      <a class="nav-link<?= $activeKey === 'dashboard' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/dashboard')) ?>">
-        <i class="bi bi-grid-1x2" aria-hidden="true"></i>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-link<?= $activeKey === 'pos' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/pos')) ?>">
-        <i class="bi bi-pc-display" aria-hidden="true"></i>
-        <span>Pos Loket</span>
+      <a class="nav-link<?= $activeKey === 'guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/guides')) ?>">
+        <i class="bi bi-person-video2" aria-hidden="true"></i>
+        <span>Guides</span>
       </a>
       <?php $grupAktif = in_array($activeKey, ['laporan-global', 'laporan-pengunjung', 'laporan-guide', 'laporan-keuangan'], true); // grup: is-open + trigger aktif bila salah satu anak aktif ?>
       <div class="nav-item-group<?= $grupAktif ? ' is-open' : '' ?>" data-nav-group>
@@ -67,7 +67,30 @@ $initials   = tp_initials($userName);
           <a<?= $activeKey === 'laporan-keuangan' ? ' class="is-active"' : '' ?> href="<?= esc(base_url('admin/laporan/keuangan')) ?>">Laporan Keuangan</a>
         </div>
       </div>
-      <a class="nav-link<?= $activeKey === 'data-tiket' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/data-tiket')) ?>">
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">AKUNTANSI</div>
+      <a class="nav-link<?= $activeKey === 'pos' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/pos')) ?>">
+        <i class="bi bi-pc-display" aria-hidden="true"></i>
+        <span>Pos Loket</span>
+      </a>
+      <a class="nav-link<?= $activeKey === 'riwayat' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/transaction-history')) ?>">
+        <i class="bi bi-cash-coin" aria-hidden="true"></i>
+        <span>Penjualan</span>
+      </a>
+      <a class="nav-link<?= $activeKey === 'expense' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/expenses')) ?>">
+        <i class="bi bi-safe2" aria-hidden="true"></i>
+        <span>Pengeluaran</span>
+      </a>
+      <!-- Gaji Guide menunjuk ke page ledger sendiri: activeKey terpisah, highlight kembar dgn menu Guides teratasi -->
+      <a class="nav-link<?= $activeKey === 'gaji-guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/gaji-guide')) ?>">
+        <i class="bi bi-wallet" aria-hidden="true"></i>
+        <span>Gaji Guide</span>
+      </a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">MASTER DATA</div>
+<a class="nav-link<?= $activeKey === 'data-tiket' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/data-tiket')) ?>">
         <i class="bi bi-ticket-perforated" aria-hidden="true"></i>
         <span>Data Tiket</span>
       </a>
@@ -85,22 +108,6 @@ $initials   = tp_initials($userName);
       </a>
   </nav>
   <nav class="nav-section">
-    <div class="nav-label">AKUTANSI</div>
-      <a class="nav-link<?= $activeKey === 'riwayat' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/transaction-history')) ?>">
-        <i class="bi bi-cash-coin" aria-hidden="true"></i>
-        <span>Penjualan</span>
-      </a>
-      <a class="nav-link<?= $activeKey === 'expense' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/expenses')) ?>">
-        <i class="bi bi-safe2" aria-hidden="true"></i>
-        <span>Pengeluaran</span>
-      </a>
-      <!-- Gaji Guide menunjuk ke page ledger sendiri: activeKey terpisah, highlight kembar dgn menu Guides teratasi -->
-      <a class="nav-link<?= $activeKey === 'gaji-guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/gaji-guide')) ?>">
-        <i class="bi bi-wallet" aria-hidden="true"></i>
-        <span>Gaji Guide</span>
-      </a>
-  </nav>
-  <nav class="nav-section">
     <div class="nav-label">USERS</div>
       <a class="nav-link<?= $activeKey === 'admin' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/users')) ?>">
         <i class="bi bi-people" aria-hidden="true"></i>
@@ -109,10 +116,6 @@ $initials   = tp_initials($userName);
       <a class="nav-link<?= $activeKey === 'gate' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/gate-users')) ?>">
         <i class="bi bi-person-check" aria-hidden="true"></i>
         <span>Penjaga Gate</span>
-      </a>
-      <a class="nav-link<?= $activeKey === 'guide' ? ' is-active' : '' ?>" href="<?= esc(base_url('admin/guides')) ?>">
-        <i class="bi bi-person-video2" aria-hidden="true"></i>
-        <span>Guides</span>
       </a>
   </nav>
   <nav class="nav-section">
