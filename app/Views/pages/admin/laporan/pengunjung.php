@@ -41,7 +41,7 @@
             <label class="form-label filter-label">Status Tiket</label>
             <select name="status" class="form-select form-select-sm bg-white">
               <option value="">Semua Status</option>
-              <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>>Aktif (Belum Hadir)</option>
+              <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>>Belum Terpakai</option>
               <option value="used" <?= ($filters['status'] ?? '') === 'used' ? 'selected' : '' ?>>Terpakai (Hadir)</option>
               <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
             </select>
@@ -193,7 +193,7 @@
                         <?php if (($t['status'] ?? '') === 'used'): ?>
                           <span class="badge bg-success">Hadir</span>
                         <?php elseif (($t['status'] ?? '') === 'active'): ?>
-                          <span class="badge bg-primary">Aktif</span>
+                          <span class="badge bg-primary">Belum Terpakai</span>
                         <?php else: ?>
                           <span class="badge bg-secondary">Batal</span>
                         <?php endif; ?>

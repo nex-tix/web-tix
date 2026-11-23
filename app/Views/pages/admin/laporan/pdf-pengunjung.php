@@ -167,7 +167,7 @@ $rangeLabel = date('d/m/Y', strtotime($startDate)) . ' s/d ' . date('d/m/Y', str
                         <td><?= esc($t['origin'] ?? '-') ?></td>
                         <td style="text-align: center;"><?= esc(ucfirst($t['ticket_category'] ?? 'Individual')) ?></td>
                         <td style="text-align: center; font-weight: bold;"><?= (int)($t['total_visitors'] ?? 0) ?></td>
-                        <td style="text-align: center; font-size: 8px;"><?= ($t['status'] ?? '') === 'used' ? 'Hadir' : (($t['status'] ?? '') === 'active' ? 'Aktif' : 'Batal') ?></td>
+                        <td style="text-align: center; font-size: 8px;"><?= ($t['status'] ?? '') === 'used' ? 'Hadir' : (($t['status'] ?? '') === 'active' ? 'Belum Terpakai' : 'Batal') ?></td>
                     </tr>
                 <?php endforeach; ?>
                 <tr class="total-row">
