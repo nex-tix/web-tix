@@ -26,6 +26,7 @@
               </span>
             </div>
             <div class="mb-2"><strong>Tanggal Valid:</strong> <?= date('d M Y', strtotime($ticket['valid_date'])) ?></div>
+            <div class="mb-2"><strong>Sesi Pertunjukan:</strong> <?= !empty($ticket['show_time']) ? esc($ticket['show_time']) . ' WITA' : '<span class="text-muted">-</span>' ?></div>
             <div class="mb-2"><strong>Pengunjung:</strong> <?= (int)($ticket['total_visitors'] ?? 0) ?> orang</div>
             <div class="mb-2"><strong>Hadir:</strong>
               <?php if (isset($ticket['actual_visitors']) && $ticket['actual_visitors'] !== null && $ticket['actual_visitors'] !== '' && (int)$ticket['actual_visitors'] > 0): ?>
@@ -35,8 +36,32 @@
               <?php endif; ?>
             </div>
             <div class="mb-2"><strong>Status:</strong>
+              <?php 
+              $nowWita = new \DateTimeImmutable('now', new \DateTimeZone('Asia/Makassar'));
+              $todayWita = $nowWita->format('Y-m-d');
+              $validDate = $ticket['valid_date'] ?? '';
+              $isExpired = false;
+              if (($ticket['status'] ?? '') === 'active') {
+                  if (!empty($validDate) && $validDate < $todayWita) {
+                      $isExpired = true;
+                  } elseif (!empty($validDate) && $validDate === $todayWita && !empty($ticket['show_time'])) {
+                      if (preg_match('/(\d{1,2})[:.](\d{2})\s*-\s*(\d{1,2})[:.](\d{2})/', $ticket['show_time'], $m)) {
+                          $endH = str_pad($m[3], 2, '0', STR_PAD_LEFT);
+                          $endM = str_pad($m[4], 2, '0', STR_PAD_LEFT);
+                          $sessionEnd = new \DateTimeImmutable("{$validDate} {$endH}:{$endM}:00", new \DateTimeZone('Asia/Makassar'));
+                          if ($nowWita > $sessionEnd) {
+                              $isExpired = true;
+                          }
+                      }
+                  }
+              }
+              ?>
               <?php if (($ticket['status'] ?? '') === 'active'): ?>
-                <span class="badge bg-success">Belum Terpakai</span>
+                <?php if ($isExpired): ?>
+                  <span class="badge bg-secondary" title="Sesi pertunjukan atau tanggal telah lewat">Kedaluwarsa (Sesi Telah Berakhir)</span>
+                <?php else: ?>
+                  <span class="badge bg-success">Belum Terpakai</span>
+                <?php endif; ?>
               <?php elseif (($ticket['status'] ?? '') === 'used'): ?>
                 <span class="badge bg-primary">Terpakai</span>
               <?php else: ?>

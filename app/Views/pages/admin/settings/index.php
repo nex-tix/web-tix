@@ -21,6 +21,7 @@
     $keyLabels = [
         'show_time_session_1'              => 'Sesi Pertunjukan 1',
         'show_time_session_2'              => 'Sesi Pertunjukan 2',
+        'show_time_entry_buffer_minutes'   => 'Batas Masuk Awal Sesi (Menit)',
         'ticket_price_domestic_adult'      => 'Harga Tiket Domestik (Dewasa)',
         'ticket_price_domestic_child'      => 'Harga Tiket Domestik (Anak)',
         'ticket_price_international_adult' => 'Harga Tiket Internasional (Dewasa)',

@@ -22,7 +22,7 @@ class TicketController extends BaseController
 
         $builder = $db->table('tickets t')
             ->select("
-                t.*, tx.invoice_code, tx.status AS transaction_status,
+                t.*, tx.invoice_code, tx.show_time, tx.status AS transaction_status,
                 c.name AS customer_name, u.name AS admin_name,
                 (SELECT GROUP_CONCAT(DISTINCT tt.name ORDER BY tt.name SEPARATOR ', ')
                    FROM ticket_details td
@@ -77,7 +77,7 @@ class TicketController extends BaseController
 
         $ticket = $db->table('tickets t')
             ->select("
-                t.*, tx.invoice_code, tx.payment_method, tx.subtotal AS tx_subtotal,
+                t.*, tx.invoice_code, tx.show_time, tx.payment_method, tx.subtotal AS tx_subtotal,
                 tx.discount_amount AS tx_discount_amount, tx.total_amount AS tx_total_amount,
                 tx.status AS transaction_status, tx.created_at AS transaction_created_at,
                 c.name AS customer_name, c.origin_type, c.origin, c.phone,

@@ -46,11 +46,36 @@
               </tr>
             </thead>
             <tbody class="table-light">
+                <?php 
+                $nowWita = new \DateTimeImmutable('now', new \DateTimeZone('Asia/Makassar'));
+                $todayWita = $nowWita->format('Y-m-d');
+                ?>
                 <?php foreach ($tickets as $row): ?>
+                  <?php
+                  $isExpired = false;
+                  $validDate = $row['valid_date'] ?? '';
+                  if (($row['status'] ?? '') === 'active') {
+                      if (!empty($validDate) && $validDate < $todayWita) {
+                          $isExpired = true;
+                      } elseif (!empty($validDate) && $validDate === $todayWita && !empty($row['show_time'])) {
+                          if (preg_match('/(\d{1,2})[:.](\d{2})\s*-\s*(\d{1,2})[:.](\d{2})/', $row['show_time'], $m)) {
+                              $endH = str_pad($m[3], 2, '0', STR_PAD_LEFT);
+                              $endM = str_pad($m[4], 2, '0', STR_PAD_LEFT);
+                              $sessionEnd = new \DateTimeImmutable("{$validDate} {$endH}:{$endM}:00", new \DateTimeZone('Asia/Makassar'));
+                              if ($nowWita > $sessionEnd) {
+                                  $isExpired = true;
+                              }
+                          }
+                      }
+                  }
+                  ?>
                   <tr>
                     <td data-order="<?= strtotime($row['created_at']) ?>">
                       <div class="fw-semibold"><?= date('d M Y', strtotime($row['created_at'])) ?></div>
                       <small><?= date('H:i', strtotime($row['created_at'])) ?> WITA</small>
+                      <?php if (!empty($row['show_time'])): ?>
+                        <div class="small text-muted"><i class="bi bi-clock me-1"></i><?= esc($row['show_time']) ?></div>
+                      <?php endif; ?>
                     </td>
                     <td class="font-monospace fw-bold"><?= esc($row['ticket_code']) ?></td>
                     <td class="font-monospace"><?= esc($row['invoice_code'] ?? '-') ?></td>
@@ -75,7 +100,11 @@
                     </td>
                     <td>
                       <?php if (($row['status'] ?? '') === 'active'): ?>
-                        <span class="badge bg-success">Belum Terpakai</span>
+                        <?php if ($isExpired): ?>
+                          <span class="badge bg-secondary" title="Sesi pertunjukan atau tanggal telah lewat">Kedaluwarsa</span>
+                        <?php else: ?>
+                          <span class="badge bg-success">Belum Terpakai</span>
+                        <?php endif; ?>
                       <?php elseif (($row['status'] ?? '') === 'used'): ?>
                         <span class="badge bg-primary">Terpakai</span>
                       <?php else: ?>
