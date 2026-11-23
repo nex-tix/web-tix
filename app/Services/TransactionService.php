@@ -45,12 +45,14 @@ class TransactionService
     {
         $ticketItems           = $data['ticket_items'] ?? [];
         $globalDiscountPercent = (float) ($data['discount_percent'] ?? 0);
+        $originType            = ($data['origin_type'] ?? '') === 'international' ? 'international' : 'domestic';
+        $showTime              = trim((string) ($data['show_time'] ?? ''));
 
         if (empty($ticketItems)) {
             throw new \InvalidArgumentException('Ticket items tidak boleh kosong');
         }
 
-        $pricing = $this->pricingService->calculateTicketDetails($ticketItems, $globalDiscountPercent);
+        $pricing = $this->pricingService->calculateTicketDetails($ticketItems, $globalDiscountPercent, $originType);
 
         // Kategori ditentukan otomatis: 1 orang = individual, > 1 orang = group
         $totalVisitors  = (int) $pricing['total_visitors'];
@@ -143,6 +145,7 @@ class TransactionService
                 'created_by'        => $userId,
                 'payment_method'    => $paymentMethod,
                 'payment_reference' => $paymentReference,
+                'show_time'         => $showTime !== '' ? $showTime : null,
                 'bank_id'           => $bankId,
                 'subtotal'          => $pricing['subtotal'],
                 'discount_amount'   => $pricing['discount_amount'],
@@ -304,6 +307,181 @@ class TransactionService
 
         if (!$ok) {
             throw new \RuntimeException('Gagal menyimpan detail tiket: ' . json_encode($this->ticketDetailModel->errors()));
+        }
+    }
+
+    public function splitTransactionTickets(int $transactionId, string $mode, int $splitCount, int $userId): array
+    {
+        $transaction = $this->transactionModel->find($transactionId);
+        if (!$transaction) {
+            throw new \InvalidArgumentException('Transaksi tidak ditemukan.');
+        }
+
+        // Ambil tiket yang ada
+        $existingTickets = $this->ticketModel->where('transaction_id', $transactionId)->findAll();
+        if (empty($existingTickets)) {
+            throw new \InvalidArgumentException('Tidak ada tiket pada transaksi ini.');
+        }
+
+        // Pastikan belum ada tiket yang used
+        foreach ($existingTickets as $t) {
+            if ($t['status'] === 'used') {
+                throw new \RuntimeException('Tiket sudah pernah di-scan di gate dan tidak dapat diubah lagi.');
+            }
+        }
+
+        // Hitung total visitors dari detail tiket asli
+        $ticketIds = array_column($existingTickets, 'id');
+        $allDetails = $this->ticketDetailModel->whereIn('ticket_id', $ticketIds)->findAll();
+        if (empty($allDetails)) {
+            throw new \InvalidArgumentException('Detail rincian tiket tidak ditemukan.');
+        }
+
+        // Konsolidasikan detail per tipe tiket
+        $consolidatedDetails = [];
+        $totalVisitors = 0;
+        foreach ($allDetails as $d) {
+            $typeId = (int)$d['ticket_type_id'];
+            if (!isset($consolidatedDetails[$typeId])) {
+                $consolidatedDetails[$typeId] = [
+                    'ticket_type_id'   => $typeId,
+                    'qty'              => 0,
+                    'unit_price'       => (float)$d['unit_price'],
+                    'discount_percent' => (float)$d['discount_percent'],
+                    'discount_amount'  => 0.0,
+                    'guide_fee_unit'   => (float)$d['guide_fee_unit'],
+                ];
+            }
+            $consolidatedDetails[$typeId]['qty'] += (int)$d['qty'];
+            $consolidatedDetails[$typeId]['discount_amount'] += (float)$d['discount_amount'];
+            $totalVisitors += (int)$d['qty'];
+        }
+
+        if ($totalVisitors <= 1 && $mode !== 'master') {
+            throw new \InvalidArgumentException('Tiket hanya untuk 1 orang, tidak perlu dipecah.');
+        }
+
+        $guideId = !empty($existingTickets[0]['guide_id']) ? (int)$existingTickets[0]['guide_id'] : null;
+        $guideName = !empty($existingTickets[0]['guide_name_snapshot']) ? $existingTickets[0]['guide_name_snapshot'] : null;
+
+        if ($mode === 'custom') {
+            if ($splitCount <= 0 || $splitCount >= $totalVisitors) {
+                throw new \InvalidArgumentException("Jumlah tiket terpisah harus antara 1 sampai " . ($totalVisitors - 1) . " orang.");
+            }
+        }
+
+        // Jalankan transaksi database
+        $this->db->transStart();
+
+        try {
+            // Hapus log cetak, detail, dan tiket lama
+            $this->printLogModel->whereIn('ticket_id', $ticketIds)->delete();
+            $this->ticketDetailModel->whereIn('ticket_id', $ticketIds)->delete();
+            $this->ticketModel->whereIn('id', $ticketIds)->delete();
+
+            $newTicketIds = [];
+
+            if ($mode === 'individual') {
+                // Semua dipecah per orang (1 kuota per tiket)
+                foreach ($consolidatedDetails as $d) {
+                    for ($i = 0; $i < (int)$d['qty']; $i++) {
+                        $newId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideName, $d['guide_fee_unit']);
+                        $this->insertDetail($newId, [
+                            'ticket_type_id'   => $d['ticket_type_id'],
+                            'unit_price'       => $d['unit_price'],
+                            'unit_discount'    => ($d['qty'] > 0) ? ($d['discount_amount'] / $d['qty']) : 0,
+                            'discount_percent' => $d['discount_percent'],
+                        ], 1, (float)$d['guide_fee_unit']);
+                        $newTicketIds[] = $newId;
+                    }
+                }
+            } elseif ($mode === 'custom') {
+                // Custom: 1 Tiket Group Utama (totalVisitors - splitCount orang) + splitCount tiket terpisah (1 orang per tiket)
+                $mainGroupVisitors = $totalVisitors - $splitCount;
+
+                // Buat 1 Master Group Ticket
+                $groupTicketId = $this->createTicket($transactionId, 'group', $mainGroupVisitors, $guideId, $guideName, null);
+                $newTicketIds[] = $groupTicketId;
+
+                // Alokasikan detail untuk group utama dan untuk tiket terpisah
+                $remainingForGroup = $mainGroupVisitors;
+                $separatedItems = [];
+
+                foreach ($consolidatedDetails as $d) {
+                    $qty = (int)$d['qty'];
+                    if ($remainingForGroup > 0) {
+                        $takeForGroup = min($qty, $remainingForGroup);
+                        $this->insertDetail($groupTicketId, [
+                            'ticket_type_id'   => $d['ticket_type_id'],
+                            'unit_price'       => $d['unit_price'],
+                            'unit_discount'    => ($qty > 0) ? ($d['discount_amount'] / $qty) : 0,
+                            'discount_percent' => $d['discount_percent'],
+                        ], $takeForGroup, (float)$d['guide_fee_unit']);
+
+                        $remainingForGroup -= $takeForGroup;
+                        $leftover = $qty - $takeForGroup;
+                    } else {
+                        $leftover = $qty;
+                    }
+
+                    for ($j = 0; $j < $leftover; $j++) {
+                        $separatedItems[] = $d;
+                    }
+                }
+
+                // Buat tiket terpisah (1 orang per tiket)
+                foreach ($separatedItems as $sep) {
+                    $sepTicketId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideName, (float)$sep['guide_fee_unit']);
+                    $this->insertDetail($sepTicketId, [
+                        'ticket_type_id'   => $sep['ticket_type_id'],
+                        'unit_price'       => $sep['unit_price'],
+                        'unit_discount'    => 0,
+                        'discount_percent' => $sep['discount_percent'],
+                    ], 1, (float)$sep['guide_fee_unit']);
+                    $newTicketIds[] = $sepTicketId;
+                }
+            } else {
+                // Mode 'master': Semua digabung kembali ke 1 Master Group Ticket
+                $totalGroupGuideFee = null;
+                if ($guideId) {
+                    $totalGroupGuideFee = 0.0;
+                    foreach ($consolidatedDetails as $d) {
+                        $totalGroupGuideFee += ((float)$d['guide_fee_unit'] * (int)$d['qty']);
+                    }
+                }
+
+                $groupTicketId = $this->createTicket($transactionId, 'group', $totalVisitors, $guideId, $guideName, $totalGroupGuideFee);
+                foreach ($consolidatedDetails as $d) {
+                    $this->insertDetail($groupTicketId, [
+                        'ticket_type_id'   => $d['ticket_type_id'],
+                        'unit_price'       => $d['unit_price'],
+                        'unit_discount'    => ($d['qty'] > 0) ? ($d['discount_amount'] / $d['qty']) : 0,
+                        'discount_percent' => $d['discount_percent'],
+                    ], (int)$d['qty'], (float)$d['guide_fee_unit']);
+                }
+                $newTicketIds[] = $groupTicketId;
+            }
+
+            // Catat print log awal untuk semua tiket baru
+            foreach ($newTicketIds as $ntId) {
+                $this->printLogModel->insert([
+                    'ticket_id'  => $ntId,
+                    'printed_by' => $userId,
+                    'print_type' => 'initial',
+                    'printed_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+
+            $this->db->transComplete();
+
+            if ($this->db->transStatus() === false) {
+                throw new \RuntimeException('Gagal memproses pembagian tiket di database.');
+            }
+
+            return ['ticket_ids' => $newTicketIds];
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
         }
     }
 }

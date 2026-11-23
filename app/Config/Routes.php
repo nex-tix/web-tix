@@ -70,6 +70,7 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('pos', 'Admin\PosController::index');
     $routes->post('pos/store', 'Admin\PosController::store');
     $routes->get('pos/receipt/(:num)', 'Admin\PosController::receipt/$1');
+    $routes->post('pos/receipt/(:num)/split', 'Admin\PosController::splitTickets/$1');
 
     // Laporan
     $routes->get('laporan', 'ReportController::index');

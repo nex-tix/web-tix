@@ -16,7 +16,7 @@ class PricingService
         $this->settingModel = new SettingModel();
     }
 
-    public function calculateTicketDetails(array $ticketItems, float $globalDiscountPercent = 0): array
+    public function calculateTicketDetails(array $ticketItems, float $globalDiscountPercent = 0, string $originType = 'domestic'): array
     {
         $ticketItems = $this->normalizeItems($ticketItems);
 
@@ -36,7 +36,7 @@ class PricingService
             }
 
             $qty       = $item['qty'];
-            $unitPrice = (float) $ticketType['price'];
+            $unitPrice = $this->resolveUnitPrice($ticketType, $originType);
             $lineGross = $qty * $unitPrice;
 
             // Diskon global dibagi per unit lalu dikali qty,
@@ -69,6 +69,34 @@ class PricingService
             'total_visitors'  => $totalVisitors,
             'details'         => $details,
         ];
+    }
+
+    public function resolveUnitPrice(array $ticketType, string $originType = 'domestic'): float
+    {
+        $typeName = strtolower(trim($ticketType['name']));
+        $isChild  = str_contains($typeName, 'child') || str_contains($typeName, 'anak');
+        $isAdult  = str_contains($typeName, 'adult') || str_contains($typeName, 'dewasa');
+
+        if ($originType === 'international') {
+            if ($isChild) {
+                $customPrice = $this->settingModel->getSetting('ticket_price_international_child');
+                if ($customPrice !== null && is_numeric($customPrice)) return (float) $customPrice;
+            } elseif ($isAdult) {
+                $customPrice = $this->settingModel->getSetting('ticket_price_international_adult');
+                if ($customPrice !== null && is_numeric($customPrice)) return (float) $customPrice;
+            }
+        } else {
+            // domestic
+            if ($isChild) {
+                $customPrice = $this->settingModel->getSetting('ticket_price_domestic_child');
+                if ($customPrice !== null && is_numeric($customPrice)) return (float) $customPrice;
+            } elseif ($isAdult) {
+                $customPrice = $this->settingModel->getSetting('ticket_price_domestic_adult');
+                if ($customPrice !== null && is_numeric($customPrice)) return (float) $customPrice;
+            }
+        }
+
+        return (float) $ticketType['price'];
     }
 
     protected function calculateUnitDiscount(float $unitPrice, float $discountPercent): float

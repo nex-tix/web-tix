@@ -69,13 +69,31 @@ class PosController extends BaseController
             ->orderBy('name', 'ASC')
             ->findAll();
 
+        $showTimes = [
+            'session_1' => $this->settingModel->getSetting('show_time_session_1', '17:00 - 18:00'),
+            'session_2' => $this->settingModel->getSetting('show_time_session_2', '19:00 - 20:00'),
+        ];
+
+        $ticketPrices = [
+            'domestic' => [
+                'adult' => (int) $this->settingModel->getSetting('ticket_price_domestic_adult', 100000),
+                'child' => (int) $this->settingModel->getSetting('ticket_price_domestic_child', 60000),
+            ],
+            'international' => [
+                'adult' => (int) $this->settingModel->getSetting('ticket_price_international_adult', 150000),
+                'child' => (int) $this->settingModel->getSetting('ticket_price_international_child', 75000),
+            ],
+        ];
+
         return view('pages/admin/pos/index', [
-            'ticketTypes' => $ticketTypes,
-            'posLimits'   => $posLimits,
-            'banks'       => $banks,
-            'guides'      => $guides,
-            'activeKey'   => 'pos',
-            'crumbs'      => 'Operasional | Pos Loket',
+            'ticketTypes'  => $ticketTypes,
+            'posLimits'    => $posLimits,
+            'banks'        => $banks,
+            'guides'       => $guides,
+            'showTimes'    => $showTimes,
+            'ticketPrices' => $ticketPrices,
+            'activeKey'    => 'pos',
+            'crumbs'       => 'Operasional | Pos Loket',
         ]);
     }
 
@@ -91,6 +109,7 @@ class PosController extends BaseController
             'origin'          => 'required|max_length[100]',
             'phone'           => 'permit_empty|numeric|min_length[9]|max_length[15]',
             'address'         => 'permit_empty|max_length[255]',
+            'show_time'       => 'permit_empty|max_length[50]',
             'ticket_category' => 'required|in_list[individual,group]',
             'payment_method'  => 'required|in_list[cash,debit]',
             'payment_reference' => 'permit_empty|max_length[100]',
@@ -192,5 +211,37 @@ class PosController extends BaseController
             'ticketTypesById' => $ticketTypesById,
             'settings' => $settings,
         ]);
+    }
+
+    public function splitTickets($transactionId)
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON(['error' => 'Hanya menerima request AJAX'])->setStatusCode(403);
+        }
+
+        $splitMode = $this->request->getPost('split_mode') ?? 'master';
+        $splitCount = (int) ($this->request->getPost('split_count') ?? 0);
+        $userId = (int) (session()->get('user_id') ?? 1);
+
+        try {
+            $result = $this->transactionService->splitTransactionTickets((int) $transactionId, $splitMode, $splitCount, $userId);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Tiket berhasil diatur ulang',
+                'data'    => $result,
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ])->setStatusCode(400);
+        } catch (\Throwable $e) {
+            log_message('error', '[Ticket Split Error] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal memproses pembagian tiket: ' . $e->getMessage(),
+            ])->setStatusCode(500);
+        }
     }
 }

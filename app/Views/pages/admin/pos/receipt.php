@@ -132,6 +132,28 @@
         }
     </style>
 </head>
+<?php
+$totalVisitors = 0;
+$hasGroupTicket = false;
+foreach ($tickets as $tk) {
+    if (!empty($tk['details'])) {
+        foreach ($tk['details'] as $det) {
+            $totalVisitors += (int) $det['qty'];
+        }
+    } else {
+        $totalVisitors += (int) ($tk['total_visitors'] ?? 1);
+    }
+    if (($tk['ticket_category'] ?? '') === 'group') {
+        $hasGroupTicket = true;
+    }
+}
+$isGroupOrMulti = (($transaction['ticket_category'] ?? null) === 'group' || $hasGroupTicket || $totalVisitors > 1);
+$currentTicketCount = count($tickets);
+$isMaster = ($currentTicketCount === 1 && $totalVisitors > 1);
+$isPerPerson = ($currentTicketCount === $totalVisitors && $totalVisitors > 1);
+$isCustom = ($isGroupOrMulti && !$isMaster && !$isPerPerson);
+$customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
+?>
 <body class="text-slate-900 font-mono text-xs antialiased py-6">
 
     <!-- Control Toolbar (No Print) -->
@@ -170,6 +192,60 @@
                 Pintasan: <strong>Enter</strong> Cetak &bull; <strong>Esc</strong> Loket
             </div>
         </div>
+
+        <!-- Group Ticket Split Toolbar -->
+        <?php if ($isGroupOrMulti): ?>
+        <div class="border-t border-slate-200 pt-3 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Pilihan Cetak Tiket Group (<?= $totalVisitors ?> Orang)
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">
+                    <?= $currentTicketCount ?> Struk
+                </span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-lg text-xs">
+                <button type="button" onclick="setSplitMode('master')" id="btn-mode-master"
+                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isMaster ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
+                    Master Ticket
+                    <span class="block text-[10px] font-normal opacity-80">(1 QR)</span>
+                </button>
+                <button type="button" onclick="setSplitMode('individual')" id="btn-mode-individual"
+                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isPerPerson ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
+                    Per Orang
+                    <span class="block text-[10px] font-normal opacity-80">(<?= $totalVisitors ?> QR)</span>
+                </button>
+                <button type="button" onclick="toggleCustomSplit(true)" id="btn-mode-custom"
+                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isCustom ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
+                    Custom Split
+                    <span class="block text-[10px] font-normal opacity-80">(Sebagian)</span>
+                </button>
+            </div>
+
+            <!-- Custom Split Sub-panel -->
+            <div id="custom-split-panel" class="<?= $isCustom ? '' : 'hidden' ?> p-2.5 bg-amber-50/70 border border-amber-200 rounded-lg space-y-2 text-xs">
+                <div class="flex items-center justify-between gap-2">
+                    <label for="custom_split_count" class="font-bold text-slate-700">
+                        Jumlah Tiket Terpisah (Orang):
+                    </label>
+                    <div class="flex items-center gap-1.5">
+                        <input type="number" id="custom_split_count" min="1" max="<?= max(1, $totalVisitors - 1) ?>" value="<?= $customSplitCount ?>" 
+                            oninput="updateCustomSplitPreview(<?= $totalVisitors ?>)"
+                            class="w-16 px-2 py-1 text-center font-bold text-sm bg-white border border-slate-300 rounded focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
+                        <button type="button" onclick="applyCustomSplit()" id="btn-apply-split"
+                            class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded shadow-xs transition">
+                            Terapkan
+                        </button>
+                    </div>
+                </div>
+                <p id="custom-split-info" class="text-[11px] text-amber-900 leading-tight">
+                    <!-- Dinamis terupdate oleh JS -->
+                </p>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- Receipt Container -->
@@ -210,6 +286,11 @@
                 <div class="flex justify-center text-[10px] text-black">
                     <span><?= date('Y-m-d H:i', strtotime($transaction['created_at'])) ?> WITA</span>
                 </div>
+                <?php if (!empty($transaction['show_time'])): ?>
+                <div class="flex justify-center text-[10px] font-bold text-black">
+                    <span>Sesi: <?= esc($transaction['show_time']) ?> WITA</span>
+                </div>
+                <?php endif; ?>
             </div>
 
             <div class="border-thermal-dashed"></div>   
@@ -284,7 +365,7 @@
 
             <!-- 5. QR CODE & KODE TIKET -->
             <div class="flex flex-col items-center justify-center my-1.5 space-y-1">
-                <?php if ($t['ticket_category'] === 'group'): ?>
+                <?php if ($t['ticket_category'] === 'group' && (int)$t['total_visitors'] > 1): ?>
                 <div class="text-[10px] font-bold uppercase tracking-wider text-center">
                     TIKET ROMBONGAN (<?= (int)$t['total_visitors'] ?> ORANG)
                 </div>
@@ -321,6 +402,88 @@
     <script>
         let currentSize = '58mm';
         const tickets = <?= json_encode($tickets) ?>;
+        const totalVisitors = <?= (int)$totalVisitors ?>;
+        const transactionId = <?= (int)$transaction['id'] ?>;
+        const csrfTokenName = '<?= csrf_token() ?>';
+        let csrfHash = '<?= csrf_hash() ?>';
+
+        function updateCustomSplitPreview(total) {
+            const input = document.getElementById('custom_split_count');
+            if (!input) return;
+            let val = parseInt(input.value) || 0;
+            if (val < 1) val = 1;
+            if (val >= total) val = total - 1;
+            input.value = val;
+            const groupCount = total - val;
+            const info = document.getElementById('custom-split-info');
+            if (info) {
+                info.innerHTML = `Hasil cetak: <strong>1 Tiket Group (${groupCount} Orang)</strong> + <strong>${val} Tiket Terpisah (masing-masing 1 Orang)</strong> &bull; Total ${val + 1} struk tiket.`;
+            }
+        }
+
+        function toggleCustomSplit(show) {
+            const panel = document.getElementById('custom-split-panel');
+            if (panel) {
+                panel.classList.remove('hidden');
+                updateCustomSplitPreview(totalVisitors);
+            }
+        }
+
+        async function setSplitMode(mode) {
+            if (mode === 'custom') {
+                toggleCustomSplit(true);
+                return;
+            }
+            await executeSplit(mode, 0);
+        }
+
+        async function applyCustomSplit() {
+            const input = document.getElementById('custom_split_count');
+            const splitCount = parseInt(input.value) || 1;
+            await executeSplit('custom', splitCount);
+        }
+
+        async function executeSplit(mode, splitCount) {
+            const btnApply = document.getElementById('btn-apply-split');
+            if (btnApply) {
+                btnApply.disabled = true;
+                btnApply.textContent = 'Menyimpan...';
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('split_mode', mode);
+                formData.append('split_count', splitCount);
+                formData.append(csrfTokenName, csrfHash);
+
+                const res = await fetch(`<?= base_url('admin/pos/receipt/' . $transaction['id'] . '/split') ?>`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (data && data.csrf_hash) csrfHash = data.csrf_hash;
+
+                if (res.ok && data && data.success) {
+                    window.location.reload();
+                } else {
+                    alert((data && data.message) || 'Gagal mengubah susunan tiket.');
+                    if (btnApply) {
+                        btnApply.disabled = false;
+                        btnApply.textContent = 'Terapkan';
+                    }
+                }
+            } catch (err) {
+                alert('Terjadi kesalahan jaringan.');
+                if (btnApply) {
+                    btnApply.disabled = false;
+                    btnApply.textContent = 'Terapkan';
+                }
+            }
+        }
 
         function renderQRCodes(size) {
             const qrSize = size === '58mm' ? 105 : 128;
@@ -399,6 +562,10 @@
                 setPaperSize('80mm');
             } else {
                 setPaperSize('58mm');
+            }
+
+            if (typeof totalVisitors !== 'undefined' && totalVisitors > 1) {
+                updateCustomSplitPreview(totalVisitors);
             }
         });
     </script>

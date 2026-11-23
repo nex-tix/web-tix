@@ -12,13 +12,23 @@
             <h2 class="text-2xl font-bold text-slate-900 tracking-tight">POS Loket</h2>
             <p class="text-sm text-slate-500 mt-0.5">Input transaksi tiket pengunjung &amp; cetak tiket fisik pertunjukan.</p>
         </div>
-        <div class="mt-3 sm:mt-0 flex items-center gap-3">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/20 text-yellow-800 border border-brand-gold/30">
-                <svg class="w-3.5 h-3.5 mr-1 text-yellow-700" fill="currentColor" viewbox="0 0 20 20">
-                    <path clip-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" fill-rule="evenodd"></path>
-                </svg>
-                Sesi Sore (18:00 WITA)
-            </span>
+        <div class="mt-3 sm:mt-0 flex flex-wrap items-center gap-2.5">
+            <div class="inline-flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 shadow-xs">
+                <span class="text-[11px] font-bold text-slate-500 uppercase px-2 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-brand-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <path clip-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" fill-rule="evenodd"></path>
+                    </svg>
+                    Sesi:
+                </span>
+                <button type="button" id="btn-session-1" onclick="setShowTime('<?= esc($showTimes['session_1']) ?>', 1)" 
+                    class="session-btn px-2.5 py-1 text-xs font-bold rounded-md transition shadow-xs bg-brand-charcoal text-white">
+                    <?= esc($showTimes['session_1']) ?> WITA
+                </button>
+                <button type="button" id="btn-session-2" onclick="setShowTime('<?= esc($showTimes['session_2']) ?>', 2)" 
+                    class="session-btn px-2.5 py-1 text-xs font-bold rounded-md transition text-slate-600 hover:text-slate-900">
+                    <?= esc($showTimes['session_2']) ?> WITA
+                </button>
+            </div>
             <button class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg shadow-sm hover:bg-slate-50 active:bg-slate-100 transition" onclick="resetTransaction()" type="button">
                 <svg class="w-3.5 h-3.5 mr-1 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                     <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
@@ -43,9 +53,15 @@
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="visitor-name">
-                            Nama Pengunjung / Perwakilan <span class="text-brand-red">*</span>
-                        </label>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider" for="visitor-name">
+                                Nama Pengunjung / Perwakilan <span class="text-brand-red">*</span>
+                            </label>
+                            <button type="button" id="btn-use-guide-name" onclick="fillVisitorWithGuideName()" class="hidden inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded transition">
+                                <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                Gunakan Nama Guide
+                            </button>
+                        </div>
                         <input class="input-design input-text w-full text-sm rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red transition px-3 py-2" id="visitor-name" placeholder="Contoh: Budi Santoso / John Doe" type="text" />
                         <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="customer_name"></p>
                     </div>
@@ -213,9 +229,14 @@
                                 <?php endforeach; ?>
                             </select>
                             <p class="field-error hidden mt-1 text-xs text-rose-600" data-error="guide_id"></p>
-                            <div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2 flex items-center justify-between hidden">
+                            <div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-center justify-between hidden">
                                 <span class="font-medium">Guide terpilih: <strong id="guide-selected-name">-</strong></span>
-                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Tercatat di Struk</span>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="fillVisitorWithGuideName()" class="text-[11px] font-bold bg-white text-emerald-700 hover:bg-emerald-100/70 border border-emerald-300 px-2 py-0.5 rounded shadow-xs transition">
+                                        Isi ke Nama Perwakilan
+                                    </button>
+                                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Tercatat di Struk</span>
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -236,6 +257,10 @@
                         </div>
                     </div>
                     <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-white/20 text-white tracking-wider" id="summary-mode-badge">INDIVIDUAL</span>
+                </div>
+                <div class="px-5 py-2.5 bg-dark-50/70 border-b border-amber-200/60 text-xs flex justify-between items-center text-amber-900">
+                    <span class="font-medium text-amber-700">Jadwal Sesi:</span>
+                    <span class="font-bold" id="summary-show-time"><?= esc($showTimes['session_1']) ?> WITA</span>
                 </div>
                 <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 text-xs flex justify-between items-center">
                     <div>
@@ -424,9 +449,11 @@
     const ticketTypesById = Object.fromEntries(ticketTypes.map(t => [t.id, t]));
     const csrfName = document.querySelector('meta[name="csrf-name"]')?.content || 'csrf_test_name';
     const posLimits = <?= json_encode($posLimits) ?>;
+    const showTimes = <?= json_encode($showTimes ?? ['session_1' => '17:00 - 18:00', 'session_2' => '19:00 - 20:00']) ?>;
+    const ticketPrices = <?= json_encode($ticketPrices ?? []) ?>;
 
-    
     const posState = {
+        show_time: <?= json_encode($showTimes['session_1'] ?? '17:00 - 18:00') ?>,
         origin: 'domestik',
         mode: 'individual',
         payment: 'cash',
@@ -436,6 +463,31 @@
         guide_name: ''
     };
     ticketTypes.forEach(t => posState.quantities[t.id] = 0);
+
+    function setShowTime(time, sessionIdx) {
+        posState.show_time = time;
+        const btn1 = document.getElementById('btn-session-1');
+        const btn2 = document.getElementById('btn-session-2');
+        if (sessionIdx === 1) {
+            if (btn1) btn1.className = 'session-btn px-2.5 py-1 text-xs font-bold rounded-md transition shadow-xs bg-brand-charcoal text-white';
+            if (btn2) btn2.className = 'session-btn px-2.5 py-1 text-xs font-bold rounded-md transition text-slate-600 hover:text-slate-900';
+        } else {
+            if (btn2) btn2.className = 'session-btn px-2.5 py-1 text-xs font-bold rounded-md transition shadow-xs bg-brand-charcoal text-white';
+            if (btn1) btn1.className = 'session-btn px-2.5 py-1 text-xs font-bold rounded-md transition text-slate-600 hover:text-slate-900';
+        }
+        const summaryShowTime = document.getElementById('summary-show-time');
+        if (summaryShowTime) summaryShowTime.textContent = `${time} WITA`;
+    }
+
+    function getTicketUnitPrice(t) {
+        const origin = (posState.origin === 'mancanegara' || posState.origin === 'international') ? 'international' : 'domestic';
+        const nameLower = (t.name || '').toLowerCase();
+        const typeKey = (nameLower.includes('child') || nameLower.includes('anak')) ? 'child' : 'adult';
+        if (ticketPrices && ticketPrices[origin] && ticketPrices[origin][typeKey] !== undefined) {
+            return parseFloat(ticketPrices[origin][typeKey]);
+        }
+        return parseFloat(t.price);
+    }
 
     const limits = {
         individual: {
@@ -463,7 +515,7 @@
         for (const t of ticketTypes) {
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
-            sum += qty * parseFloat(t.price);
+            sum += qty * getTicketUnitPrice(t);
         }
         return Math.round(sum);
     };
@@ -556,6 +608,8 @@
         document.getElementById('btn-origin-mancanegara').className = origin === 'mancanegara' ? 'flex items-center justify-center gap-2 py-2 px-3 text-sm font-semibold rounded-lg border-2 border-brand-charcoal bg-brand-charcoal text-white transition-all shadow-sm' : 'flex items-center justify-center gap-2 py-2 px-3 text-sm font-semibold rounded-lg border-2 border-slate-200 bg-white text-slate-600 hover:border-slate-300 transition-all';
         document.getElementById('summary-visitor-origin').textContent = (origin === 'domestik' ? 'Domestik (WNI)' : 'Mancanegara (WNA)') + ` (${totalQty()} Orang)`;
         clearFieldErrors();
+        renderTickets();
+        renderCart();
     }
 
     function renderTickets() {
@@ -566,7 +620,7 @@
         }
         container.innerHTML = ticketTypes.map(t => {
             const qty = posState.quantities[t.id] || 0;
-            const price = parseFloat(t.price);
+            const price = getTicketUnitPrice(t);
             return `<div class="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 transition bg-white shadow-xs">
                         <div class="space-y-0.5">
                             <div class="flex items-center gap-2"><span class="font-bold text-sm text-slate-800">${t.name}</span></div>
@@ -647,7 +701,7 @@
             const qty = posState.quantities[t.id] || 0;
             if (!qty) continue;
             hasItems = true;
-            const price = parseFloat(t.price);
+            const price = getTicketUnitPrice(t);
             itemsEl.innerHTML += `<div class="flex justify-between items-center text-xs"><div><span class="font-bold text-slate-800">${t.name}</span><span class="text-slate-400 ml-1">× ${qty}</span><p class="text-[10px] text-slate-400">@ ${rupiah(price)}</p></div><span class="font-bold text-slate-800">${rupiah(qty * price)}</span></div>`;
         }
         if (!hasItems) itemsEl.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Belum ada tiket yang dipilih.</p>';
@@ -701,6 +755,16 @@
         calculateChange();
     }
 
+    function fillVisitorWithGuideName() {
+        if (!posState.guide_name) return;
+        const input = document.getElementById('visitor-name');
+        input.value = posState.guide_name;
+        input.dispatchEvent(new Event('input'));
+        if (typeof toastr !== 'undefined') {
+            toastr.info('Nama perwakilan pengunjung diisi nama guide: ' + posState.guide_name, '', { timeOut: 1500 });
+        }
+    }
+
     function setGuideEnabled(enabled) {
         posState.guide_enabled = enabled;
         const btnNo = document.getElementById('btn-guide-no');
@@ -708,6 +772,7 @@
         const dropdownContainer = document.getElementById('guide-dropdown-container');
         const summaryGuideRow = document.getElementById('summary-guide-row');
         const selectGuide = document.getElementById('select-guide');
+        const btnUseGuide = document.getElementById('btn-use-guide-name');
 
         if (enabled) {
             btnYes.className = 'px-3 py-1 rounded text-xs font-bold transition-all bg-brand-charcoal text-white shadow-xs';
@@ -717,6 +782,7 @@
             btnNo.className = 'px-3 py-1 rounded text-xs font-bold transition-all bg-brand-charcoal text-white shadow-xs';
             btnYes.className = 'px-3 py-1 rounded text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
             if (dropdownContainer) dropdownContainer.classList.add('hidden');
+            if (btnUseGuide) btnUseGuide.classList.add('hidden');
             if (guideChoices) {
                 guideChoices.removeActiveItems();
             } else if (selectGuide) {
@@ -737,12 +803,14 @@
         const summaryGuideName = document.getElementById('summary-guide-name');
         const selectedInfo = document.getElementById('guide-selected-info');
         const selectedNameEl = document.getElementById('guide-selected-name');
+        const btnUseGuide = document.getElementById('btn-use-guide-name');
 
         if (!guideId) {
             posState.guide_id = null;
             posState.guide_name = '';
             if (selectedInfo) selectedInfo.classList.add('hidden');
             if (summaryGuideRow) summaryGuideRow.classList.add('hidden');
+            if (btnUseGuide) btnUseGuide.classList.add('hidden');
             return;
         }
 
@@ -762,6 +830,13 @@
         if (summaryGuideRow && summaryGuideName) {
             summaryGuideName.textContent = guideName;
             summaryGuideRow.classList.remove('hidden');
+        }
+        if (btnUseGuide) {
+            if (guideName) {
+                btnUseGuide.classList.remove('hidden');
+            } else {
+                btnUseGuide.classList.add('hidden');
+            }
         }
         clearFieldErrors();
     }
@@ -892,10 +967,12 @@
                 '<select id="select-guide" onchange="onGuideSelected(this.value)" class="input-design form-select w-full text-sm font-semibold rounded-lg border-slate-300 focus:border-brand-red focus:ring-brand-red">' +
                 '<option value="">-- Pilih Guide --</option>' + optionHtml + '</select>' +
                 '<p class="field-error hidden mt-1 text-xs text-rose-600" data-error="guide_id"></p>' +
-                '<div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2 flex items-center justify-between hidden">' +
+                '<div id="guide-selected-info" class="mt-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-center justify-between hidden">' +
                 '<span class="font-medium">Guide terpilih: <strong id="guide-selected-name">-</strong></span>' +
+                '<div class="flex items-center gap-2">' +
+                '<button type="button" onclick="fillVisitorWithGuideName()" class="text-[11px] font-bold bg-white text-emerald-700 hover:bg-emerald-100/70 border border-emerald-300 px-2 py-0.5 rounded shadow-xs transition">Isi ke Nama Perwakilan</button>' +
                 '<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Tercatat di Struk</span>' +
-                '</div>');
+                '</div></div>');
             selectGuide = document.getElementById('select-guide');
             freshSelect = true;
             initGuideSearch();
@@ -916,6 +993,9 @@
 
     function resetTransaction() {
         setGuideEnabled(false);
+        const btnUseGuide = document.getElementById('btn-use-guide-name');
+        if (btnUseGuide) btnUseGuide.classList.add('hidden');
+        if (showTimes && showTimes.session_1) setShowTime(showTimes.session_1, 1);
         document.getElementById('visitor-name').value = '';
         document.getElementById('visitor-city').value = '';
         document.getElementById('visitor-phone').value = '';
@@ -924,8 +1004,8 @@
         document.getElementById('cash-received').value = '';
         document.getElementById('discount_given').value = '';
         document.getElementById('edc-ref').value = '';
-                if (edcBankChoices) edcBankChoices.removeActiveItems();
-                document.getElementById('edc-bank').value = '';
+        if (edcBankChoices) edcBankChoices.removeActiveItems();
+        document.getElementById('edc-bank').value = '';
         Object.keys(posState.quantities).forEach(k => posState.quantities[k] = 0);
         document.getElementById('summary-visitor-name').textContent = '- Belum Diisi -';
         document.getElementById('trx-id').textContent = '-';
@@ -1027,6 +1107,7 @@
         payload.append('origin', origin);
         payload.append('phone', phoneRaw);
         payload.append('address', address);
+        payload.append('show_time', posState.show_time || '');
         payload.append('ticket_category', ticketCategory);
         payload.append('payment_method', paymentMethod);
         if (paymentMethod === 'cash') payload.append('cash_paid', document.getElementById('cash-received').value);

@@ -16,11 +16,25 @@
     <?php endif; ?>
 
     <?php
-    $headers = ['Key', 'Value', 'Diperbarui', 'Aksi'];
+    $headers = ['Key / Keterangan', 'Value', 'Diperbarui', 'Aksi'];
     $rows = [];
+    $keyLabels = [
+        'show_time_session_1'              => 'Sesi Pertunjukan 1',
+        'show_time_session_2'              => 'Sesi Pertunjukan 2',
+        'ticket_price_domestic_adult'      => 'Harga Tiket Domestik (Dewasa)',
+        'ticket_price_domestic_child'      => 'Harga Tiket Domestik (Anak)',
+        'ticket_price_international_adult' => 'Harga Tiket Internasional (Dewasa)',
+        'ticket_price_international_child' => 'Harga Tiket Internasional (Anak)',
+        'max_individual_per_tx'            => 'Batas Maks Tiket Individual',
+        'min_group_size'                   => 'Batas Min Tiket Group',
+        'max_group_members'                => 'Batas Maks Tiket Group',
+    ];
     foreach ($settings as $s) {
+      $labelHtml = isset($keyLabels[$s['setting_key']]) 
+        ? '<div class="small text-muted">' . esc($keyLabels[$s['setting_key']]) . '</div>' 
+        : '';
       $rows[] = [
-        '<code class="fw-semibold">' . esc($s['setting_key']) . '</code>',
+        '<div><code class="fw-semibold">' . esc($s['setting_key']) . '</code>' . $labelHtml . '</div>',
         '<div>' . esc($s['setting_value']) . '</div>',
         $s['updated_at'] ?? '-',
         '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#settingModal" '
