@@ -85,6 +85,8 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('transaction-history', 'Admin\TransactionHistoryController::index');
     $routes->get('transaction-history/detail/(:num)', 'Admin\TransactionHistoryController::detail/$1');
     $routes->post('transaction-history/void/(:num)', 'Admin\TransactionHistoryController::void/$1');
+    // ubah metode bayar transaksi selesai (cash ↔ debit)
+    $routes->post('transaction-history/update-payment/(:num)', 'Admin\TransactionHistoryController::updatePayment/$1');
     // Cetak ulang tiket dari riwayat: GET data tiket aktif (AJAX modal), POST eksekusi reprint
     $routes->get('transaction-history/reprint-data/(:num)', 'Admin\TransactionHistoryController::reprintData/$1');
     $routes->post('transaction-history/reprint/(:num)', 'Admin\TransactionHistoryController::reprint/$1');
