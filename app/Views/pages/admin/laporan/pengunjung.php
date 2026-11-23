@@ -46,7 +46,7 @@
               <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
             </select>
           </div>
-          <div class="col-12 col-md-4 col-lg-2 d-flex gap-1">
+          <div class="col-12 col-md-4 col-lg-2 d-flex flex-wrap gap-1">
             <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
               <i class="bi bi-filter"></i> Filter
             </button>
@@ -62,9 +62,24 @@
                 'status'      => $filters['status'] ?? '',
               ]));
             ?>
-            <a href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-              <i class="bi bi-file-earmark-pdf"></i> PDF
-            </a>
+            <!-- Tombol Export: dropdown hover — child "PDF" (aktif, link lama dipertahankan) & "Excel" (menunggu fitur) -->
+            <div class="dropdown hover-dropdown">
+              <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
+                Export
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>">
+                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item disabled" href="#" aria-disabled="true" title="Segera hadir">
+                    <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </form>

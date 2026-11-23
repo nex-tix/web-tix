@@ -20,9 +20,24 @@
           <input type="date" id="filter-tanggal-akhir" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
         </div>
         <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
-          <a id="btn-export-pdf" class="btn btn-sm btn-transaksi w-100 justify-content-center" href="<?= base_url('admin/laporan/export-pdf?start=' . date('d-m-Y', strtotime('first day of this month')) . '&end=' . date('d-m-Y')) ?>">
-            <i class="bi bi-file-earmark-pdf"></i> Export PDF
-          </a>
+          <!-- Tombol Export: dropdown hover — child "PDF" (aktif, link lama dipertahankan) & "Excel" (menunggu fitur) -->
+          <div class="dropdown hover-dropdown w-100">
+            <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle w-100 justify-content-center" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
+              Export
+            </button>
+            <ul class="dropdown-menu w-100">
+              <li>
+                <a id="btn-export-pdf" class="dropdown-item" href="<?= base_url('admin/laporan/export-pdf?start=' . date('d-m-Y', strtotime('first day of this month')) . '&end=' . date('d-m-Y')) ?>">
+                  <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item disabled" href="#" aria-disabled="true" title="Segera hadir">
+                  <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

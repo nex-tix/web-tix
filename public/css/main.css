@@ -2299,4 +2299,39 @@
         border-color: #991B1B !important;
       }
 
+      /* ============================================================
+         DROPDOWN EKSPOR (hover) — tombol "Export" dengan child PDF & Excel
+         ============================================================ */
+      /* Tombol Export: paddingX dipadatkan (1.2rem -> 0.6rem) + gap dirapatkan
+         supaya min-width 3 tombol (Filter+Reset+Export) muat satu baris di col-lg-2 */
+      .hover-dropdown .btn-transaksi {
+        padding: 0.6rem 0.6rem;
+        gap: 4px;
+      }
+
+      .hover-dropdown .dropdown-menu {
+        border: 1px solid var(--card-border);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+      }
+
+      /* Dark mode: menu ikut tema gelap */
+      [data-theme=dark] .hover-dropdown .dropdown-menu {
+        background-color: var(--bg-header-card);
+        border-color: var(--card-border);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item {
+        color: var(--text-dark);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item:hover,
+      [data-theme=dark] .hover-dropdown .dropdown-item:focus {
+        background-color: var(--sidebar-hover);
+        color: var(--text-dark);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item.disabled {
+        color: var(--text-muted);
+      }
+
 
