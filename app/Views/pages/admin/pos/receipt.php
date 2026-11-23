@@ -65,10 +65,13 @@
                 box-shadow: none !important;
             }
 
-            body {
+            html, body {
                 background: #ffffff !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
             }
 
             .no-print {
@@ -85,12 +88,22 @@
                 opacity: 0 !important;
             }
 
+            /* Normalisasi Wrapper: Hindari display flex & gap agar tidak memicu Blank Page */
+            #receipt-wrapper {
+                display: block !important;
+                gap: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
             .thermal-receipt {
                 box-shadow: none !important;
                 border: none !important;
                 margin: 0 auto !important;
-                padding: 1.5mm 2mm !important;
+                padding: 1.5mm 2mm 0 2mm !important;
                 background: #ffffff !important;
+                box-sizing: border-box !important;
             }
 
             /* Driver thermal 58mm umumnya memiliki lebar cetak efektif 48mm */
@@ -109,15 +122,27 @@
                 line-height: 1.3 !important;
             }
 
-            /* Pemisah halaman untuk transaksi multi-tiket individual */
+            /* Pemisah halaman untuk transaksi multi-tiket individual / group split */
             .receipt-slip {
                 page-break-after: always !important;
                 break-after: page !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
             }
 
             .receipt-slip:last-child {
                 page-break-after: auto !important;
                 break-after: auto !important;
+            }
+
+            /* Trailing Feed Spacer: Ruang potong fisik untuk pisau auto-cutter */
+            .thermal-cut-spacer {
+                display: block !important;
+                height: 12mm !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                content: "" !important;
             }
 
             .border-thermal-dashed {
@@ -177,20 +202,41 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             </div>
         </div>
 
-        <!-- Paper Size Switcher & Shortcut Info -->
+        <!-- Paper Size Switcher & Auto-Cutter Guide Trigger -->
         <div class="flex items-center justify-between gap-2 pt-1 text-xs">
             <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
                 <span class="text-[10px] uppercase font-bold text-slate-600 px-2">Kertas:</span>
-                <button type="button" onclick="setPaperSize('58mm')" id="btn-58mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs">
+                <button type="button" onclick="setPaperSize('58mm')" id="btn-58mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900">
                     58mm
                 </button>
-                <button type="button" onclick="setPaperSize('80mm')" id="btn-80mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900">
+                <button type="button" onclick="setPaperSize('80mm')" id="btn-80mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs">
                     80mm
                 </button>
             </div>
-            <div class="text-[10px] text-slate-500 font-sans hidden sm:block">
-                Pintasan: <strong>Enter</strong> Cetak &bull; <strong>Esc</strong> Loket
+            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-sans">
+                <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-800 font-medium underline flex items-center gap-1 cursor-pointer" title="Panduan pengaturan driver printer auto-cut">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Tips Auto-Cutter
+                </button>
+                <span class="hidden sm:inline">&bull; <strong>Enter</strong> Cetak &bull; <strong>Esc</strong> Loket</span>
             </div>
+        </div>
+
+        <!-- Panduan Pengaturan Driver Printer Auto-Cutter (Collapsible) -->
+        <div id="autocut-guide-box" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs space-y-1.5 text-blue-900">
+            <div class="flex justify-between items-center font-bold">
+                <span class="flex items-center gap-1 text-blue-800">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Tips Pengaturan Driver Printer Auto-Cutter:
+                </span>
+                <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-900 text-sm font-bold px-1">&times;</button>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-[11px] leading-relaxed text-blue-950">
+                <li><strong>Cut Option:</strong> Pilih <code>Cut at End of Page</code> agar tiket rombongan terpisah otomatis dipotong per lembar tiket.</li>
+                <li><strong>Cut Mode:</strong> Disarankan <code>Partial Cut</code> agar tiket tetap menggantung rapi di mulut printer dan tidak jatuh ke lantai.</li>
+                <li><strong>Margin Browser:</strong> Set margin print ke <code>None</code> atau <code>Minimum</code> pada dialog cetak browser.</li>
+                <li><strong>Trailing Feed:</strong> Web ini sudah menambahkan bantalan potong 12mm otomatis agar footer/QR tidak terpotong pisau cutter.</li>
+            </ul>
         </div>
 
         <!-- Group Ticket Split Toolbar -->
@@ -395,6 +441,9 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             <!-- GARIS PUTUS-PUTUS PENUTUP -->
             <div class="border-thermal-dashed"></div>
 
+            <!-- Trailing feed space khusus print agar pisau auto-cutter tidak memotong garis penutup/footer -->
+            <div class="thermal-cut-spacer hidden print:block"></div>
+
         </div>
         <?php endforeach; ?>
     </div>
@@ -507,8 +556,17 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             });
         }
 
+        function toggleAutoCutGuide() {
+            const box = document.getElementById('autocut-guide-box');
+            if (box) box.classList.toggle('hidden');
+        }
+
         function setPaperSize(size) {
             currentSize = size;
+            try {
+                localStorage.setItem('nextix_receipt_paper_size', size);
+            } catch (e) {}
+
             const slips = document.querySelectorAll('.receipt-slip');
             const btn80 = document.getElementById('btn-80mm');
             const btn58 = document.getElementById('btn-58mm');
@@ -558,11 +616,19 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             const urlParams = new URLSearchParams(window.location.search);
             const sizeParam = urlParams.get('size');
 
-            if (sizeParam === '80mm') {
-                setPaperSize('80mm');
-            } else {
-                setPaperSize('58mm');
+            let preferredSize = '80mm'; // Default 80mm untuk printer kasir auto-cutter
+            try {
+                const storedSize = localStorage.getItem('nextix_receipt_paper_size');
+                if (storedSize === '58mm' || storedSize === '80mm') {
+                    preferredSize = storedSize;
+                }
+            } catch (e) {}
+
+            if (sizeParam === '58mm' || sizeParam === '80mm') {
+                preferredSize = sizeParam;
             }
+
+            setPaperSize(preferredSize);
 
             if (typeof totalVisitors !== 'undefined' && totalVisitors > 1) {
                 updateCustomSplitPreview(totalVisitors);
