@@ -681,6 +681,34 @@
         color: #0d6efd;
       }
 
+      .badge-origin-d {
+        background: #e0f2fe;
+        color: #0369A1 ;
+      }
+      .badge-origin-m {
+        background: #F3E8FF ;
+        color: #6B21A8  ;
+      }
+      .badge-type-i {
+        background: #D1FAE5  ;
+        color: #047857   ;
+      }
+      .badge-type-g {
+        background: #FFEDD5  ;
+        color: #C2410C   ;
+      }
+      .badge-status-bt {
+        background: #E2E8F0   ;
+        color: #475569    ;
+      }
+      .badge-status-t {
+        background: #DCFCE7   ;
+        color: #15803D    ;
+      }
+      .badge-status-b {
+        background: #FEE2E2   ;
+        color: #B91C1C    ;
+      }
       /* Content Body */
       .app-content {
         padding: 1rem 2rem 2rem;

@@ -176,26 +176,26 @@
                       <td><?= esc($t['origin'] ?? '-') ?></td>
                       <td>
                         <?php if (($t['origin_type'] ?? '') === 'domestic'): ?>
-                          <span class="badge bg-primary">Domestik</span>
+                          <span class="badge badge-origin-d">Domestik</span>
                         <?php elseif (($t['origin_type'] ?? '') === 'international'): ?>
-                          <span class="badge bg-danger">Mancanegara</span>
+                          <span class="badge badge-origin-m">Mancanegara</span>
                         <?php else: ?>
                           <span class="badge bg-secondary">-</span>
                         <?php endif; ?>
                       </td>
                       <td>
-                        <span class="badge bg-<?= ($t['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'info text-dark' ?>">
+                        <span class="badge badge-type-<?= ($t['ticket_category'] ?? '') === 'group' ? 'g' : ' badge-type-i' ?>">
                           <?= esc(ucfirst($t['ticket_category'] ?? 'Individual')) ?>
                         </span>
                       </td>
                       <td class="fw-semibold"><?= (int)($t['total_visitors'] ?? 0) ?> org</td>
                       <td>
                         <?php if (($t['status'] ?? '') === 'used'): ?>
-                          <span class="badge bg-success">Hadir</span>
+                          <span class="badge badge-status-t">Hadir</span>
                         <?php elseif (($t['status'] ?? '') === 'active'): ?>
-                          <span class="badge bg-primary">Belum Terpakai</span>
+                          <span class="badge badge-status-bt">Belum Terpakai</span>
                         <?php else: ?>
-                          <span class="badge bg-secondary">Batal</span>
+                          <span class="badge badge-status-b">Batal</span>
                         <?php endif; ?>
                       </td>
                       <td><?= esc($t['checkpoint_name'] ?? '-') ?></td>
