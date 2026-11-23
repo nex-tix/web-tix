@@ -7,6 +7,9 @@
       try {
         var saved = localStorage.getItem('dash26-theme') || 'light';
         document.documentElement.setAttribute('data-theme', saved);
+        // Sinkronkan juga tema Bootstrap/AdminLTE (adminlte.min.js menimpanya
+        // saat DOMContentLoaded; initThemeBridge di init.js mengunci ulang)
+        document.documentElement.setAttribute('data-bs-theme', saved);
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
       }

@@ -893,7 +893,8 @@ class ReportController extends BaseController
         $endInput      = $this->request->getGet('end');
         $paymentMethod = $this->request->getGet('payment_method');
         $bankId        = $this->request->getGet('bank_id');
-        $status        = $this->request->getGet('status') ?: 'completed';
+        // Default 'completed' hanya saat param absen (null); '' (Semua Status) tetap lolos
+        $status        = $this->request->getGet('status') ?? 'completed';
 
         $range     = $this->resolveDateRange($startInput, $endInput);
         $startDate = $range['startDate'];
@@ -1011,7 +1012,8 @@ class ReportController extends BaseController
         $endInput      = $this->request->getGet('end');
         $paymentMethod = $this->request->getGet('payment_method');
         $bankId        = $this->request->getGet('bank_id');
-        $status        = $this->request->getGet('status') ?: 'completed';
+        // Samakan dengan keuangan(): default 'completed' hanya saat param absen
+        $status        = $this->request->getGet('status') ?? 'completed';
 
         $range     = $this->resolveDateRange($startInput, $endInput);
         $startDate = $range['startDate'];
