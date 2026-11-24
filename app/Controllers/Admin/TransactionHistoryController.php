@@ -284,4 +284,38 @@ class TransactionHistoryController extends BaseController
         return redirect()->to(base_url("admin/pos/receipt/{$ticket['transaction_id']}?ticket_id={$ticketId}"))
             ->with('success', 'Cetak ulang berhasil. Tiket siap dicetak.');
     }
+
+    /**
+     * Ubah payment_method transaksi selesai (cash ↔ debit) dari modal riwayat.
+     * Hanya field payment_method yang boleh berubah; status harus completed.
+     */
+    public function updatePayment($id)
+    {
+        $transactionModel = new TransactionModel();
+        $transaction = $transactionModel->find($id);
+
+        if (!$transaction) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Transaksi tidak ditemukan.');
+        }
+
+        if ($transaction['status'] !== 'completed') {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Hanya transaksi selesai yang bisa diubah metode bayarnya.');
+        }
+
+        $paymentMethod = (string) $this->request->getPost('payment_method');
+        if (!in_array($paymentMethod, ['cash', 'debit'], true)) {
+            return redirect()->back()->with('error', 'Metode bayar tidak valid.')->withInput();
+        }
+
+        if ($paymentMethod === $transaction['payment_method']) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Metode bayar tidak berubah.');
+        }
+
+        if (!$transactionModel->update($id, ['payment_method' => $paymentMethod])) {
+            return redirect()->to('/admin/transaction-history')->with('error', 'Gagal memperbarui metode bayar.');
+        }
+
+        $label = $paymentMethod === 'cash' ? 'Tunai' : 'Debit';
+        return redirect()->to('/admin/transaction-history')->with('success', 'Metode bayar ' . $transaction['invoice_code'] . ' diubah menjadi ' . $label . '.');
+    }
 }

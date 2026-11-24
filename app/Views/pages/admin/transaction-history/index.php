@@ -4,18 +4,6 @@
 
 <div class="app-content">
   <div class="container-fluid px-0">
-    <?php if (session()->get('success')): ?>
-      <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-        <?= session()->get('success') ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <?php endif; ?>
-    <?php if (session()->get('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-        <?= session()->get('error') ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <?php endif; ?>
     <div class="app-content-header">
       <div class="page-title mb-3">
         <h4 class="text-slate-900">Riwayat Penjualan</h4>
@@ -73,11 +61,10 @@
                       <?php endif; ?>
                     </td>
                     <td style="text-align:center">
-                      <a href="<?= base_url('admin/transaction-history/detail/' . $row['id']) ?>" class="btn btn-sm btn-outline-dark" title="Detail">
+                      <a href="<?= base_url('admin/transaction-history/detail/' . $row['id']) ?>" class=" text-center btn btn-sm btn-outline-dark" title="Detail">
                         <i class="bi bi-eye action-icon"></i>
                       </a>
-                      <?php if (($row['status'] ?? '') === 'completed'): ?>
-                        <button
+                        <!-- <button
                           type="button"
                           class="btn btn-sm btn-outline-danger"
                           title="Void Transaksi"
@@ -86,7 +73,19 @@
                           data-void-url="<?= esc(base_url('admin/transaction-history/void/' . $row['id']), 'attr') ?>"
                           data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>">
                           <i class="bi bi-x-circle"></i>
-                        </button>
+                        </button> -->
+                      <?php if (($row['status'] ?? '') === 'completed'): ?>
+                        <!-- tombol edit pay-method: buka modal ubah metode bayar -->
+                         <button type="button" class="btn btn-sm btn-outline-warning btn-edit"
+                          title="Ubah Metode Bayar"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editPaymentModal"
+                          data-payment-url="<?= esc(base_url('admin/transaction-history/update-payment/' . $row['id']), 'attr') ?>"
+                          data-invoice="<?= esc($row['invoice_code'] ?? '-', 'attr') ?>"
+                          data-payment-method="<?= esc($row['payment_method'] ?? 'cash', 'attr') ?>">
+                          <i class="bi bi-pencil"></i>
+                         </button>
+
                         <!-- Tombol cetak ulang: buka modal, daftar tiket diambil via AJAX -->
                         <button
                           type="button"
@@ -140,6 +139,45 @@
   </div>
 </div>
 
+<!-- Modal ubah metode bayar: hanya field payment_method (cash ↔ debit) -->
+<div class="modal fade" id="editPaymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="editPaymentForm" method="POST" action="" novalidate>
+        <?= csrf_field() ?>
+        <div class="modal-header">
+          <h6 class="modal-title">Ubah Metode Bayar</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-2">
+            Invoice: <strong id="editInvoiceCode">-</strong>
+          </p>
+          <div class="alert alert-warning py-2 mb-3">
+            <i class="bi bi-exclamation-triangle"></i>
+            Hanya metode bayar yang bisa diubah. Nominal dan status transaksi tidak berubah.
+          </div>
+          <label class="form-label fw-semibold">Metode Bayar <span class="text-danger">*</span></label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="payCash" value="cash" required>
+              <label class="form-check-label" for="payCash">Tunai</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="payDebit" value="debit" required>
+              <label class="form-check-label" for="payDebit">Debit</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-warning btn-sm">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Modal cetak ulang: daftar tiket aktif & berlaku hari ini diambil via AJAX saat modal dibuka -->
 <div
   class="modal fade"
@@ -167,6 +205,20 @@
 <?= $this->section('scripts') ?>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Flash session → toastr; dipanggil di sini karena toastr.min.js baru dimuat di layouts/js-query (setelah content)
+    <?php if (session()->get('success')): ?>
+      toastr.success(<?= json_encode(session()->get('success')) ?>, 'Berhasil', {
+        timeOut: 2500,
+        extendedTimeOut: 0
+      });
+    <?php endif; ?>
+    <?php if (session()->get('error')): ?>
+      toastr.error(<?= json_encode(session()->get('error')) ?>, 'Gagal', {
+        timeOut: 3000,
+        extendedTimeOut: 0
+      });
+    <?php endif; ?>
+
     const modal = document.getElementById('voidTransactionModal');
     const form = document.getElementById('voidTransactionForm');
     const reason = document.getElementById('voidReason');
@@ -201,6 +253,48 @@
       }).then(function(result) {
         if (result.isConfirmed) {
           form.submit();
+        }
+      });
+    });
+
+    // --- Modal ubah metode bayar: isi form dari data-* button, konfirmasi SweetAlert sebelum POST ---
+    const editPaymentModal = document.getElementById('editPaymentModal');
+    const editPaymentForm = document.getElementById('editPaymentForm');
+    const editInvoiceCode = document.getElementById('editInvoiceCode');
+
+    editPaymentModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      editPaymentForm.action = button.getAttribute('data-payment-url');
+      editInvoiceCode.textContent = button.getAttribute('data-invoice');
+      // pre-select radio sesuai metode saat ini
+      const current = button.getAttribute('data-payment-method');
+      document.getElementById('payCash').checked = (current === 'cash');
+      document.getElementById('payDebit').checked = (current !== 'cash');
+    });
+
+    editPaymentForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const selected = editPaymentForm.querySelector('input[name="payment_method"]:checked');
+      if (!selected) {
+        toastr.error('Pilih metode bayar terlebih dahulu.', 'Validasi Gagal', {
+          timeOut: 2500,
+          extendedTimeOut: 0
+        });
+        return;
+      }
+      const label = selected.value === 'cash' ? 'Tunai' : 'Debit';
+      Swal.fire({
+        title: 'Ubah metode bayar?',
+        text: 'Invoice ' + editInvoiceCode.textContent + ' akan diubah menjadi ' + label + '.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#d97706',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Simpan',
+        cancelButtonText: 'Batal',
+      }).then(function(result) {
+        if (result.isConfirmed) {
+          editPaymentForm.submit();
         }
       });
     });
