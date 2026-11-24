@@ -102,4 +102,10 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->post('expenses/(:num)/delete', 'Admin\ExpenseController::delete/$1');
     $routes->get('expenses/export-pdf', 'Admin\ExpenseController::exportPdf');
 
+    //Export excel
+    $routes->get('laporan/export-excel', 'ReportController::exporExcel');
+    $routes->get('laporan/pengunjung/export-excel', 'ReportController::exportPengunjungExcel');
+    $routes->get('laporan/guide/export-excel', 'ReportController::exportGuideExcel');
+    $routes->get('laporan/keuangan/export-excel', 'ReportController::exportKeuanganExcel');
+    $routes->get('expenses/export-excel', 'Admin/ExpenseController::exportExcel');
 });
