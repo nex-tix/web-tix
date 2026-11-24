@@ -2299,6 +2299,39 @@
         border-color: #991B1B !important;
       }
 
+      /* Warna hijau tetap pekat saat status disabled.
+         Catatan: .btn.disabled bawaan BS (lewat AdminLTE) menulis color/border-color
+         dari variabel tak-terdefinisi -> jatuh ke hitam dgn spesifisitas (0,2,0),
+         jadi aturan disabled khusus ini wajib set warna eksplisit di atasnya. */
+      .btn-excel-outline.disabled,
+      .btn-excel-outline:disabled {
+        opacity: 1;
+        color: #198754;
+        border-color: #198754;
+      }
+
+      /* --- Tombol Excel outline (pasangan btn-pdf-outline, dipakai kolom Aksi bank) --- */
+      .btn-excel-outline {
+        background: transparent;
+        color: #198754;
+        border: 1px solid #198754;
+        font-weight: 500;
+      }
+      .btn-excel-outline:hover {
+        background: #198754;
+        color: #fff;
+      }
+      [data-theme=dark] .btn-excel-outline {
+        color: #4ADE80 !important;
+        border-color: #166534 !important;
+        background: transparent !important;
+      }
+      [data-theme=dark] .btn-excel-outline:hover {
+        background: #166534 !important;
+        color: #BBF7D0 !important;
+        border-color: #15803D !important;
+      }
+
       /* ============================================================
          DROPDOWN EKSPOR (hover) — tombol "Export" dengan child PDF & Excel
          ============================================================ */

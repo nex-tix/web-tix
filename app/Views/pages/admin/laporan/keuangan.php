@@ -66,7 +66,7 @@
                 'status'         => $filters['status'] ?? '',
               ]);
             ?>
-            <!-- Tombol Export: dropdown hover — child "PDF" (aktif, link lama dipertahankan) & "Excel" (menunggu fitur) -->
+            <!-- Tombol Export: dropdown hover — child "PDF" & "Excel" (keduanya aktif) -->
             <div class="dropdown hover-dropdown">
               <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
                 Export
@@ -78,7 +78,7 @@
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item disabled" href="#" aria-disabled="true" title="Segera hadir">
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/keuangan/export-excel?' . $exportQuery) ?>">
                     <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
                   </a>
                 </li>
@@ -246,10 +246,17 @@
                         'status'         => $filters['status'] ?? '',
                       ]);
                     ?>
+                    <!-- Dua tombol aksi per baris: Cetak (PDF) & Excel — query sama, tinggal beda endpoint -->
+                    <div class="d-flex gap-1">
                     <a href="<?= base_url('admin/laporan/keuangan/export-pdf?' . $rowPdfQuery) ?>"
-                       class="btn btn-sm btn-pdf-outline py-0 px-2 ms-3" style="font-size: 0.75rem;" title="Cetak Rekonsiliasi Bank Ini">
+                       class="btn btn-sm btn-pdf-outline py-0 px-2" style="font-size: 0.75rem;" title="Cetak Rekonsiliasi Bank Ini">
                       <i class="bi bi-printer"></i> Cetak
                     </a>
+                    <a href="<?= base_url('admin/laporan/keuangan/export-excel?' . $rowPdfQuery) ?>"
+                       class="btn btn-sm btn-excel-outline py-0 px-2" style="font-size: 0.75rem;" title="Ekspor Excel Rekonsiliasi Bank Ini">
+                      <i class="bi bi-file-earmark-excel"></i> Excel
+                    </a>
+                    </div>
                   </td>
                 </tr>
               <?php endforeach; ?>

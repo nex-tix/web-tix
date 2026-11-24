@@ -82,8 +82,10 @@ trait ExcelExportTrait
      * @param array     $kolomTengah huruf kolom isi rata tengah (mis. ['A','B'])
      * @param array     $lebarKolom  lebar manual per kolom ['A' => 6, ...];
      *                               kolom yang tidak disebut memakai auto-size
+     * @param string    $mergeTotal  huruf kolom TERAKHIR label baris total untuk di-merge
+     *                               dari kolom A (default 'B' = merge A:B)
      */
-    private function styleSheet(Worksheet $sheet, int $barisHeader, array $kolomAngka = [], array $kolomTengah = [], array $lebarKolom = []): void
+    private function styleSheet(Worksheet $sheet, int $barisHeader, array $kolomAngka = [], array $kolomTengah = [], array $lebarKolom = [], string $mergeTotal = 'B'): void
     {
         // getHighestDataRow() di PhpSpreadsheet 5.x mengembalikan int (nomor baris)
         $akhirData  = $sheet->getHighestDataRow();     // baris terakhir = TOTAL
@@ -135,15 +137,36 @@ trait ExcelExportTrait
             }
         }
 
-        // --- Baris TOTAL: merge A:B (label tidak terpotong), latar tint merah,
-        //     bold + font lebih besar, border atas double ---
-        $sheet->mergeCells('A' . $akhirData . ':B' . $akhirData);
+        // --- Baris TOTAL: merge label dari A s/d $mergeTotal (default A:B),
+        //     latar tint merah, bold + font lebih besar, border atas double ---
+        $sheet->mergeCells('A' . $akhirData . ':' . $mergeTotal . $akhirData);
         $gayaTotal = $sheet->getStyle('A' . $akhirData . ':' . $akhirKolom . $akhirData);
         $gayaTotal->getFont()->setBold(true)->setSize(11);
         $gayaTotal->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB(self::WARNA_TOTAL);
         $gayaTotal->getBorders()->getTop()->setBorderStyle(Border::BORDER_DOUBLE);
         $gayaTotal->getAlignment()->setVertical('center');
         $sheet->getRowDimension($akhirData)->setRowHeight(20);
+
+        // --- Padding cell: jarak teks dari border ---
+        // Excel tidak punya "padding" seperti CSS: setIndent menggeser teks menjauhi
+        // tepi kiri/kanan (1 karakter), dan tinggi baris memberi ruang vertikal.
+        // Kolom center TIDAK diindent (Excel mengabaikan indent pada center).
+        for ($r = $barisHeader; $r <= $akhirData; $r++) {
+            if ($r !== $barisHeader && $r !== $akhirData) {
+                $sheet->getRowDimension($r)->setRowHeight(18);   // ruang vertikal baris data
+            }
+            foreach (range('A', $akhirKolom) as $kolom) {
+                $al = $sheet->getStyle($kolom . $r)->getAlignment();
+                $al->setVertical('center');
+                $h = $al->getHorizontal();
+                if ($h === null || $h === 'general') {
+                    $al->setHorizontal('left');     // teks polos: rata kiri eksplisit + indent
+                    $al->setIndent(1);
+                } elseif ($h === 'left' || $h === 'right') {
+                    $al->setIndent(1);              // angka kanan / teks kiri: jarak 1 karakter
+                }
+            }
+        }
 
         // --- Auto-filter di baris header (tanpa freeze/sticky — ralat review) ---
         if ($akhirIsi >= $barisHeader + 1) {

@@ -77,7 +77,7 @@
               'q'              => $filters['q'] ?? '',
             ]));
             ?>
-            <!-- Tombol Export: dropdown hover — child "PDF" (aktif, link lama dipertahankan) & "Excel" (menunggu fitur) -->
+            <!-- Tombol Export: dropdown hover — child "PDF" & "Excel" (keduanya aktif) -->
             <div class="dropdown hover-dropdown flex-grow-1 flex-sm-grow-0">
               <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle px-3 text-nowrap w-100" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor pengeluaran">
                 Export
@@ -89,7 +89,7 @@
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item disabled" href="#" aria-disabled="true" title="Segera hadir">
+                  <a class="dropdown-item" href="<?= base_url('admin/expenses/export-excel?' . $exportQuery) ?>">
                     <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
                   </a>
                 </li>
