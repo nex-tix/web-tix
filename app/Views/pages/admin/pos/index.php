@@ -262,7 +262,7 @@
                     <span class="font-medium text-amber-700">Jadwal Sesi:</span>
                     <span class="font-bold" id="summary-show-time"><?= esc($showTimes['session_1']) ?> WITA</span>
                 </div>
-                <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 text-xs flex justify-between items-center">
+                <div class="px-5 py-3 border-b border-slate-200 text-xs flex justify-between items-center">
                     <div>
                         <span class="text-slate-400">Pengunjung:</span>
                         <span class="font-bold text-slate-800 ml-1" id="summary-visitor-name">- Belum Diisi -</span>
@@ -272,7 +272,7 @@
                         <span class="font-bold text-slate-800 ml-1" id="summary-visitor-origin">Domestik (0 Orang)</span>
                     </div>
                 </div>
-                <div class="px-5 py-2.5 bg-slate-50/70 border-b border-slate-200 text-xs flex justify-between items-center hidden" id="summary-guide-row">
+                <div class="px-5 py-2.5 border-b border-slate-200 text-xs flex justify-between items-center hidden" id="summary-guide-row">
                     <span class="text-slate-500">Pemandu / Guide:</span>
                     <span class="font-bold text-slate-800" id="summary-guide-name">-</span>
                 </div>
