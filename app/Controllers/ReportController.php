@@ -12,9 +12,12 @@ use App\Models\TransactionModel;
 use App\Models\CustomerModel;
 use App\Models\GuideModel;
 use App\Models\BankModel;
+use App\Tools\ExcelExportTrait;
 
 class ReportController extends BaseController
 {
+    use ExcelExportTrait;   // streamXlsx, styleSheet, escapeCells — untuk export Excel
+
     protected $chekinHistoryModel;
     protected $checkpointModel;
     protected $ticketModel;
@@ -249,6 +252,129 @@ class ReportController extends BaseController
             : "laporan-{$bulanNames[$startMonth]}-s/d-{$bulanNames[$endMonth]}-{$tahun}.pdf";
 
         $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    /**
+     * Export EXCEL laporan rekapitulasi tiket — pasangan dari exportPdf().
+     * Param, parsing tanggal, dan data diambil SAMA PERSIS dengan exportPdf();
+     * hanya bagian akhirnya berubah: view HTML+Dompdf -> PhpSpreadsheet.
+     */
+    public function exportExcel()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput = $this->request->getGet('end');
+
+        // SAMA PERSIS dengan exportPdf(): parse d-m-Y / Y-m-d, fallback bulan berjalan, swap jika terbalik
+        if (empty($startInput) || empty($endInput)) {
+            $startDate = date('Y-m-01');
+            $endDate = date('Y-m-t');
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
+        } else {
+            $startDt = \DateTime::createFromFormat('d-m-Y', $startInput) ?: \DateTime::createFromFormat('Y-m-d', $startInput);
+            $endDt = \DateTime::createFromFormat('d-m-Y', $endInput) ?: \DateTime::createFromFormat('Y-m-d', $endInput);
+
+            if ($startDt === false || $endDt === false) {
+                $startDate = date('Y-m-01');
+                $endDate = date('Y-m-t');
+                $startDt = new \DateTime($startDate);
+                $endDt = new \DateTime($endDate);
+            } else {
+                $startDate = $startDt->format('Y-m-d');
+                $endDate = $endDt->format('Y-m-d');
+            }
+        }
+
+        if ($startDate > $endDate) {
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
+        }
+
+        $tahun = (int) $startDt->format('Y');
+        $startMonth = (int) $startDt->format('n');
+        $endMonth = (int) $endDt->format('n');
+
+        // Daftar bulan tercakup (untuk penamaan file), sama seperti exportPdf()
+        $bulanArr = [];
+        $y = (int) $startDt->format('Y');
+        $m = (int) $startDt->format('n');
+        $endY = (int) $endDt->format('Y');
+        $endM = (int) $endDt->format('n');
+        while ($y < $endY || ($y === $endY && $m <= $endM)) {
+            $bulanArr[] = $m;
+            $m++;
+            if ($m > 12) {
+                $m = 1;
+                $y++;
+            }
+        }
+
+        // Data laporan: rows = rekap harian, totals = total periode (method lama, tidak diubah)
+        $dailyData = $this->getDailyTicketData($startDate, $endDate);
+
+        // Susun baris — angka tetap angka (bukan teks "Rp ...") supaya bisa dijumlahkan di Excel
+        // Nama kolom diseragamkan bahasa Indonesia (keputusan review visual)
+        $header = ['No.', 'Tanggal', 'Tiket Terbit', 'Pengunjung', 'Terpakai', 'Aktif', 'Dibatalkan', 'Pendapatan (Rp)'];
+        $rows = [];
+        foreach ($dailyData['rows'] as $row) {
+            $rows[] = [
+                (int) $row['no'],
+                (string) $row['tanggal_display'],
+                (int) $row['tiket_terbit'],
+                (int) $row['pengunjung'],
+                (int) $row['used'],
+                (int) $row['active'],
+                (int) $row['cancelled'],
+                (float) $row['pendapatan'],
+            ];
+        }
+
+        // Baris TOTAL PERIODE — sama dengan footer tabel di PDF
+        $totals = $dailyData['totals'];
+        $rows[] = [
+            'TOTAL PERIODE', '',
+            (int) $totals['tiket_terbit'],
+            (int) $totals['pengunjung'],
+            (int) $totals['used'],
+            (int) $totals['active'],
+            (int) $totals['cancelled'],
+            (float) $totals['pendapatan'],
+        ];
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        // Bangun sheet: header kolom di baris 1, data mulai baris 2 (tanpa blok judul — ralat review)
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Rekapitulasi Tiket');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis (bukan dianggap null)
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        // Styling lengkap dari trait: semua cell ber-border tipis, header merah solid,
+        // zebra, baris total (merge A:B + border double), auto-filter,
+        // lebar kolom manual, dan siap cetak A4 landscape
+        $this->styleSheet(
+            $sheet,
+            1,                                // baris header kolom
+            ['C', 'D', 'E', 'F', 'G', 'H'],   // kolom angka: rata kanan + format nol "-"
+            ['A', 'B'],                       // No. & Tanggal: rata tengah
+            ['A' => 6, 'B' => 14, 'C' => 12, 'D' => 12, 'E' => 10, 'F' => 8, 'G' => 13, 'H' => 16]
+        );
+
+        // Nama file: pola sama dengan exportPdf(), ekstensi .xlsx
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+        $filename = count($bulanArr) === 1
+            ? "laporan-{$bulanNames[$startMonth]}-{$tahun}.xlsx"
+            : "laporan-{$bulanNames[$startMonth]}-s-d-{$bulanNames[$endMonth]}-{$tahun}.xlsx";
+
+        $this->streamXlsx($spreadsheet, $filename);
     }
 
     private function getDailyTicketData(string $startDate, string $endDate): array

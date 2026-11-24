@@ -20,7 +20,7 @@
           <input type="date" id="filter-tanggal-akhir" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
         </div>
         <div class="col-12 col-sm-12 col-md-4 col-lg-auto">
-          <!-- Tombol Export: dropdown hover — child "PDF" (aktif, link lama dipertahankan) & "Excel" (menunggu fitur) -->
+          <!-- Tombol Export: dropdown hover — child "PDF" & "Excel" (keduanya aktif) -->
           <div class="dropdown hover-dropdown w-100">
             <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle w-100 justify-content-center" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
               Export
@@ -32,7 +32,7 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item disabled" href="#" aria-disabled="true" title="Segera hadir">
+                <a id="btn-export-excel" class="dropdown-item" href="<?= base_url('admin/laporan/export-excel?start=' . date('d-m-Y', strtotime('first day of this month')) . '&end=' . date('d-m-Y')) ?>">
                   <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
                 </a>
               </li>
@@ -271,6 +271,7 @@
         const startInput = document.getElementById('filter-tanggal-awal');
         const endInput = document.getElementById('filter-tanggal-akhir');
         const exportBtn = document.getElementById('btn-export-pdf');
+        const exportExcelBtn = document.getElementById('btn-export-excel');   // child Excel ikut sinkron
         let alertEl = null;
 
         function formatDateRegional(dateStr) {
@@ -304,16 +305,20 @@
           const endVal = endInput.value ? formatDateRegional(endInput.value) : '<?= date('d-m-Y') ?>';
 
           exportBtn.href = '<?= base_url('admin/laporan/export-pdf') ?>?start=' + startVal + '&end=' + endVal;
+          exportExcelBtn.href = '<?= base_url('admin/laporan/export-excel') ?>?start=' + startVal + '&end=' + endVal;
         }
 
         startInput.addEventListener('change', updateExportUrl);
         endInput.addEventListener('change', updateExportUrl);
 
-        exportBtn.addEventListener('click', function(e) {
-          if (startInput.value && endInput.value && endInput.value < startInput.value) {
-            e.preventDefault();
-            showAlert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
-          }
+        // Validasi tanggal berlaku untuk KEDUA item menu (PDF & Excel)
+        [exportBtn, exportExcelBtn].forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            if (startInput.value && endInput.value && endInput.value < startInput.value) {
+              e.preventDefault();
+              showAlert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
+            }
+          });
         });
 
         updateExportUrl();

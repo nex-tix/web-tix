@@ -74,6 +74,7 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     // Laporan
     $routes->get('laporan', 'ReportController::index');
     $routes->get('laporan/export-pdf', 'ReportController::exportPdf');
+    // Endpoint Excel pertama (baru) — pengujian end-to-end sebelum endpoint lain menyusul
     $routes->get('laporan/pengunjung', 'ReportController::pengunjung');
     $routes->get('laporan/pengunjung/export-pdf', 'ReportController::exportPengunjungPdf');
     $routes->get('laporan/guide', 'ReportController::guide');
@@ -103,7 +104,7 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('expenses/export-pdf', 'Admin\ExpenseController::exportPdf');
 
     //Export excel
-    $routes->get('laporan/export-excel', 'ReportController::exporExcel');
+    $routes->get('laporan/export-excel', 'ReportController::exportExcel');
     $routes->get('laporan/pengunjung/export-excel', 'ReportController::exportPengunjungExcel');
     $routes->get('laporan/guide/export-excel', 'ReportController::exportGuideExcel');
     $routes->get('laporan/keuangan/export-excel', 'ReportController::exportKeuanganExcel');
