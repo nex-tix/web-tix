@@ -231,7 +231,33 @@ function initMobileDrawer() {
   });
 }
 
+function initThemeBridge() {
+  // Jembatan antar sistem tema: adminlte.min.js punya ColorMode sendiri
+  // (key 'lte-theme', default 'auto' → prefers-color-scheme OS) yang menyetel
+  // html[data-bs-theme], sedangkan shell memakai data-theme ('dash26-theme').
+  // Bila tidak dijembatani, OS Windows dark membuat --bs-body-bg gelap →
+  // sel tabel Bootstrap/AdminLTE ikut gelap walau UI dalam mode light.
+  const root = document.documentElement;
+  const sync = () => {
+    const t = root.getAttribute('data-theme') || 'light';
+    if (root.getAttribute('data-bs-theme') !== t) root.setAttribute('data-bs-theme', t);
+    root.style.colorScheme = t;
+  };
+  sync();
+  // Setelah init AdminLTE (listener DOMContentLoaded-nya terdaftar lebih dulu
+  // saat parse) menimpa atribut — listener ini jalan belakangan dan menang.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sync);
+  }
+  // Pantau perubahan dari toggle shell (init.js/palette.js) maupun AdminLTE/OS.
+  new MutationObserver(sync).observe(root, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'data-bs-theme'],
+  });
+}
+
 export function initShellBehaviors() {
+  initThemeBridge();
   initThemeToggle();
   initHeroDate();
   initNavGroups();

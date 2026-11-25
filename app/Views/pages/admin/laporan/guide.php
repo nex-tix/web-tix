@@ -46,9 +46,24 @@
                 'guide_id' => $selectedGuideId,
               ]));
             ?>
-            <a href="<?= base_url('admin/laporan/guide/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-              <i class="bi bi-file-earmark-pdf"></i> PDF
-            </a>
+            <!-- Tombol Export: dropdown hover — child "PDF" & "Excel" (keduanya aktif) -->
+            <div class="dropdown hover-dropdown">
+              <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
+                Export
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/guide/export-pdf?' . $exportQuery) ?>">
+                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/guide/export-excel?' . $exportQuery) ?>">
+                    <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </form>

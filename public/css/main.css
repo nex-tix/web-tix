@@ -681,6 +681,34 @@
         color: #0d6efd;
       }
 
+      .badge-origin-d {
+        background: #e0f2fe;
+        color: #0369A1 ;
+      }
+      .badge-origin-m {
+        background: #F3E8FF ;
+        color: #6B21A8  ;
+      }
+      .badge-type-i {
+        background: #D1FAE5  ;
+        color: #047857   ;
+      }
+      .badge-type-g {
+        background: #FFEDD5  ;
+        color: #C2410C   ;
+      }
+      .badge-status-bt {
+        background: #E2E8F0   ;
+        color: #475569    ;
+      }
+      .badge-status-t {
+        background: #DCFCE7   ;
+        color: #15803D    ;
+      }
+      .badge-status-b {
+        background: #FEE2E2   ;
+        color: #B91C1C    ;
+      }
       /* Content Body */
       .app-content {
         padding: 1rem 2rem 2rem;
@@ -2072,6 +2100,271 @@
         color: var(--bs-alert-color);
         background-color: var(--bs-alert-bg);
         border-color: var(--bs-alert-border-color);
+      }
+
+      /* ============================================================
+         LAPORAN KEUANGAN — REDESIGN
+         Palet badge mengikuti badge laporan (main.css 684-711).
+         ============================================================ */
+
+      /* --- Badge Metode Bayar (palet sama dengan badge laporan) --- */
+      .badge-method-cash {
+        background: #E2E8F0;
+        color: #475569;
+        font-weight: 600;
+      }
+      .badge-method-debit {
+        background: #e0f2fe;
+        color: #0369A1;
+        font-weight: 600;
+      }
+      [data-theme=dark] .badge-method-cash {
+        background: #2A2F35;
+        color: #C9CFD6;
+        border: 1px solid #3A3F45;
+      }
+      [data-theme=dark] .badge-method-debit {
+        background: #17293B;
+        color: #7DD3FC;
+        border: 1px solid #1E4258;
+      }
+      /* Badge kode bank pada card Top 3 — biru subtle, sama dgn palet di atas */
+      .badge-bank-code {
+        background: #e0f2fe;
+        color: #0369A1;
+        font-weight: 600;
+      }
+      [data-theme=dark] .badge-bank-code {
+        background: #17293B;
+        color: #7DD3FC;
+        border: 1px solid #1E4258;
+      }
+
+      /* --- KPI: hero (Pendapatan Bersih) vs kartu pendamping --- */
+      .stat-card.stat-hero {
+        background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 70%);
+        border-color: #cfe3fb;
+      }
+      .stat-card.stat-hero .stat-value h4 {
+        font-size: 1.9rem;
+        color: #0b3a6f;
+      }
+      /* Penjelasan pindah sejajar judul, bukan di bawah angka */
+      .stat-hero .stat-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem;
+      }
+      .stat-hero .stat-desc {
+        font-size: 0.72rem;
+        color: #64748b;
+        font-weight: 400;
+        text-align: right;
+        margin: 0;
+      }
+      /* Kartu pendamping: angka tidak bersaing dengan hero */
+      .stat-card.stat-muted .stat-value h4 {
+        color: #495057;
+        font-weight: 600;
+      }
+      .stat-card.stat-muted .stat-sub h4 {
+        color: #6c757d;
+        font-weight: 500;
+      }
+      .stat-muted .stat-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem;
+      }
+      .stat-muted .stat-desc {
+        font-size: 0.72rem;
+        color: #94a3b8;
+        font-weight: 400;
+        text-align: right;
+        margin: 0;
+      }
+      [data-theme=dark] .stat-card.stat-hero {
+        background: linear-gradient(180deg, #1a2733 0%, #22262B 70%);
+        border-color: #2E4258;
+      }
+      [data-theme=dark] .stat-card.stat-hero .stat-value h4 {
+        color: #93C5FD;
+      }
+      [data-theme=dark] .stat-hero .stat-desc,
+      [data-theme=dark] .stat-muted .stat-desc {
+        color: #9AA0A6;
+      }
+      [data-theme=dark] .stat-card.stat-muted .stat-value h4 {
+        color: #D5D9DE;
+      }
+      [data-theme=dark] .stat-card.stat-muted .stat-sub h4 {
+        color: #9AA0A6;
+      }
+
+      /* --- Tabel Rekonsiliasi per Bank --- */
+      .bank-table th {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9AA0A6 !important;
+        font-weight: 600;
+        white-space: nowrap;
+        background-color: transparent !important;
+      }
+      .bank-table td {
+        vertical-align: middle;
+      }
+      .bank-table .bank-rank {
+        font-weight: 600;
+        color: #495057;
+        width: 3rem;
+      }
+      .bank-table .bank-rank.rank-top {
+        color: #0b3a6f;
+      }
+      .bank-table .num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      /* Baris tanpa transaksi dipudarkan — jangan menarik mata */
+      .bank-table tr.is-zero .bank-total-cell,
+      .bank-table tr.is-zero .bank-tx-cell {
+        color: #adb5bd;
+        font-weight: 400;
+      }
+      .bank-table tr.is-zero .bank-name-cell {
+        color: #868e96;
+      }
+      [data-theme=dark] .bank-table th {
+        color: #9AA0A6;
+      }
+      [data-theme=dark] .bank-table .bank-rank {
+        color: #C9CFD6;
+      }
+      [data-theme=dark] .bank-table .bank-rank.rank-top {
+        color: #93C5FD;
+      }
+      [data-theme=dark] .bank-table tr.is-zero .bank-total-cell,
+      [data-theme=dark] .bank-table tr.is-zero .bank-tx-cell,
+      [data-theme=dark] .bank-table tr.is-zero .bank-name-cell {
+        color: #6B7280;
+      }
+
+      /* --- Teks sekunder tabel transaksi (jam / sub-invoice): kontras naik --- */
+      .tx-sub {
+        color: #6c757d;
+        font-size: 0.78rem;
+      }
+
+      /* --- Kolom Bank EDC: teks polos, bukan badge biru solid --- */
+      .tx-bank-name {
+        color: #343a40;
+        font-weight: 500;
+      }
+      .tx-ref-empty {
+        color: #adb5bd;
+        font-size: 0.75rem;
+      }
+      [data-theme=dark] .tx-sub {
+        color: #9AA0A6;
+      }
+      [data-theme=dark] .tx-bank-name {
+        color: #D5D9DE;
+      }
+      [data-theme=dark] .tx-ref-empty {
+        color: #6B7280;
+      }
+
+      /* --- Tombol PDF outline (pengganti btn-transaksi solid di page ini) --- */
+      .btn-pdf-outline {
+        background: transparent;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        font-weight: 500;
+      }
+      .btn-pdf-outline:hover {
+        background: #dc3545;
+        color: #fff;
+      }
+      [data-theme=dark] .btn-pdf-outline {
+        color: #F87171 !important;
+        border-color: #7F1D1D !important;
+        background: transparent !important;
+      }
+      [data-theme=dark] .btn-pdf-outline:hover {
+        background: #7F1D1D !important;
+        color: #FCA5A5 !important;
+        border-color: #991B1B !important;
+      }
+
+      /* Warna hijau tetap pekat saat status disabled.
+         Catatan: .btn.disabled bawaan BS (lewat AdminLTE) menulis color/border-color
+         dari variabel tak-terdefinisi -> jatuh ke hitam dgn spesifisitas (0,2,0),
+         jadi aturan disabled khusus ini wajib set warna eksplisit di atasnya. */
+      .btn-excel-outline.disabled,
+      .btn-excel-outline:disabled {
+        opacity: 1;
+        color: #198754;
+        border-color: #198754;
+      }
+
+      /* --- Tombol Excel outline (pasangan btn-pdf-outline, dipakai kolom Aksi bank) --- */
+      .btn-excel-outline {
+        background: transparent;
+        color: #198754;
+        border: 1px solid #198754;
+        font-weight: 500;
+      }
+      .btn-excel-outline:hover {
+        background: #198754;
+        color: #fff;
+      }
+      [data-theme=dark] .btn-excel-outline {
+        color: #4ADE80 !important;
+        border-color: #166534 !important;
+        background: transparent !important;
+      }
+      [data-theme=dark] .btn-excel-outline:hover {
+        background: #166534 !important;
+        color: #BBF7D0 !important;
+        border-color: #15803D !important;
+      }
+
+      /* ============================================================
+         DROPDOWN EKSPOR (hover) — tombol "Export" dengan child PDF & Excel
+         ============================================================ */
+      /* Tombol Export: paddingX dipadatkan (1.2rem -> 0.6rem) + gap dirapatkan
+         supaya min-width 3 tombol (Filter+Reset+Export) muat satu baris di col-lg-2 */
+      .hover-dropdown .btn-transaksi {
+        padding: 0.6rem 0.6rem;
+        gap: 4px;
+      }
+
+      .hover-dropdown .dropdown-menu {
+        border: 1px solid var(--card-border);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+      }
+
+      /* Dark mode: menu ikut tema gelap */
+      [data-theme=dark] .hover-dropdown .dropdown-menu {
+        background-color: var(--bg-header-card);
+        border-color: var(--card-border);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item {
+        color: var(--text-dark);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item:hover,
+      [data-theme=dark] .hover-dropdown .dropdown-item:focus {
+        background-color: var(--sidebar-hover);
+        color: var(--text-dark);
+      }
+
+      [data-theme=dark] .hover-dropdown .dropdown-item.disabled {
+        color: var(--text-muted);
       }
 
 

@@ -182,3 +182,14 @@ document.addEventListener('submit', function (e) {
     }
   });
 });
+
+/* ============================================================ HOVER DROPDOWN (tombol Export) ============================================================ */
+// Dropdown terbuka saat kursor masuk, tertutup saat kursor keluar.
+// data-bs-toggle="dropdown" tetap dipertahankan agar tetap bisa diklik pada touch device.
+document.querySelectorAll('.hover-dropdown').forEach(function (el) {
+  var trigger = el.querySelector('[data-bs-toggle="dropdown"]');
+  if (!trigger || typeof bootstrap === 'undefined') return;
+  var dd = bootstrap.Dropdown.getOrCreateInstance(trigger);
+  el.addEventListener('mouseenter', function () { dd.show(); });
+  el.addEventListener('mouseleave', function () { dd.hide(); });
+});

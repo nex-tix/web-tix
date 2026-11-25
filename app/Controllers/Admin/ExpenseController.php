@@ -8,9 +8,12 @@ use App\Models\ExpenseCategoryModel;
 use App\Models\ExpenseModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use App\Tools\ExcelExportTrait;
 
 class ExpenseController extends BaseController
 {
+    use ExcelExportTrait;   // streamXlsx, styleSheet, escapeCells — untuk export Excel
+
     protected ExpenseModel $expenseModel;
     protected ExpenseCategoryModel $categoryModel;
     protected BankModel $bankModel;
@@ -351,6 +354,135 @@ class ExpenseController extends BaseController
             $filename = "laporan-pengeluaran-semua-periode.pdf";
         }
         $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    /**
+     * Export EXCEL laporan pengeluaran — pasangan dari exportPdf().
+     * Param dan query SALINAN IDENTIK; mapping kolom identik dengan tabel
+     * di view pdf-expense.php, termasuk baris TOTAL PENGELUARAN.
+     */
+    public function exportExcel()
+    {
+        $startInput    = $this->request->getGet('start');
+        $endInput      = $this->request->getGet('end');
+        $categoryId    = $this->request->getGet('category_id');
+        $paymentMethod = $this->request->getGet('payment_method');
+        $search        = trim((string) ($this->request->getGet('q') ?? ''));
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        // SALINAN IDENTIK dari exportPdf(): builder, join, filter, pencarian.
+        // ($selectedCategory hanya untuk judul PDF — tidak dibutuhkan di Excel.)
+        $builder = $this->expenseModel->builder('expenses e')
+            ->select('
+                e.*,
+                ec.name AS category_name,
+                b.name AS bank_name,
+                b.code AS bank_code,
+                u.name AS creator_name,
+                u.username AS creator_username
+            ')
+            ->join('expense_categories ec', 'ec.id = e.category_id', 'left')
+            ->join('banks b', 'b.id = e.bank_id', 'left')
+            ->join('users u', 'u.id = e.created_by', 'left');
+
+        if ($startDate !== null) {
+            $builder->where('e.expense_date >=', $startDate);
+        }
+        if ($endDate !== null) {
+            $builder->where('e.expense_date <=', $endDate);
+        }
+
+        if (!empty($categoryId)) {
+            $builder->where('e.category_id', $categoryId);
+        }
+        if (!empty($paymentMethod)) {
+            $builder->where('e.payment_method', $paymentMethod);
+        }
+        if ($search !== '') {
+            $builder->groupStart()
+                ->like('e.expense_code', $search)
+                ->orLike('e.title', $search)
+                ->orLike('e.notes', $search)
+                ->orLike('ec.name', $search)
+                ->orLike('b.name', $search)
+                ->orLike('b.code', $search)
+                ->groupEnd();
+        }
+
+        $expenses = $builder->orderBy('e.expense_date', 'ASC')
+            ->orderBy('e.id', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $totalNominal = 0;
+        foreach ($expenses as $exp) {
+            $totalNominal += (float) ($exp['amount'] ?? 0);
+        }
+
+        // Mapping kolom persis tabel pdf-expense.php
+        $header = ['No.', 'Tanggal', 'Kode', 'Kategori', 'Keterangan', 'Metode Bayar', 'Jumlah (Rp)'];
+        $rows = [];
+        foreach ($expenses as $idx => $exp) {
+            // Keterangan = judul + catatan (notes) dalam satu sel, isi sama dengan PDF
+            $keterangan = (string) ($exp['title'] ?? '');
+            if (!empty($exp['notes'])) {
+                $keterangan .= ' (' . $exp['notes'] . ')';
+            }
+
+            $rows[] = [
+                $idx + 1,
+                date('d/m/Y', strtotime($exp['expense_date'])),
+                (string) ($exp['expense_code'] ?? '-'),
+                (string) ($exp['category_name'] ?? 'Umum'),
+                $keterangan,
+                // Label metode bayar sama dengan tampilan PDF
+                ($exp['payment_method'] === 'transfer')
+                    ? 'Transfer ' . ($exp['bank_code'] ?: $exp['bank_name'] ?: 'Bank')
+                    : 'Tunai (Cash)',
+                (float) ($exp['amount'] ?? 0),
+            ];
+        }
+
+        if (empty($rows)) {
+            // Pesan kosong — sama dengan tampilan PDF
+            $rows[] = ['Tidak ada catatan pengeluaran pada periode ini.', '', '', '', '', '', ''];
+        } else {
+            // TOTAL: label merge A:F, angka di G (Jumlah)
+            $rows[] = ['TOTAL PENGELUARAN:', '', '', '', '', '', $totalNominal];
+        }
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Pengeluaran');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        $this->styleSheet(
+            $sheet,
+            1,                                        // baris header kolom
+            ['G'],                                    // Jumlah: rata kanan + format nol "-"
+            ['A', 'B', 'C', 'F'],                     // center; D (Kategori) & E (Keterangan) teks kiri
+            ['A' => 6, 'B' => 12, 'C' => 18, 'D' => 18, 'E' => 34, 'F' => 18, 'G' => 16],
+            'F'                                       // merge label total A:F
+        );
+
+        // Nama file: 4 varian logika tanggal yang sama dengan exportPdf()
+        if ($startDate && $endDate) {
+            $filename = "laporan-pengeluaran-{$startDate}-sd-{$endDate}.xlsx";
+        } elseif ($startDate) {
+            $filename = "laporan-pengeluaran-mulai-{$startDate}.xlsx";
+        } elseif ($endDate) {
+            $filename = "laporan-pengeluaran-sampai-{$endDate}.xlsx";
+        } else {
+            $filename = "laporan-pengeluaran-semua-periode.xlsx";
+        }
+
+        $this->streamXlsx($spreadsheet, $filename);
     }
 
     /**

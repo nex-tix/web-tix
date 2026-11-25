@@ -46,7 +46,7 @@
               <option value="cancelled" <?= ($filters['status'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
             </select>
           </div>
-          <div class="col-12 col-md-4 col-lg-2 d-flex gap-1">
+          <div class="col-12 col-md-4 col-lg-2 d-flex flex-wrap gap-1">
             <button type="submit" class="btn btn-sm btn-dark flex-grow-1">
               <i class="bi bi-filter"></i> Filter
             </button>
@@ -62,9 +62,24 @@
                 'status'      => $filters['status'] ?? '',
               ]));
             ?>
-            <a href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>" class="btn btn-sm btn-transaksi" title="Cetak PDF">
-              <i class="bi bi-file-earmark-pdf"></i> PDF
-            </a>
+            <!-- Tombol Export: dropdown hover — child "PDF" & "Excel" (keduanya aktif) -->
+            <div class="dropdown hover-dropdown">
+              <button type="button" class="btn btn-sm btn-transaksi dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Ekspor laporan">
+                Export
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/pengunjung/export-pdf?' . $exportQuery) ?>">
+                    <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('admin/laporan/pengunjung/export-excel?' . $exportQuery) ?>">
+                    <i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </form>
@@ -176,26 +191,26 @@
                       <td><?= esc($t['origin'] ?? '-') ?></td>
                       <td>
                         <?php if (($t['origin_type'] ?? '') === 'domestic'): ?>
-                          <span class="badge bg-primary">Domestik</span>
+                          <span class="badge badge-origin-d">Domestik</span>
                         <?php elseif (($t['origin_type'] ?? '') === 'international'): ?>
-                          <span class="badge bg-danger">Mancanegara</span>
+                          <span class="badge badge-origin-m">Mancanegara</span>
                         <?php else: ?>
                           <span class="badge bg-secondary">-</span>
                         <?php endif; ?>
                       </td>
                       <td>
-                        <span class="badge bg-<?= ($t['ticket_category'] ?? '') === 'group' ? 'warning text-dark' : 'info text-dark' ?>">
+                        <span class="badge badge-type-<?= ($t['ticket_category'] ?? '') === 'group' ? 'g' : ' badge-type-i' ?>">
                           <?= esc(ucfirst($t['ticket_category'] ?? 'Individual')) ?>
                         </span>
                       </td>
                       <td class="fw-semibold"><?= (int)($t['total_visitors'] ?? 0) ?> org</td>
                       <td>
                         <?php if (($t['status'] ?? '') === 'used'): ?>
-                          <span class="badge bg-success">Hadir</span>
+                          <span class="badge badge-status-t">Hadir</span>
                         <?php elseif (($t['status'] ?? '') === 'active'): ?>
-                          <span class="badge bg-primary">Belum Terpakai</span>
+                          <span class="badge badge-status-bt">Belum Terpakai</span>
                         <?php else: ?>
-                          <span class="badge bg-secondary">Batal</span>
+                          <span class="badge badge-status-b">Batal</span>
                         <?php endif; ?>
                       </td>
                       <td><?= esc($t['checkpoint_name'] ?? '-') ?></td>

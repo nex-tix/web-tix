@@ -12,9 +12,12 @@ use App\Models\TransactionModel;
 use App\Models\CustomerModel;
 use App\Models\GuideModel;
 use App\Models\BankModel;
+use App\Tools\ExcelExportTrait;
 
 class ReportController extends BaseController
 {
+    use ExcelExportTrait;   // streamXlsx, styleSheet, escapeCells — untuk export Excel
+
     protected $chekinHistoryModel;
     protected $checkpointModel;
     protected $ticketModel;
@@ -249,6 +252,129 @@ class ReportController extends BaseController
             : "laporan-{$bulanNames[$startMonth]}-s/d-{$bulanNames[$endMonth]}-{$tahun}.pdf";
 
         $dompdf->stream($filename, ['Attachment' => true]);
+    }
+
+    /**
+     * Export EXCEL laporan rekapitulasi tiket — pasangan dari exportPdf().
+     * Param, parsing tanggal, dan data diambil SAMA PERSIS dengan exportPdf();
+     * hanya bagian akhirnya berubah: view HTML+Dompdf -> PhpSpreadsheet.
+     */
+    public function exportExcel()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput = $this->request->getGet('end');
+
+        // SAMA PERSIS dengan exportPdf(): parse d-m-Y / Y-m-d, fallback bulan berjalan, swap jika terbalik
+        if (empty($startInput) || empty($endInput)) {
+            $startDate = date('Y-m-01');
+            $endDate = date('Y-m-t');
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
+        } else {
+            $startDt = \DateTime::createFromFormat('d-m-Y', $startInput) ?: \DateTime::createFromFormat('Y-m-d', $startInput);
+            $endDt = \DateTime::createFromFormat('d-m-Y', $endInput) ?: \DateTime::createFromFormat('Y-m-d', $endInput);
+
+            if ($startDt === false || $endDt === false) {
+                $startDate = date('Y-m-01');
+                $endDate = date('Y-m-t');
+                $startDt = new \DateTime($startDate);
+                $endDt = new \DateTime($endDate);
+            } else {
+                $startDate = $startDt->format('Y-m-d');
+                $endDate = $endDt->format('Y-m-d');
+            }
+        }
+
+        if ($startDate > $endDate) {
+            $temp = $startDate;
+            $startDate = $endDate;
+            $endDate = $temp;
+            $startDt = new \DateTime($startDate);
+            $endDt = new \DateTime($endDate);
+        }
+
+        $tahun = (int) $startDt->format('Y');
+        $startMonth = (int) $startDt->format('n');
+        $endMonth = (int) $endDt->format('n');
+
+        // Daftar bulan tercakup (untuk penamaan file), sama seperti exportPdf()
+        $bulanArr = [];
+        $y = (int) $startDt->format('Y');
+        $m = (int) $startDt->format('n');
+        $endY = (int) $endDt->format('Y');
+        $endM = (int) $endDt->format('n');
+        while ($y < $endY || ($y === $endY && $m <= $endM)) {
+            $bulanArr[] = $m;
+            $m++;
+            if ($m > 12) {
+                $m = 1;
+                $y++;
+            }
+        }
+
+        // Data laporan: rows = rekap harian, totals = total periode (method lama, tidak diubah)
+        $dailyData = $this->getDailyTicketData($startDate, $endDate);
+
+        // Susun baris — angka tetap angka (bukan teks "Rp ...") supaya bisa dijumlahkan di Excel
+        // Nama kolom diseragamkan bahasa Indonesia (keputusan review visual)
+        $header = ['No.', 'Tanggal', 'Tiket Terbit', 'Pengunjung', 'Terpakai', 'Aktif', 'Dibatalkan', 'Pendapatan (Rp)'];
+        $rows = [];
+        foreach ($dailyData['rows'] as $row) {
+            $rows[] = [
+                (int) $row['no'],
+                (string) $row['tanggal_display'],
+                (int) $row['tiket_terbit'],
+                (int) $row['pengunjung'],
+                (int) $row['used'],
+                (int) $row['active'],
+                (int) $row['cancelled'],
+                (float) $row['pendapatan'],
+            ];
+        }
+
+        // Baris TOTAL PERIODE — sama dengan footer tabel di PDF
+        $totals = $dailyData['totals'];
+        $rows[] = [
+            'TOTAL PERIODE', '',
+            (int) $totals['tiket_terbit'],
+            (int) $totals['pengunjung'],
+            (int) $totals['used'],
+            (int) $totals['active'],
+            (int) $totals['cancelled'],
+            (float) $totals['pendapatan'],
+        ];
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        // Bangun sheet: header kolom di baris 1, data mulai baris 2 (tanpa blok judul — ralat review)
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Rekapitulasi Tiket');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis (bukan dianggap null)
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        // Styling lengkap dari trait: semua cell ber-border tipis, header merah solid,
+        // zebra, baris total (merge A:B + border double), auto-filter,
+        // lebar kolom manual, dan siap cetak A4 landscape
+        $this->styleSheet(
+            $sheet,
+            1,                                // baris header kolom
+            ['C', 'D', 'E', 'F', 'G', 'H'],   // kolom angka: rata kanan + format nol "-"
+            ['A', 'B'],                       // No. & Tanggal: rata tengah
+            ['A' => 6, 'B' => 14, 'C' => 12, 'D' => 12, 'E' => 10, 'F' => 8, 'G' => 13, 'H' => 16]
+        );
+
+        // Nama file: pola sama dengan exportPdf(), ekstensi .xlsx
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+        $filename = count($bulanArr) === 1
+            ? "laporan-{$bulanNames[$startMonth]}-{$tahun}.xlsx"
+            : "laporan-{$bulanNames[$startMonth]}-s-d-{$bulanNames[$endMonth]}-{$tahun}.xlsx";
+
+        $this->streamXlsx($spreadsheet, $filename);
     }
 
     private function getDailyTicketData(string $startDate, string $endDate): array
@@ -739,6 +865,115 @@ class ReportController extends BaseController
         $dompdf->stream($filename, ['Attachment' => true]);
     }
 
+    /**
+     * Export EXCEL laporan data pengunjung — pasangan dari exportPengunjungPdf().
+     * Param dan query SALINAN IDENTIK; mapping kolom identik dengan tabel
+     * di view pdf-pengunjung.php. Tanpa blok ringkasan KPI (keputusan review).
+     */
+    public function exportPengunjungExcel()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $originType = $this->request->getGet('origin_type');
+        $category   = $this->request->getGet('category');
+        $status     = $this->request->getGet('status');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        // SALINAN IDENTIK dari exportPengunjungPdf(): builder, join, filter, order
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                c.name AS customer_name,
+                c.origin,
+                c.origin_type,
+                c.phone AS customer_phone,
+                cp.name AS checkpoint_name
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('checkpoints cp', 'cp.id = t.used_checkpoint_id', 'left')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($originType)) {
+            $builder->where('c.origin_type', $originType);
+        }
+        if (!empty($category)) {
+            $builder->where('t.ticket_category', $category);
+        }
+        if (!empty($status)) {
+            $builder->where('t.status', $status);
+        }
+
+        $tickets = $builder->orderBy('t.valid_date', 'ASC')->orderBy('t.id', 'ASC')->get()->getResultArray();
+
+        // Susun baris — mapping kolom persis tabel pdf-pengunjung.php
+        $header = ['No.', 'Tanggal', 'No. Tiket', 'Invoice', 'Nama Pengunjung', 'Kota / Negara', 'Tipe', 'Qty', 'Status'];
+        $rows = [];
+        $totalPengunjung = 0;
+
+        foreach ($tickets as $idx => $t) {
+            $qty = (int) ($t['total_visitors'] ?? 0);
+            $totalPengunjung += $qty;
+            $rows[] = [
+                $idx + 1,
+                date('d/m/Y', strtotime($t['valid_date'])),
+                (string) ($t['ticket_code'] ?? '-'),
+                (string) ($t['invoice_code'] ?? '-'),
+                (string) ($t['customer_name'] ?? 'Umum'),
+                (string) ($t['origin'] ?? '-'),
+                ucfirst((string) ($t['ticket_category'] ?? 'Individual')),
+                $qty,
+                // Label status bahasa Indonesia — sama dengan tampilan PDF
+                match ($t['status'] ?? '') {
+                    'used'   => 'Hadir',
+                    'active' => 'Belum Terpakai',
+                    default  => 'Batal',
+                },
+            ];
+        }
+
+        if (empty($rows)) {
+            // Pesan kosong — sama dengan tampilan PDF
+            $rows[] = ['Tidak ada data pengunjung pada periode ini.', '', '', '', '', '', '', '', ''];
+        } else {
+            // Total pengunjung: label merge A:G, angka di kolom H (Qty)
+            $rows[] = ['TOTAL PENGUNJUNG:', '', '', '', '', '', '', $totalPengunjung, ''];
+        }
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Pengunjung');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        $this->styleSheet(
+            $sheet,
+            1,                                        // baris header kolom
+            ['H'],                                    // Qty: rata kanan + format nol "-"
+            ['A', 'B', 'C', 'D', 'G', 'I'],           // center; E (Nama) & F (Kota) teks kiri
+            ['A' => 6, 'B' => 12, 'C' => 16, 'D' => 16, 'E' => 26, 'F' => 20, 'G' => 12, 'H' => 8, 'I' => 14],
+            'G'                                       // merge label total A:G
+        );
+
+        // Nama file: pola sama dengan exportPengunjungPdf(), ekstensi .xlsx
+        $suffix = match ($originType) {
+            'domestic'      => '-domestik',
+            'international' => '-mancanegara',
+            default         => '',
+        };
+        $filename = "laporan-pengunjung{$suffix}-{$startDate}-sd-{$endDate}.xlsx";
+
+        $this->streamXlsx($spreadsheet, $filename);
+    }
+
     // =========================================================================
     // 3. LAPORAN PEMBAYARAN GUIDE
     // =========================================================================
@@ -884,6 +1119,103 @@ class ReportController extends BaseController
         $dompdf->stream($filename, ['Attachment' => true]);
     }
 
+    /**
+     * Export EXCEL laporan komisi guide — pasangan dari exportGuidePdf().
+     * Param dan query SALINAN IDENTIK; mapping kolom identik dengan tabel
+     * di view pdf-guide.php, termasuk baris TOTAL (wisatawan + komisi).
+     */
+    public function exportGuideExcel()
+    {
+        $startInput = $this->request->getGet('start');
+        $endInput   = $this->request->getGet('end');
+        $guideId    = $this->request->getGet('guide_id');
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        // SALINAN IDENTIK dari exportGuidePdf(): builder, join, filter, order.
+        // ($selectedGuide dari versi PDF tidak dibutuhkan — hanya untuk judul PDF.)
+        $builder = $this->ticketModel->builder('tickets t')
+            ->select('
+                t.*,
+                tx.invoice_code,
+                tx.created_at AS transaction_date,
+                tx.status AS tx_status,
+                c.name AS customer_name,
+                c.origin AS customer_origin,
+                g.name AS guide_name,
+                g.code AS guide_code,
+                g.phone AS guide_phone
+            ')
+            ->join('transactions tx', 'tx.id = t.transaction_id', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->join('guides g', 'g.id = t.guide_id', 'left')
+            ->where('t.guide_id IS NOT NULL')
+            ->where('DATE(t.valid_date) >=', $startDate)
+            ->where('DATE(t.valid_date) <=', $endDate);
+
+        if (!empty($guideId)) {
+            $builder->where('t.guide_id', $guideId);
+        }
+
+        $records = $builder->orderBy('t.valid_date', 'ASC')->orderBy('t.id', 'ASC')->get()->getResultArray();
+
+        // Total persis seperti versi PDF
+        $totalWisatawan = 0;
+        $totalKomisi    = 0;
+        foreach ($records as $r) {
+            $totalWisatawan += (int) ($r['total_visitors'] ?? 0);
+            $totalKomisi    += (float) ($r['guide_fee_amount'] ?? 0);
+        }
+
+        // Mapping kolom persis tabel pdf-guide.php
+        $header = ['No.', 'Tanggal', 'Kode Guide', 'Nama Guide', 'No. Tiket', 'Rombongan / Tamu', 'Wisatawan', 'Komisi (Rp)'];
+        $rows = [];
+        foreach ($records as $idx => $r) {
+            $rows[] = [
+                $idx + 1,
+                date('d/m/Y', strtotime($r['valid_date'])),
+                (string) ($r['guide_code'] ?? '-'),
+                (string) ($r['guide_name'] ?? ($r['guide_name_snapshot'] ?? '-')),
+                (string) ($r['ticket_code'] ?? '-'),
+                (string) ($r['customer_name'] ?? 'Rombongan'),
+                (int) ($r['total_visitors'] ?? 0),
+                (float) ($r['guide_fee_amount'] ?? 0),
+            ];
+        }
+
+        if (empty($rows)) {
+            // Pesan kosong — sama dengan tampilan PDF
+            $rows[] = ['Tidak ada catatan trip guide pada periode ini.', '', '', '', '', '', '', ''];
+        } else {
+            // TOTAL: label merge A:F, angka di G (Wisatawan) & H (Komisi)
+            $rows[] = ['TOTAL:', '', '', '', '', '', $totalWisatawan, $totalKomisi];
+        }
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Komisi Guide');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        $this->styleSheet(
+            $sheet,
+            1,                                        // baris header kolom
+            ['G', 'H'],                               // Wisatawan & Komisi: kanan + format nol "-"
+            ['A', 'B', 'C', 'E'],                     // center; D (Nama) & F (Rombongan) teks kiri
+            ['A' => 6, 'B' => 12, 'C' => 14, 'D' => 24, 'E' => 20, 'F' => 24, 'G' => 11, 'H' => 14],
+            'F'                                       // merge label total A:F
+        );
+
+        // Nama file: pola sama dengan exportGuidePdf(), ekstensi .xlsx
+        $filename = "laporan-komisi-guide-{$startDate}-sd-{$endDate}.xlsx";
+
+        $this->streamXlsx($spreadsheet, $filename);
+    }
+
     // =========================================================================
     // 4. LAPORAN KEUANGAN (PER BANK & CASH)
     // =========================================================================
@@ -893,7 +1225,8 @@ class ReportController extends BaseController
         $endInput      = $this->request->getGet('end');
         $paymentMethod = $this->request->getGet('payment_method');
         $bankId        = $this->request->getGet('bank_id');
-        $status        = $this->request->getGet('status') ?: 'completed';
+        // Default 'completed' hanya saat param absen (null); '' (Semua Status) tetap lolos
+        $status        = $this->request->getGet('status') ?? 'completed';
 
         $range     = $this->resolveDateRange($startInput, $endInput);
         $startDate = $range['startDate'];
@@ -1011,7 +1344,8 @@ class ReportController extends BaseController
         $endInput      = $this->request->getGet('end');
         $paymentMethod = $this->request->getGet('payment_method');
         $bankId        = $this->request->getGet('bank_id');
-        $status        = $this->request->getGet('status') ?: 'completed';
+        // Samakan dengan keuangan(): default 'completed' hanya saat param absen
+        $status        = $this->request->getGet('status') ?? 'completed';
 
         $range     = $this->resolveDateRange($startInput, $endInput);
         $startDate = $range['startDate'];
@@ -1096,4 +1430,116 @@ class ReportController extends BaseController
 
         $dompdf->stream($filename, ['Attachment' => true]);
     }
+
+    /**
+     * Export EXCEL laporan keuangan — pasangan dari exportKeuanganPdf().
+     * Param dan query SALINAN IDENTIK, termasuk default status 'completed'
+     * saat param absen (sinkron dengan halaman keuangan). Mapping kolom
+     * identik dengan tabel di view pdf-keuangan.php. Tanpa blok ringkasan
+     * KPI dan tanpa tombol per-bank (keputusan review: menyusul).
+     */
+    public function exportKeuanganExcel()
+    {
+        $startInput    = $this->request->getGet('start');
+        $endInput      = $this->request->getGet('end');
+        $paymentMethod = $this->request->getGet('payment_method');
+        $bankId        = $this->request->getGet('bank_id');
+        // Samakan dengan keuangan() & exportKeuanganPdf(): default 'completed' saat param absen
+        $status        = $this->request->getGet('status') ?? 'completed';
+
+        $range     = $this->resolveDateRange($startInput, $endInput);
+        $startDate = $range['startDate'];
+        $endDate   = $range['endDate'];
+
+        // Untuk variasi nama file saja (pola sama dengan versi PDF)
+        $selectedBank = null;
+        if (!empty($bankId)) {
+            $selectedBank = $this->bankModel->find($bankId);
+        }
+
+        // SALINAN IDENTIK dari exportKeuanganPdf(): builder, join, filter, order
+        $builder = $this->transactionModel->builder('transactions tx')
+            ->select('
+                tx.*,
+                b.name AS bank_name,
+                b.code AS bank_code,
+                u.username AS cashier_username,
+                c.name AS customer_name
+            ')
+            ->join('banks b', 'b.id = tx.bank_id', 'left')
+            ->join('users u', 'u.id = tx.created_by', 'left')
+            ->join('customers c', 'c.id = tx.customer_id', 'left')
+            ->where('DATE(tx.created_at) >=', $startDate)
+            ->where('DATE(tx.created_at) <=', $endDate);
+
+        if (!empty($status)) {
+            $builder->where('tx.status', $status);
+        }
+        if (!empty($paymentMethod)) {
+            $builder->where('tx.payment_method', $paymentMethod);
+        }
+        if (!empty($bankId)) {
+            $builder->where('tx.bank_id', $bankId);
+        }
+
+        $transactions = $builder->orderBy('tx.created_at', 'ASC')->get()->getResultArray();
+
+        // Perhitungan total SAMA dengan exportKeuanganPdf() — netRevenue dipakai
+        // di baris TOTAL PENERIMAAN (gross/diskon/cash/debit tidak ditampilkan:
+        // blok KPI dikecualikan dari Excel, keputusan review)
+        $netRevenue = 0;
+        foreach ($transactions as $tx) {
+            $netRevenue += (float) ($tx['total_amount'] ?? 0);
+        }
+
+        // Mapping kolom persis tabel pdf-keuangan.php
+        $header = ['No.', 'Waktu', 'No. Invoice', 'Kasir', 'Customer', 'Metode', 'Bank', 'No. Ref EDC', 'Total (Rp)'];
+        $rows = [];
+        foreach ($transactions as $idx => $tx) {
+            $rows[] = [
+                $idx + 1,
+                date('d/m/Y H:i', strtotime($tx['created_at'])),
+                (string) ($tx['invoice_code'] ?? '-'),
+                (string) ($tx['cashier_username'] ?? '-'),
+                (string) ($tx['customer_name'] ?? 'Umum'),
+                strtoupper((string) ($tx['payment_method'] ?? '')),
+                (string) ($tx['bank_name'] ?? '-'),
+                (string) ($tx['payment_reference'] ?? '-'),
+                (float) ($tx['total_amount'] ?? 0),
+            ];
+        }
+
+        if (empty($rows)) {
+            // Pesan kosong — sama dengan tampilan PDF
+            $rows[] = ['Tidak ada transaksi keuangan pada periode ini.', '', '', '', '', '', '', '', ''];
+        } else {
+            // TOTAL: label merge A:H, angka di I (Total) = netRevenue
+            $rows[] = ['TOTAL PENERIMAAN:', '', '', '', '', '', '', '', $netRevenue];
+        }
+
+        $rows = $this->escapeCells($rows);   // amankan string dari formula injection
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Keuangan');
+        $sheet->fromArray($header, null, 'A1', true);   // strict: angka 0 tetap ditulis
+        $sheet->fromArray($rows, null, 'A2', true);
+
+        $this->styleSheet(
+            $sheet,
+            1,                                        // baris header kolom
+            ['I'],                                    // Total: rata kanan + format nol "-"
+            ['A', 'B', 'C', 'F', 'G', 'H'],           // center; D (Kasir) & E (Customer) teks kiri
+            ['A' => 5, 'B' => 16, 'C' => 16, 'D' => 14, 'E' => 20, 'F' => 10, 'G' => 14, 'H' => 14, 'I' => 16],
+            'H'                                       // merge label total A:H
+        );
+
+        // Nama file: pola sama dengan exportKeuanganPdf(), ekstensi .xlsx
+        $filename = !empty($selectedBank)
+            ? "laporan-keuangan-{$selectedBank['code']}-{$startDate}-sd-{$endDate}.xlsx"
+            : "laporan-keuangan-{$startDate}-sd-{$endDate}.xlsx";
+
+        $this->streamXlsx($spreadsheet, $filename);
+    }
+
 }
