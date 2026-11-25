@@ -8,7 +8,7 @@
  * app/Views/partials/*.php yang dipanggil layouts/main.php.
  */
 
-import { initShellBehaviors } from './init.js';
+import { initShellBehaviors } from './init.js?v=20261125';
 import { initCharts } from './charts.js';
 import { initVectorMaps } from './maps.js';
 import { initCalendarPage } from './calendar.js';
