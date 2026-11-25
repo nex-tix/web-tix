@@ -2342,6 +2342,15 @@
         gap: 4px;
       }
 
+      /* Baris tombol filter (pengunjung & keuangan): padding X dipadatkan supaya
+         Filter + Reset + Export muat SEJAJAR satu baris di col-lg-2 yang sempit.
+         flex-wrap di container tetap dipertahankan sebagai jaring pengaman overflow. */
+      .filter-export-actions .btn,
+      .filter-export-actions .hover-dropdown .btn {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+      }
+
       .hover-dropdown .dropdown-menu {
         border: 1px solid var(--card-border);
         box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
