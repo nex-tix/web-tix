@@ -96,7 +96,7 @@ class PricingService
             }
         }
 
-        return (float) $ticketType['price'];
+        return (float) ($ticketType['price'] ?? 0);
     }
 
     protected function calculateUnitDiscount(float $unitPrice, float $discountPercent): float

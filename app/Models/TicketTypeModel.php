@@ -12,14 +12,13 @@ class TicketTypeModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'price', 'ticket_category', 'is_active'];
+    protected $allowedFields    = ['name', 'ticket_category', 'is_active'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [
         'id' => 'int',
-        'price' => 'float',
         'is_active' => 'boolean',
     ];
     protected array $castHandlers = [];

@@ -486,7 +486,7 @@
         if (ticketPrices && ticketPrices[origin] && ticketPrices[origin][typeKey] !== undefined) {
             return parseFloat(ticketPrices[origin][typeKey]);
         }
-        return parseFloat(t.price);
+        return parseFloat(t.price || 0);
     }
 
     const limits = {

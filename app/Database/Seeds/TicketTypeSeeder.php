@@ -10,11 +10,11 @@ class TicketTypeSeeder extends Seeder
     {
         $now = date('Y-m-d H:i:s');
 
-        // Data awal sesuai PRD v2.5 baris 376 & 165–170
+        // Data awal sesuai PRD v2.5 baris 376 & 165–170 (harga diatur terpusat di settings)
         $types = [
-            ['name' => 'Adult', 'ticket_category' => 'individual', 'price' => 100000.00],
-            ['name' => 'Child', 'ticket_category' => 'individual', 'price' => 60000.00],
-            ['name' => 'Group', 'ticket_category' => 'group', 'price' => 100000.00],
+            ['name' => 'Adult', 'ticket_category' => 'individual'],
+            ['name' => 'Child', 'ticket_category' => 'individual'],
+            ['name' => 'Group', 'ticket_category' => 'group'],
         ];
 
         foreach ($types as $type) {
@@ -29,7 +29,6 @@ class TicketTypeSeeder extends Seeder
             $this->db->table('ticket_types')->insert([
                 'name'             => $type['name'],
                 'ticket_category'  => $type['ticket_category'],
-                'price'            => $type['price'],
                 'is_active'        => 1,
                 'created_at'       => $now,
             ]);

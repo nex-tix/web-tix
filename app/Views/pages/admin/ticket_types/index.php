@@ -3,18 +3,17 @@
 <div class="app-content">
   <div class="container-fluid px-0">
     <?php
-    $headers = ['Nama', 'Harga', 'Kategori', 'Status', 'Dibuat', 'Aksi'];
+    $headers = ['Nama', 'Kategori', 'Status', 'Dibuat', 'Aksi'];
     $rows = [];
     foreach ($ticketTypes as $tt) {
       $rows[] = [
         '<div class="fw-semibold">' . esc($tt['name']) . '</div>',
-        'Rp ' . number_format($tt['price'], 0, ',', '.'),
         '<span class="text-white badge bg-' . ($tt['ticket_category'] === 'individual' ? 'danger' : 'warning') . '">' . ucfirst($tt['ticket_category']) . '</span>',
         $tt['is_active'] ? '<span class="text-white badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Nonaktif</span>',
         $tt['created_at'],
         '<button type="button" class="btn btn-sm btn-outline-warning me-1 btn-edit" title="Edit" data-bs-toggle="modal" data-bs-target="#ticketModal" '
-          . 'data-id="' . $tt['id'] . '" data-name="' . esc($tt['name']) . '" data-price="' . $tt['price'] . '" '
-          . 'data-category="' . $tt['ticket_category'] . '" data-discount="' . '" data-active="' . $tt['is_active'] . '"><i class="bi bi-pencil"></i></button>'
+          . 'data-id="' . $tt['id'] . '" data-name="' . esc($tt['name']) . '" '
+          . 'data-category="' . $tt['ticket_category'] . '" data-active="' . $tt['is_active'] . '"><i class="bi bi-pencil"></i></button>'
           . '<form action="' . base_url('admin/ticket-types/' . $tt['id'] . '/delete') . '" method="POST" class="d-inline" data-confirm-delete="true" data-delete-message="Yakin ingin menghapus jenis tiket ini?">'
           . csrf_field()
           . '<button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>'
@@ -22,6 +21,14 @@
       ];
     }
     ?>
+
+    <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3" role="alert">
+      <div>
+        <i class="bi bi-info-circle me-2"></i>
+        Tarif harga tiket (Domestik &amp; Internasional untuk Dewasa &amp; Anak) dikelola terpusat melalui menu <strong>Pengaturan Sistem</strong>.
+      </div>
+      <a href="<?= base_url('admin/settings') ?>" class="btn btn-sm btn-outline-primary text-nowrap">Buka Pengaturan</a>
+    </div>
 
     <?= view('components/data-table', [
       'title'       => 'Kelola Jenis Tiket',
@@ -64,10 +71,6 @@
                 <option value="group">Group</option>
               </select>
             </div>
-            <div class="col-md-6">
-              <label for="price" class="form-label">Harga <span class="text-danger">*</span></label>
-              <input type="number" class="form-control" id="price" name="price" value="<?= old('price') ?>" placeholder="0" step="0.01" required>
-            </div>
             <div class="col-12">
               <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" <?= old('is_active', 1) ? 'checked' : '' ?>>
@@ -92,7 +95,6 @@
       form.action = '<?= base_url('admin/ticket-types/') ?>' + this.dataset.id + '/update';
       document.getElementById('modalTitle').innerText = 'Edit Jenis Tiket';
       document.getElementById('name').value = this.dataset.name;
-      document.getElementById('price').value = this.dataset.price;
       document.getElementById('ticket_category').value = this.dataset.category;
       document.getElementById('is_active').checked = this.dataset.active == '1';
     });

@@ -28,7 +28,6 @@ class TicketTypeController extends BaseController
     {
         $rules = [
             'name' => 'required|max_length[100]',
-            'price' => 'required|decimal|greater_than_equal_to[0]',
             'ticket_category' => 'required|in_list[individual,group]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];
@@ -39,7 +38,6 @@ class TicketTypeController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'price' => $this->request->getPost('price'),
             'ticket_category' => $this->request->getPost('ticket_category'),
             'is_active' => $this->request->getPost('is_active') ? 1 : 0,
         ];
@@ -61,7 +59,6 @@ class TicketTypeController extends BaseController
 
         $rules = [
             'name' => 'required|max_length[100]',
-            'price' => 'required|decimal|greater_than_equal_to[0]',
             'ticket_category' => 'required|in_list[individual,group]',
             'is_active' => 'permit_empty|in_list[0,1]',
         ];
@@ -72,7 +69,6 @@ class TicketTypeController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'price' => $this->request->getPost('price'),
             'ticket_category' => $this->request->getPost('ticket_category'),
             'is_active' => $this->request->getPost('is_active') ? 1 : 0,
         ];
