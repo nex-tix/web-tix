@@ -310,8 +310,12 @@ class TransactionService
         }
     }
 
-    public function splitTransactionTickets(int $transactionId, string $mode, int $splitCount, int $userId): array
+    public function splitTransactionTickets(int $transactionId, string $mode = 'master', int $splitCount = 0, int $userId = 1): array
     {
+        if (!in_array($mode, ['master', 'individual'], true)) {
+            throw new \InvalidArgumentException('Mode pembagian tiket tidak valid. Hanya mendukung master atau individual.');
+        }
+
         $transaction = $this->transactionModel->find($transactionId);
         if (!$transaction) {
             throw new \InvalidArgumentException('Transaksi tidak ditemukan.');
@@ -364,12 +368,6 @@ class TransactionService
         $guideId = !empty($existingTickets[0]['guide_id']) ? (int)$existingTickets[0]['guide_id'] : null;
         $guideName = !empty($existingTickets[0]['guide_name_snapshot']) ? $existingTickets[0]['guide_name_snapshot'] : null;
 
-        if ($mode === 'custom') {
-            if ($splitCount <= 0 || $splitCount >= $totalVisitors) {
-                throw new \InvalidArgumentException("Jumlah tiket terpisah harus antara 1 sampai " . ($totalVisitors - 1) . " orang.");
-            }
-        }
-
         // Jalankan transaksi database
         $this->db->transStart();
 
@@ -394,51 +392,6 @@ class TransactionService
                         ], 1, (float)$d['guide_fee_unit']);
                         $newTicketIds[] = $newId;
                     }
-                }
-            } elseif ($mode === 'custom') {
-                // Custom: 1 Tiket Group Utama (totalVisitors - splitCount orang) + splitCount tiket terpisah (1 orang per tiket)
-                $mainGroupVisitors = $totalVisitors - $splitCount;
-
-                // Buat 1 Master Group Ticket
-                $groupTicketId = $this->createTicket($transactionId, 'group', $mainGroupVisitors, $guideId, $guideName, null);
-                $newTicketIds[] = $groupTicketId;
-
-                // Alokasikan detail untuk group utama dan untuk tiket terpisah
-                $remainingForGroup = $mainGroupVisitors;
-                $separatedItems = [];
-
-                foreach ($consolidatedDetails as $d) {
-                    $qty = (int)$d['qty'];
-                    if ($remainingForGroup > 0) {
-                        $takeForGroup = min($qty, $remainingForGroup);
-                        $this->insertDetail($groupTicketId, [
-                            'ticket_type_id'   => $d['ticket_type_id'],
-                            'unit_price'       => $d['unit_price'],
-                            'unit_discount'    => ($qty > 0) ? ($d['discount_amount'] / $qty) : 0,
-                            'discount_percent' => $d['discount_percent'],
-                        ], $takeForGroup, (float)$d['guide_fee_unit']);
-
-                        $remainingForGroup -= $takeForGroup;
-                        $leftover = $qty - $takeForGroup;
-                    } else {
-                        $leftover = $qty;
-                    }
-
-                    for ($j = 0; $j < $leftover; $j++) {
-                        $separatedItems[] = $d;
-                    }
-                }
-
-                // Buat tiket terpisah (1 orang per tiket)
-                foreach ($separatedItems as $sep) {
-                    $sepTicketId = $this->createTicket($transactionId, 'individual', 1, $guideId, $guideName, (float)$sep['guide_fee_unit']);
-                    $this->insertDetail($sepTicketId, [
-                        'ticket_type_id'   => $sep['ticket_type_id'],
-                        'unit_price'       => $sep['unit_price'],
-                        'unit_discount'    => 0,
-                        'discount_percent' => $sep['discount_percent'],
-                    ], 1, (float)$sep['guide_fee_unit']);
-                    $newTicketIds[] = $sepTicketId;
                 }
             } else {
                 // Mode 'master': Semua digabung kembali ke 1 Master Group Ticket

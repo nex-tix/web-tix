@@ -220,11 +220,13 @@ class PosController extends BaseController
         }
 
         $splitMode = $this->request->getPost('split_mode') ?? 'master';
-        $splitCount = (int) ($this->request->getPost('split_count') ?? 0);
+        if (!in_array($splitMode, ['master', 'individual'], true)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Mode pembagian tiket tidak valid.'])->setStatusCode(400);
+        }
         $userId = (int) (session()->get('user_id') ?? 1);
 
         try {
-            $result = $this->transactionService->splitTransactionTickets((int) $transactionId, $splitMode, $splitCount, $userId);
+            $result = $this->transactionService->splitTransactionTickets((int) $transactionId, $splitMode, 0, $userId);
 
             return $this->response->setJSON([
                 'success' => true,

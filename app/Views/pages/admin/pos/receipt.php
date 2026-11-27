@@ -89,6 +89,9 @@
             }
 
             /* Normalisasi Wrapper: Hindari display flex & gap agar tidak memicu Blank Page */
+            .receipt-screen-wrapper,
+            .receipt-preview-area,
+            main,
             #receipt-wrapper {
                 display: block !important;
                 gap: 0 !important;
@@ -124,6 +127,7 @@
 
             /* Pemisah halaman untuk transaksi multi-tiket individual / group split */
             .receipt-slip {
+                display: block !important;
                 page-break-after: always !important;
                 break-after: page !important;
                 break-inside: avoid !important;
@@ -176,128 +180,130 @@ $isGroupOrMulti = (($transaction['ticket_category'] ?? null) === 'group' || $has
 $currentTicketCount = count($tickets);
 $isMaster = ($currentTicketCount === 1 && $totalVisitors > 1);
 $isPerPerson = ($currentTicketCount === $totalVisitors && $totalVisitors > 1);
-$isCustom = ($isGroupOrMulti && !$isMaster && !$isPerPerson);
-$customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
 ?>
-<body class="text-slate-900 font-mono text-xs antialiased py-6">
+<body class="text-slate-900 font-mono text-xs antialiased bg-slate-100 min-h-screen">
 
-    <!-- Control Toolbar (No Print) -->
-    <div class="max-w-md mx-auto mb-5 bg-white p-4 rounded-xl shadow-sm border border-slate-200 no-print space-y-3">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
-            <div>
-                <h1 class="font-bold text-sm text-slate-800 flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    Cetak Struk & Tiket
-                </h1>
-                <p class="text-[11px] text-slate-500 font-mono"><?= esc($transaction['invoice_code']) ?> &bull; <?= count($tickets) ?> Struk</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="window.print()" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5" title="Cetak struk (Enter / P)">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    <span>Cetak (Enter)</span>
-                </button>
-                <a href="<?= base_url('admin/pos') ?>" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1" title="Kembali ke Loket POS (Esc)">
-                    <span>Kembali (Esc)</span>
-                </a>
-            </div>
-        </div>
+    <div class="receipt-screen-wrapper min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- LEFT SIDEBAR (40% WIDTH, DOCKED, FULL-HEIGHT, WHITE, BORDER-R) -->
+        <aside class="w-full lg:w-2/5 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 p-6 lg:p-8 xl:p-10 no-print lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto flex flex-col justify-between items-center space-y-6">
+            
+            <div class="w-full max-w-md space-y-6">
+                <!-- Title & Invoice info -->
+                <div class="space-y-1 pb-4 border-b border-slate-100">
+                    <div class="flex items-center justify-between">
+                        <h1 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                            Panel Cetak Struk
+                        </h1>
+                        <span class="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-slate-100 text-slate-700">
+                            <?= count($tickets) ?> Struk
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-mono"><?= esc($transaction['invoice_code']) ?></p>
+                </div>
 
-        <!-- Paper Size Switcher & Auto-Cutter Guide Trigger -->
-        <div class="flex items-center justify-between gap-2 pt-1 text-xs">
-            <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                <span class="text-[10px] uppercase font-bold text-slate-600 px-2">Kertas:</span>
-                <button type="button" onclick="setPaperSize('58mm')" id="btn-58mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900">
-                    58mm
-                </button>
-                <button type="button" onclick="setPaperSize('80mm')" id="btn-80mm" class="px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs">
-                    80mm
-                </button>
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-sans">
-                <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-800 font-medium underline flex items-center gap-1 cursor-pointer" title="Panduan pengaturan driver printer auto-cut">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Tips Auto-Cutter
-                </button>
-                <span class="hidden sm:inline">&bull; <strong>Enter</strong> Cetak &bull; <strong>Esc</strong> Loket</span>
-            </div>
-        </div>
+                <!-- Action Buttons: Cetak & Kembali -->
+                <div class="space-y-2">
+                    <button type="button" onclick="window.print()" class="w-full px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm hover:shadow transition flex items-center justify-center gap-2 cursor-pointer" title="Cetak struk (Enter / P)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        <span>Cetak Struk (Enter)</span>
+                    </button>
+                    <a href="<?= base_url('admin/pos') ?>" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center justify-center gap-1.5" title="Kembali ke Loket POS (Esc)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        <span>Kembali ke POS (Esc)</span>
+                    </a>
+                </div>
 
-        <!-- Panduan Pengaturan Driver Printer Auto-Cutter (Collapsible) -->
-        <div id="autocut-guide-box" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs space-y-1.5 text-blue-900">
-            <div class="flex justify-between items-center font-bold">
-                <span class="flex items-center gap-1 text-blue-800">
-                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Tips Pengaturan Driver Printer Auto-Cutter:
-                </span>
-                <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-900 text-sm font-bold px-1">&times;</button>
-            </div>
-            <ul class="list-disc list-inside space-y-0.5 text-[11px] leading-relaxed text-blue-950">
-                <li><strong>Cut Option:</strong> Pilih <code>Cut at End of Page</code> agar tiket rombongan terpisah otomatis dipotong per lembar tiket.</li>
-                <li><strong>Cut Mode:</strong> Disarankan <code>Partial Cut</code> agar tiket tetap menggantung rapi di mulut printer dan tidak jatuh ke lantai.</li>
-                <li><strong>Margin Browser:</strong> Set margin print ke <code>None</code> atau <code>Minimum</code> pada dialog cetak browser.</li>
-                <li><strong>Trailing Feed:</strong> Web ini sudah menambahkan bantalan potong 12mm otomatis agar footer/QR tidak terpotong pisau cutter.</li>
-            </ul>
-        </div>
-
-        <!-- Group Ticket Split Toolbar -->
-        <?php if ($isGroupOrMulti): ?>
-        <div class="border-t border-slate-200 pt-3 space-y-2">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    Pilihan Cetak Tiket Group (<?= $totalVisitors ?> Orang)
-                </span>
-                <span class="text-[10px] px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">
-                    <?= $currentTicketCount ?> Struk
-                </span>
-            </div>
-
-            <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-lg text-xs">
-                <button type="button" onclick="setSplitMode('master')" id="btn-mode-master"
-                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isMaster ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
-                    Master Ticket
-                    <span class="block text-[10px] font-normal opacity-80">(1 QR)</span>
-                </button>
-                <button type="button" onclick="setSplitMode('individual')" id="btn-mode-individual"
-                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isPerPerson ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
-                    Per Orang
-                    <span class="block text-[10px] font-normal opacity-80">(<?= $totalVisitors ?> QR)</span>
-                </button>
-                <button type="button" onclick="toggleCustomSplit(true)" id="btn-mode-custom"
-                    class="py-1.5 px-2 rounded-md font-semibold text-center transition <?= $isCustom ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' ?>">
-                    Custom Split
-                    <span class="block text-[10px] font-normal opacity-80">(Sebagian)</span>
-                </button>
-            </div>
-
-            <!-- Custom Split Sub-panel -->
-            <div id="custom-split-panel" class="<?= $isCustom ? '' : 'hidden' ?> p-2.5 bg-amber-50/70 border border-amber-200 rounded-lg space-y-2 text-xs">
-                <div class="flex items-center justify-between gap-2">
-                    <label for="custom_split_count" class="font-bold text-slate-700">
-                        Jumlah Tiket Terpisah (Orang):
-                    </label>
-                    <div class="flex items-center gap-1.5">
-                        <input type="number" id="custom_split_count" min="1" max="<?= max(1, $totalVisitors - 1) ?>" value="<?= $customSplitCount ?>" 
-                            oninput="updateCustomSplitPreview(<?= $totalVisitors ?>)"
-                            class="w-16 px-2 py-1 text-center font-bold text-sm bg-white border border-slate-300 rounded focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
-                        <button type="button" onclick="applyCustomSplit()" id="btn-apply-split"
-                            class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded shadow-xs transition">
-                            Terapkan
+                <!-- Paper Size Switcher -->
+                <div class="pt-2 border-t border-slate-100 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700">Ukuran Kertas:</span>
+                        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button type="button" onclick="setPaperSize('58mm')" id="btn-58mm" class="px-3 py-1 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900 cursor-pointer">
+                                58mm
+                            </button>
+                            <button type="button" onclick="setPaperSize('80mm')" id="btn-80mm" class="px-3 py-1 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs cursor-pointer">
+                                80mm
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 font-sans">
+                        <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-800 font-medium underline flex items-center gap-1 cursor-pointer" title="Panduan pengaturan driver printer auto-cut">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Tips Auto-Cutter
                         </button>
+                        <span>Pintasan: <strong>1</strong> (58) &bull; <strong>2</strong> (80)</span>
                     </div>
                 </div>
-                <p id="custom-split-info" class="text-[11px] text-amber-900 leading-tight">
-                    <!-- Dinamis terupdate oleh JS -->
-                </p>
-            </div>
-        </div>
-        <?php endif; ?>
-    </div>
 
-    <!-- Receipt Container -->
-    <div id="receipt-wrapper" class="mx-auto flex flex-col items-center gap-6">
+                <!-- Panduan Pengaturan Driver Printer Auto-Cutter (Collapsible) -->
+                <div id="autocut-guide-box" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs space-y-1.5 text-blue-900">
+                    <div class="flex justify-between items-center font-bold">
+                        <span class="flex items-center gap-1 text-blue-800 text-[11px]">
+                            <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Tips Pengaturan Driver Printer:
+                        </span>
+                        <button type="button" onclick="toggleAutoCutGuide()" class="text-blue-600 hover:text-blue-900 text-base font-bold px-1 cursor-pointer">&times;</button>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-[11px] leading-relaxed text-blue-950 font-sans">
+                        <li><strong>Cut Option:</strong> Pilih <code>Cut at End of Page</code> agar dipotong per lembar tiket.</li>
+                        <li><strong>Cut Mode:</strong> Disarankan <code>Partial Cut</code> agar tiket tetap menggantung rapi di printer.</li>
+                        <li><strong>Margin Browser:</strong> Set ke <code>None</code> atau <code>Minimum</code> pada dialog cetak.</li>
+                        <li><strong>Trailing Feed:</strong> Web otomatis menyertakan spacer 12mm di akhir struk.</li>
+                    </ul>
+                </div>
+
+                <!-- Group Ticket Split Options (2 Options: Master vs Per Orang) -->
+                <?php if ($isGroupOrMulti): ?>
+                <div class="pt-2 border-t border-slate-100 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            Pilihan Cetak Group
+                        </span>
+                        <span class="text-[10px] px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">
+                            <?= $totalVisitors ?> Orang
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl text-xs">
+                        <button type="button" onclick="setSplitMode('master')" id="btn-mode-master"
+                            class="py-2 px-2 rounded-lg font-semibold text-center transition cursor-pointer <?= $isMaster ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white/60' ?>">
+                            Master Ticket
+                            <span class="block text-[10px] font-normal opacity-80">(1 QR)</span>
+                        </button>
+                        <button type="button" onclick="setSplitMode('individual')" id="btn-mode-individual"
+                            class="py-2 px-2 rounded-lg font-semibold text-center transition cursor-pointer <?= $isPerPerson ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white/60' ?>">
+                            Per Orang
+                            <span class="block text-[10px] font-normal opacity-80">(<?= $totalVisitors ?> QR)</span>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 leading-tight font-sans">
+                        Pilih <strong>Master Ticket</strong> untuk mencetak 1 lembar struk rombongan, atau <strong>Per Orang</strong> untuk memecah ke <?= $totalVisitors ?> lembar tiket individu.
+                    </p>
+                </div>
+                <?php endif; ?>
+
+            </div>
+
+            <!-- Footer Sidebar: Pintasan Keyboard -->
+            <div class="w-full max-w-md pt-4 border-t border-slate-100 text-[11px] text-slate-400 font-sans hidden lg:block">
+                <p class="font-semibold text-slate-500 mb-1.5">Pintasan Keyboard:</p>
+                <ul class="space-y-1">
+                    <li class="flex items-center justify-between"><span>Cetak Struk:</span> <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono text-slate-700">Enter</kbd></li>
+                    <li class="flex items-center justify-between"><span>Kembali ke POS:</span> <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono text-slate-700">Esc</kbd></li>
+                    <li class="flex items-center justify-between"><span>Ukuran Kertas:</span> <span><kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono text-slate-700">1</kbd> / <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono text-slate-700">2</kbd></span></li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT PREVIEW CANVAS (60% WIDTH, SCROLLABLE, STREAM STRUK TIKET THERMAL) -->
+        <main class="receipt-preview-area w-full lg:w-3/5 py-8 px-4 lg:px-8 flex flex-col items-center min-h-screen overflow-y-auto bg-slate-100">
+            <div id="receipt-wrapper" class="w-full max-w-4xl flex flex-wrap justify-center items-start content-start gap-6">
         <?php foreach ($tickets as $idx => $t): ?>
-        <div class="receipt-slip bg-white p-4 shadow-md border border-slate-300 receipt-58mm thermal-receipt text-black font-mono space-y-2">
+        <div class="receipt-slip bg-white p-4 shadow-md border border-slate-300 receipt-58mm thermal-receipt text-black font-mono space-y-2 shrink-0">
             
             <!-- 1. HEADER -->
             <div class="text-center space-y-0.5">
@@ -446,6 +452,9 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
 
         </div>
         <?php endforeach; ?>
+            </div>
+        </main>
+
     </div>
 
     <script>
@@ -456,53 +465,20 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
         const csrfTokenName = '<?= csrf_token() ?>';
         let csrfHash = '<?= csrf_hash() ?>';
 
-        function updateCustomSplitPreview(total) {
-            const input = document.getElementById('custom_split_count');
-            if (!input) return;
-            let val = parseInt(input.value) || 0;
-            if (val < 1) val = 1;
-            if (val >= total) val = total - 1;
-            input.value = val;
-            const groupCount = total - val;
-            const info = document.getElementById('custom-split-info');
-            if (info) {
-                info.innerHTML = `Hasil cetak: <strong>1 Tiket Group (${groupCount} Orang)</strong> + <strong>${val} Tiket Terpisah (masing-masing 1 Orang)</strong> &bull; Total ${val + 1} struk tiket.`;
-            }
-        }
-
-        function toggleCustomSplit(show) {
-            const panel = document.getElementById('custom-split-panel');
-            if (panel) {
-                panel.classList.remove('hidden');
-                updateCustomSplitPreview(totalVisitors);
-            }
-        }
-
         async function setSplitMode(mode) {
-            if (mode === 'custom') {
-                toggleCustomSplit(true);
-                return;
-            }
-            await executeSplit(mode, 0);
+            if (mode !== 'master' && mode !== 'individual') return;
+            await executeSplit(mode);
         }
 
-        async function applyCustomSplit() {
-            const input = document.getElementById('custom_split_count');
-            const splitCount = parseInt(input.value) || 1;
-            await executeSplit('custom', splitCount);
-        }
-
-        async function executeSplit(mode, splitCount) {
-            const btnApply = document.getElementById('btn-apply-split');
-            if (btnApply) {
-                btnApply.disabled = true;
-                btnApply.textContent = 'Menyimpan...';
-            }
+        async function executeSplit(mode) {
+            const btnMaster = document.getElementById('btn-mode-master');
+            const btnIndiv = document.getElementById('btn-mode-individual');
+            if (btnMaster) btnMaster.disabled = true;
+            if (btnIndiv) btnIndiv.disabled = true;
 
             try {
                 const formData = new FormData();
                 formData.append('split_mode', mode);
-                formData.append('split_count', splitCount);
                 formData.append(csrfTokenName, csrfHash);
 
                 const res = await fetch(`<?= base_url('admin/pos/receipt/' . $transaction['id'] . '/split') ?>`, {
@@ -520,17 +496,13 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
                     window.location.reload();
                 } else {
                     alert((data && data.message) || 'Gagal mengubah susunan tiket.');
-                    if (btnApply) {
-                        btnApply.disabled = false;
-                        btnApply.textContent = 'Terapkan';
-                    }
+                    if (btnMaster) btnMaster.disabled = false;
+                    if (btnIndiv) btnIndiv.disabled = false;
                 }
             } catch (err) {
                 alert('Terjadi kesalahan jaringan.');
-                if (btnApply) {
-                    btnApply.disabled = false;
-                    btnApply.textContent = 'Terapkan';
-                }
+                if (btnMaster) btnMaster.disabled = false;
+                if (btnIndiv) btnIndiv.disabled = false;
             }
         }
 
@@ -582,11 +554,11 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             });
 
             if (size === '58mm') {
-                btn58.className = "px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs";
-                btn80.className = "px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900";
+                btn58.className = "px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs cursor-pointer";
+                btn80.className = "px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900 cursor-pointer";
             } else {
-                btn80.className = "px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs";
-                btn58.className = "px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900";
+                btn80.className = "px-3 py-1.5 rounded-md font-bold text-xs transition bg-slate-900 text-white shadow-xs cursor-pointer";
+                btn58.className = "px-3 py-1.5 rounded-md font-bold text-xs transition text-slate-600 hover:text-slate-900 cursor-pointer";
             }
 
             renderQRCodes(size);
@@ -629,10 +601,6 @@ $customSplitCount = $isCustom ? ($currentTicketCount - 1) : 1;
             }
 
             setPaperSize(preferredSize);
-
-            if (typeof totalVisitors !== 'undefined' && totalVisitors > 1) {
-                updateCustomSplitPreview(totalVisitors);
-            }
         });
     </script>
 </body>
